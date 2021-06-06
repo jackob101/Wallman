@@ -188,6 +188,10 @@ default_border pixel 2
 default_floating_border pixel 2 
 hide_edge_borders smart
 
+#Gaps
+gaps outer 5
+gaps inner 10
+smart_gaps on
 
 # class                 border  backgr. text    indicator child_border
 client.focused          #98971a #98971a #ebdbb2 #E26D5C   #8ec07c
@@ -209,3 +213,4 @@ exec spotify
 exec telegram-desktop
 exec discord
 exec_always feh --bg-scale /home/jakub/Obrazy/wallpaper.png
+exec_always picom -i 1 --vsync -m 1
