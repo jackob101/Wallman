@@ -34,11 +34,11 @@ exec --no-startup-id nm-applet
 exec_always --no-startup-id $HOME/.config/polybar/start.sh 
 
 # Use pactl to adjust volume in PulseAudio.
-#set $refresh_i3status killall -SIGUSR1 i3status
-#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
-#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
-#bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-#bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
 # Media player controls
 bindsym XF86AudioPlay exec playerctl play
@@ -203,9 +203,10 @@ set $l_aqua #8ec07c
 set $l_gray #ebdbb2
 
 #Border settings
-default_border pixel 2 
-default_floating_border pixel 2 
+default_border pixel 4 
+default_floating_border pixel 4 
 hide_edge_borders smart
+
 
 #Gaps
 gaps outer 5
@@ -231,36 +232,7 @@ assign [class="TelegramDesktop"] $ws9
 exec spotify
 exec telegram-desktop
 exec discord
-exec_always feh --bg-scale /home/jakub/Obrazy/wallpaper.png
-exec_always picom -i 1 --vsync -m 1
+exec_always feh --bg-scale /home/jakub/Obrazy/wallpaper001.jpg
+exec_alway killall picom
+exec_always picom --config ~/.config/picom/config 
 exec_always dunst -c ~/.config/dunst/dunstrc
-# Review the lines below and append to ~/.config/.i3/config
-
-## Volume control
-
-# Path to volume control, without trailing slash
-set $volumepath /usr/bin/i3-volume
-
-# Command for the status line (used with -t, requires -u)
-#   ie: i3blocks, i3status
-set $statuscmd i3blocks 
-
-# Signal used to update the status line (used with -u, requires -t)
-#   i3blocks uses SIGRTMIN+10 by default
-#   i3status uses SIGUSR1 by default
-set $statussig SIGRTMIN+10 
-
-# Amount to increase/decrease volume as a percentage (used with -i, -d)
-set $volumestep 5
-
-# pulseaudio-utils settings
-#
-# Symbolic name for sink (numeric index not supported) (used with -s $sinkname)
-#   Recommended: comment out this setting and omit the -s option to use default sink
-#   List sink names: pacmd list-sinks | awk -F "[<>]" '/^\s+name: <.*>/{print $2}'
-#set $sinkname alsa_output.pci-0000_00_1b.0.analog-stereo
-
-# Using pulseaudio-utils (append "-s $sinkname" without quotes to override default sink)
-bindsym XF86AudioRaiseVolume exec $volumepath -np -i $volumestep -t $statuscmd -u $statussig
-bindsym XF86AudioLowerVolume exec $volumepath -np -d $volumestep -t $statuscmd -u $statussig
-bindsym XF86AudioMute        exec $volumepath -mn -t $statuscmd -u $statussig
