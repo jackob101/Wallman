@@ -31,7 +31,7 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
 
 # Start Polybar
-exec_always --no-startup-id $HOME/.config/polybar/start.sh 
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh --shapes 
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -55,8 +55,11 @@ bindsym $mod+Return exec alacritty
 # kill focused window
 bindsym $mod+Shift+q kill
 
+#start rofi
+bindsym $mod+d exec --no-startup-id ~/.config/polybar/shapes/scripts/launcher.sh &
+
 # start dmenu (a program launcher)
-bindsym $mod+d exec --no-startup-id dmenu_run
+bindsym $mod+Shift+d exec --no-startup-id dmenu_run
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -115,16 +118,16 @@ bindsym $mod+a focus parent
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1 "1: Browser " 
-set $ws2 "2: Terminals "
+set $ws1 "1" 
+set $ws2 "2"
 set $ws3 "3"
 set $ws4 "4"
 set $ws5 "5"
 set $ws6 "6"
 set $ws7 "7"
-set $ws8 "8: Discord "
-set $ws9 "9: Telegram "
-set $ws10 "10: Spotify "
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
 
 # switch to workspace
 bindsym $mod+1 workspace $ws1 
@@ -207,11 +210,10 @@ default_border pixel 4
 default_floating_border pixel 4 
 hide_edge_borders smart
 
-
 #Gaps
 gaps outer 5
 gaps inner 10
-smart_gaps on
+smart_gaps 1 
 
 # class                 border  backgr. text    indicator child_border
 client.focused          #98971a #98971a #ebdbb2 #E26D5C   #8ec07c
@@ -229,10 +231,10 @@ assign [class="discord"] $ws8
 assign [class="TelegramDesktop"] $ws9
 
 #Autostart
-exec spotify
-exec telegram-desktop
-exec discord
-exec_always feh --bg-scale /home/jakub/Obrazy/wallpaper001.jpg
+exec --no-startup-id spotify
+exec --no-startup-id telegram-desktop
+exec --no-startup-id discord
+exec_always --no-startup-id feh --bg-scale /home/jakub/Obrazy/wallpaper001.jpg
 exec_alway killall picom
-exec_always picom --config ~/.config/picom/config 
-exec_always dunst -c ~/.config/dunst/dunstrc
+exec_always --no-startup-id picom --experimental-backends --config ~/.config/picom/config 
+exec_always --no-startup-id dunst -c ~/.config/dunst/dunstrc

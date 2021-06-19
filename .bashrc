@@ -2,7 +2,13 @@
 # ~/.bashrc
 #
 
+alias vim="nvim"
+
 [[ $- != *i* ]] && return
+
+npm set prefix ~/.npm
+PATH="$HOME/.npm/bin:$PATH"
+PATH="./node_modules/.bin:$PATH"
 
 colors() {
 	local fgc bgc vals seq0
