@@ -11,7 +11,7 @@ configuration {
 	font:							"SourceCodePro-SemiBold 10";
     show-icons:                     true;
 	icon-theme: 					"Papirus";
-    display-drun: 					" Applications";
+    display-drun: 					" Applications";
     drun-display-format:            "{name}";
     disable-history:                false;
     fullscreen:                     false;
@@ -25,6 +25,7 @@ configuration {
   se:  #504945FF;
   fg:  #ebdbb2ff;
   ac:  #8ec07cff;
+  fgd: #1d2021ff;
 }
 
 window {
@@ -44,7 +45,7 @@ prompt {
     enabled: 						true;
 	padding: 						1.25% 0.75% 1.25% 0.75%;
 	background-color: 				@ac;
-	text-color: 					@fg;
+	text-color: 					@fgd;
 	font:							"SourceCodePro-SemiBold 12";
     border-radius:                  0%;
 }
@@ -111,7 +112,7 @@ element-icon {
     size:                           64px;
     border:                         1%;
     border-color:                  	@se;
-    border-radius:                  15px;
+    border-radius:                  5px;
     background-color:               @se;
 	padding: 						2% 1% 2% 1%;
 }
@@ -129,6 +130,6 @@ element-text selected {
     horizontal-align:               0.5;
     vertical-align:                 0.5;
     background-color:               @ac;
-    text-color:                     @bg;
-    border-radius:                  0%;
+    text-color:                     @fgd;
+    border-radius:                  5px;
 }
