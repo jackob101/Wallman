@@ -9,6 +9,7 @@ alias vim="nvim"
 npm set prefix ~/.npm
 PATH="$HOME/.npm/bin:$PATH"
 PATH="./node_modules/.bin:$PATH"
+PATH="$HOME/.emacs.d/bin:$PATH"
 
 colors() {
 	local fgc bgc vals seq0

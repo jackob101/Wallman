@@ -27,7 +27,7 @@ window {
     text-color:                     @fg;
 	border:							0px;
 	border-color:					@ac;
-    border-radius:                  12px;
+    border-radius:                  0px;
 	width:							300px;
     location:                       center;
     x-offset:                       0;
@@ -59,7 +59,7 @@ entry {
     horizontal-align:               0;
     placeholder:                    "find...";
 	padding: 						10px;
-    border-radius:                  0px 12px 12px 0px;
+    border-radius:                  0px 0px 0px 0px;
     blink:                          true;
 }
 
@@ -69,7 +69,7 @@ inputbar {
     text-color:                     #FFFFFF;
     expand:                         false;
 	border:							0px;
-    border-radius:                  12px;
+    border-radius:                  0px;
 	border-color:					@ac;
     spacing:                        0px;
 }
