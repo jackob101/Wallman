@@ -116,8 +116,6 @@ bindsym $mod+a focus parent
 
 bindsym $mod+m exec emacs
 
-bindsym Print exec --no-startup-id spectacle 
-
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
 set $ws1 "1" 
@@ -236,5 +234,5 @@ exec --no-startup-id spotify
 exec --no-startup-id telegram-desktop
 exec --no-startup-id discord
 exec_always --no-startup-id feh --bg-scale /home/jakub/Obrazy/wallpaper003.png
-exec_always --no-startup-id picom --experimental-backends --config ~/.config/picom/config 
+exec_always --no-startup-id picom --experimental-backends --config ~/.config/picom/config
 exec_always --no-startup-id dunst -c ~/.config/dunst/dunstrc
