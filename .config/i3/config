@@ -205,6 +205,7 @@ set $l_purple #d3869b
 set $l_aqua #8ec07c
 set $l_gray #ebdbb2
 
+
 #Border settings
 default_border pixel 4 
 default_floating_border pixel 4 
@@ -214,12 +215,18 @@ hide_edge_borders smart
 gaps outer 3
 gaps inner 5 
 
-# class                 border  backgr. text    indicator child_border
-client.focused          #98971a #98971a #ebdbb2 #E26D5C   #8ec07c
-client.focused_inactive #FFFFFF #5f676a #ffffff #484e50   #5f676a
-client.unfocused        #FFFFFF #222222 #888888 #292d2e   #3c3836
-client.urgent           #2f343a #900000 #ffffff #900000   #fb4934
-client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+set_from_resource $color1 color1_2 #ffffff
+set_from_resource $indicator color2_2 #ffffff
+set_from_resource $foreground primaryForeground #ffffff
+set_from_resource $urgent alert #ffffff
+
+
+# class                 border  backgr. text        indicator  child_border
+client.focused          $color1 #98971a $foreground $indicator $color1
+client.focused_inactive #FFFFFF #5f676a $foreground #484e50    #5f676a
+client.unfocused        #FFFFFF #222222 $foreground #292d2e    #3c3836
+client.urgent           $urgent $urgent $foreground #900000    #900000
+client.placeholder      #000000 #0c0c0c $foreground #000000    #0c0c0c
 
 
 #Start applications on specific workspace

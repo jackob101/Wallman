@@ -1,8 +1,8 @@
 
 *.primaryBackground: #282828
-*.primaryForeground: #ebdbb2;
+*.primaryForeground: #ebdbb2
 
-*.secondaryBackground: #3c3836;
+*.secondaryBackground: #3c3836
 
 *.alert: #fb4934
 

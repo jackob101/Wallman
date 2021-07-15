@@ -12,6 +12,13 @@ PATH="$HOME/.npm/bin:$PATH"
 PATH="./node_modules/.bin:$PATH"
 PATH="$HOME/.emacs.d/bin:$PATH"
 
+#BugTracker variables
+#source ~/IdeaProjects/bug-tracker/env.sh
+#export DATASOURCE_URL=jdbc:mysql://localhost:3306/bugtracker
+#export DATASOURCE_PASSWORD=MPno
+#export DATASOURCE_USERNAME=root
+
+
 colors() {
 	local fgc bgc vals seq0
 
