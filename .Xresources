@@ -1,5 +1,6 @@
 
 *.primaryBackground: #282828
+*.primaryBackgroundTransparent: #cc282828
 *.primaryForeground: #ebdbb2
 
 *.secondaryBackground: #3c3836

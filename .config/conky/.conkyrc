@@ -1,0 +1,158 @@
+conky.config = {
+
+-------------------------------------
+--  Generic Settings
+-------------------------------------
+background=true,
+update_interval=3,
+double_buffer=true,
+no_buffers=true,
+imlib_cache_size=10,
+
+draw_shades=false,
+draw_outline=false,
+draw_borders=false,
+draw_graph_borders=false,
+default_shade_color="#282828",
+default_graph_height=26,
+default_graph_width=80,
+show_graph_scale=false,
+show_graph_range=false,
+
+
+-------------------------------------
+--  Window Specifications
+-------------------------------------
+gap_y=0,
+gap_x=15,
+alignment='mr',
+minimum_height=1080,
+minimum_width=300,
+own_window=true,
+own_window_argb_visual=true,
+own_window_class= Conky,
+own_window_type="override",
+own_window_transparent=true,
+draw_shades=true,
+own_window_hints="undecorated,below,sticky,skip_taskbar,skip_pager",
+border_inner_margin=0,
+border_outer_margin=0,
+border_width=15,
+--own_window_argb_visual=true,
+--own_window_argb_value=0,
+
+
+-------------------------------------
+--  Text Settings
+-------------------------------------
+use_xft=true,
+xftalpha=1,
+text_buffer_size=256,
+override_utf8_locale=true,
+font='GE Inspira:size=14',
+
+short_units=true,
+short_units=true,
+pad_percents=2,
+top_name_width=15,
+
+
+-------------------------------------
+--  Color Scheme
+-------------------------------------
+default_color="FFFFFF",
+color1="feeafa",
+color2="8ec07c",
+color3="ebdbb2",
+color4="b8bb26",
+color5="DCDCDC",
+color6="FFFFFF",
+color7="FFFFFF",
+color8="FFFFFF",
+
+
+-------------------------------------
+--  API Key
+-------------------------------------
+template6="129dc41dea99d534aefefafb21452f8a",
+
+
+-------------------------------------
+--  City ID
+-------------------------------------
+template7="3085786",
+
+
+-------------------------------------
+--  Temp Unit (default, metric, imperial)
+-------------------------------------
+template8="metric",
+
+-------------------------------------
+--  Locale (e.g. "es_ES.UTF-8")
+--  Leave empty for default
+-------------------------------------
+template9="",
+
+
+}
+
+
+---------------------------------------------------
+---------------------------------------------------
+
+
+conky.text = [[
+#----------------------------------------
+#Time and date
+#----------------------------------------
+#${voffset 0}${color1}${font :size=14:bold}Time & Date ${hr 2}
+#${font}${voffset 5}Time: ${alignr}${color1}${time %R}
+#${voffset 0}Date: ${alignr}${execi 600 date +%A | sed -e "s/\b\(.\)/\u\1/g"} ${execi 600 date +%m-%Y}
+#----------------------------------------
+#Info
+#----------------------------------------
+${voffset 220}${goto -50}${color4}${font :size=14:bold}Info ${hr 2}${color1}
+${font}${voffset 5}${font :bold}${color3}Release:${font}${color1}${alignr}${voffset -3}$kernel
+${voffset 0}${font :bold}${color3}Uptime:${font}${color1}${alignr}${voffset -3}$uptime
+${voffset 0}${color3}${font :bold}Packages to update: ${font}${color1}${alignr}${voffset -3}${execi 600 pamac checkupdates | awk '(NR==1)' | awk '{print $1}'}
+#----------------------------------------
+#CPU
+#----------------------------------------
+${voffset 10}${color4}${font :size=14:bold}CPU ${hr 2}${font}
+${voffset 5}${color3}${font :bold}Name : ${font}${color1}${voffset -3}$alignr${execi 6000 cat /proc/cpuinfo | grep 'model name' | sed -e 's/model name.*: //'| uniq | cut -c 1-16}
+${voffset 0}${color3}${font :bold}Frequency : ${font}${color1}${alignr}${voffset -3}${freq_g} GHz
+${voffset 0}${color3}${font :bold}Average CPU use: ${font}${color1}${alignr}${voffset -3}${cpu}%
+#----------------------------------------
+#Cores
+#----------------------------------------
+#${voffset 0}${color3}${font :bold}CPU Cores:${font}
+#${voffset 5}${color1} 1${goto 45}${color1}${cpu cpu1}%${goto 85}${color2}${cpubar cpu1 13, 60}${goto 170}${color1} 2${goto 195}${color1}${cpu cpu2}%${goto 235}${color2}${cpubar cpu2 13, 60}
+#${voffset 2}${color1} 3${goto 45}${color1}${cpu cpu3}%${goto 85}${color2}${cpubar cpu3 13, 60}${goto 170}${color1} 4${goto 195}${color1}${cpu cpu4}%${goto 235}${color2}${cpubar cpu4 13, 60}
+#${voffset 2}${color1} 5${goto 45}${color1}${cpu cpu5}%${goto 85}${color2}${cpubar cpu5 13, 60}${goto 170}${color1} 6${goto 195}${color1}${cpu cpu6}%${goto 235}${color2}${cpubar cpu6 13, 60}
+#${voffset 2}${color1} 7${goto 45}${color1}${cpu cpu7}%${goto 85}${color2}${cpubar cpu7 13, 60}${goto 170}${color1} 8${goto 195}${color1}${cpu cpu8}%${goto 235}${color2}${cpubar cpu8 13, 60}
+#${voffset 2}${color1} 9${goto 45}${color1}${cpu cpu9}%${goto 85}${color2}${cpubar cpu9 13, 60}${goto 170}${color1}10${goto 195}${color1}${cpu cpu10}%${goto 235}${color2}${cpubar cpu10 13, 60}
+#${voffset 2}${color1}11${goto 45}${color1}${cpu cpu11}%${goto 85}${color2}${cpubar cpu11 13, 60}${goto 170}${color1}12${goto 195}${color1}${cpu cpu12}%${goto 235}${color2}${cpubar cpu12 13, 60}
+#----------------------------------------
+#Cpu process
+#----------------------------------------
+${voffset 10}${color3}${font :bold}Applications: ${font}
+${voffset 5}${color3}${font :bold}Name${alignr}CPU%${font}${color1}
+${top name 1} ${alignr}${top cpu 1}
+${top name 2} ${alignr}${top cpu 2}
+${top name 3} ${alignr}${top cpu 3}
+${top name 4} ${alignr}${top cpu 4}
+${top name 5} ${alignr}${top cpu 5}
+#----------------------------------------
+#memory
+#----------------------------------------
+${voffset 10}${color4}${font :size=14:bold}Memory ${hr 2}${font}
+${voffset 5}${color3}${font :bold}Used: ${voffset -3}${color1}${font}$mem ($memperc%)${color1}
+${color2}${membar}
+${voffset 5}${font :bold}${color3}Name${goto 180}Mem%${alignr}Mem${font}${color1}
+${top_mem name 1} ${goto 180}${top_mem mem 1}${alignr}${top_mem mem_res 1}
+${top_mem name 2} ${goto 180}${top_mem mem 2}${alignr}${top_mem mem_res 2}
+${top_mem name 3} ${goto 180}${top_mem mem 3}${alignr}${top_mem mem_res 3}
+${top_mem name 4} ${goto 180}${top_mem mem 4}${alignr}${top_mem mem_res 4}
+${top_mem name 5} ${goto 180}${top_mem mem 5}${alignr}${top_mem mem_res 5}
+]]
