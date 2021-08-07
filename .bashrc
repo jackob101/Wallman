@@ -3,6 +3,7 @@
 #
 
 alias vim="nvim"
+alias configadd="$HOME/skripts/commitAndPushConfig.sh"
 alias config='/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
 
 [[ $- != *i* ]] && return
