@@ -8,7 +8,7 @@
  */
 
 configuration {
-	font:							"SourceCodePro-SemiBold 10";
+	font:							"GE Inspira 12";
     show-icons:                     true;
 	icon-theme: 					"Papirus";
     display-drun: 					" Applications";
@@ -46,7 +46,7 @@ prompt {
 	padding: 						1.25% 0.75% 1.25% 0.75%;
 	background-color: 				@ac;
 	text-color: 					@fgd;
-	font:							"SourceCodePro-SemiBold 12";
+	font:							"GE Inspira 14";
     border-radius:                  0%;
 }
 

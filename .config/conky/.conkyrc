@@ -13,7 +13,7 @@ draw_shades=false,
 draw_outline=false,
 draw_borders=false,
 draw_graph_borders=false,
-default_shade_color="#282828",
+default_shade_color="#000000",
 default_graph_height=26,
 default_graph_width=80,
 show_graph_scale=false,
@@ -25,15 +25,17 @@ show_graph_range=false,
 -------------------------------------
 gap_y=0,
 gap_x=15,
-alignment='mr',
-minimum_height=1080,
+alignment='tr',
+minimum_height=1040,
 minimum_width=300,
 own_window=true,
+own_window_colour="000000",
 own_window_argb_visual=true,
+own_window_argb_value=119,
 own_window_class= Conky,
 own_window_type="override",
-own_window_transparent=true,
-draw_shades=true,
+own_window_transparent=no,
+draw_shades=false,
 own_window_hints="undecorated,below,sticky,skip_taskbar,skip_pager",
 border_inner_margin=0,
 border_outer_margin=0,
@@ -49,7 +51,7 @@ use_xft=true,
 xftalpha=1,
 text_buffer_size=256,
 override_utf8_locale=true,
-font='GE Inspira:size=14',
+font='UbuntuMono:size=14',
 
 short_units=true,
 short_units=true,
@@ -60,15 +62,15 @@ top_name_width=15,
 -------------------------------------
 --  Color Scheme
 -------------------------------------
-default_color="FFFFFF",
-color1="feeafa",
-color2="8ec07c",
-color3="ebdbb2",
-color4="b8bb26",
-color5="DCDCDC",
-color6="FFFFFF",
-color7="FFFFFF",
-color8="FFFFFF",
+default_color="#ebdbb2",
+color1="#ebdbb2",
+color2="#fabd2f",
+color3="#b8bb26",
+color4="#fabd2f",
+color5="#DCDCDC",
+color6="#FFFFFF",
+color7="#FFFFFF",
+color8="#FFFFFF",
 
 
 -------------------------------------
@@ -106,23 +108,23 @@ conky.text = [[
 #----------------------------------------
 #Time and date
 #----------------------------------------
-#${voffset 0}${color1}${font :size=14:bold}Time & Date ${hr 2}
-#${font}${voffset 5}Time: ${alignr}${color1}${time %R}
-#${voffset 0}Date: ${alignr}${execi 600 date +%A | sed -e "s/\b\(.\)/\u\1/g"} ${execi 600 date +%m-%Y}
+${voffset 40}${font UbuntuMono:size=72}${alignc}${color3}${time %R}${font}
+${voffset 5}${font UbuntuMono:size=24}${alignc}${color4}${execi 600 date +%A | sed -e "s/\b\(.\)/\u\1/g"}${font}
+${voffset 3}${alignc}${time %d} ${execi 600 date +%B | sed -e "s/\b\(.\)/\u\1/g"} ${time %Y}
 #----------------------------------------
 #Info
-#----------------------------------------
-${voffset 220}${goto -50}${color4}${font :size=14:bold}Info ${hr 2}${color1}
-${font}${voffset 5}${font :bold}${color3}Release:${font}${color1}${alignr}${voffset -3}$kernel
-${voffset 0}${font :bold}${color3}Uptime:${font}${color1}${alignr}${voffset -3}$uptime
-${voffset 0}${color3}${font :bold}Packages to update: ${font}${color1}${alignr}${voffset -3}${execi 600 pamac checkupdates | awk '(NR==1)' | awk '{print $1}'}
+# ----------------------------------------
+${voffset 140}${goto -50}${color4}${font UbuntuMono:size=14:bold}Info ${hr}${color1}
+${font}${voffset 5}${font UbuntuMono:size=14}${color3}Release:${font}${color1}${alignr}${voffset -3}$kernel
+${voffset 3}${font UbuntuMono:size=14}${color3}Uptime:${font}${color1}${alignr}${voffset -3}$uptime
+${voffset 3}${font UbuntuMono:size=14}${color3}Packages to update:${font}${color1}${goto 305}${voffset -3}${execi 600 pacman -Qu | awk 'END{print NR}'}
 #----------------------------------------
 #CPU
 #----------------------------------------
-${voffset 10}${color4}${font :size=14:bold}CPU ${hr 2}${font}
-${voffset 5}${color3}${font :bold}Name : ${font}${color1}${voffset -3}$alignr${execi 6000 cat /proc/cpuinfo | grep 'model name' | sed -e 's/model name.*: //'| uniq | cut -c 1-16}
-${voffset 0}${color3}${font :bold}Frequency : ${font}${color1}${alignr}${voffset -3}${freq_g} GHz
-${voffset 0}${color3}${font :bold}Average CPU use: ${font}${color1}${alignr}${voffset -3}${cpu}%
+${voffset 10}${color4}${font UbuntuMono:size=14:bold}CPU ${hr}${font}
+${voffset 5}${color3}${font UbuntuMono:size=14}Name : ${font}${color1}${voffset -3}$alignr${execi 6000 cat /proc/cpuinfo | grep 'model name' | sed -e 's/model name.*: //'| uniq | cut -c 1-16}
+${voffset 3}${color3}${font UbuntuMono:size=14}Frequency : ${font}${color1}${alignr}${voffset -3}${freq_g} GHz
+${voffset 3}${color3}${font UbuntuMono:size=14}Average CPU use: ${font}${color1}${alignr}${voffset -3}${cpu}%
 #----------------------------------------
 #Cores
 #----------------------------------------
@@ -132,12 +134,11 @@ ${voffset 0}${color3}${font :bold}Average CPU use: ${font}${color1}${alignr}${vo
 #${voffset 2}${color1} 5${goto 45}${color1}${cpu cpu5}%${goto 85}${color2}${cpubar cpu5 13, 60}${goto 170}${color1} 6${goto 195}${color1}${cpu cpu6}%${goto 235}${color2}${cpubar cpu6 13, 60}
 #${voffset 2}${color1} 7${goto 45}${color1}${cpu cpu7}%${goto 85}${color2}${cpubar cpu7 13, 60}${goto 170}${color1} 8${goto 195}${color1}${cpu cpu8}%${goto 235}${color2}${cpubar cpu8 13, 60}
 #${voffset 2}${color1} 9${goto 45}${color1}${cpu cpu9}%${goto 85}${color2}${cpubar cpu9 13, 60}${goto 170}${color1}10${goto 195}${color1}${cpu cpu10}%${goto 235}${color2}${cpubar cpu10 13, 60}
-#${voffset 2}${color1}11${goto 45}${color1}${cpu cpu11}%${goto 85}${color2}${cpubar cpu11 13, 60}${goto 170}${color1}12${goto 195}${color1}${cpu cpu12}%${goto 235}${color2}${cpubar cpu12 13, 60}
+#${voffset 2}${color1}11${goto 45}${color 1}${cpu cpu11}%${goto 85}${color2}${cpubar cpu11 13, 60}${goto 170}${color1}12${goto 195}${color1}${cpu cpu12}%${goto 235}${color2}${cpubar cpu12 13, 60}
 #----------------------------------------
 #Cpu process
 #----------------------------------------
-${voffset 10}${color3}${font :bold}Applications: ${font}
-${voffset 5}${color3}${font :bold}Name${alignr}CPU%${font}${color1}
+${voffset 5}${color3}${font UbuntuMono:size=14}Name${alignr}CPU%${font}${color1}
 ${top name 1} ${alignr}${top cpu 1}
 ${top name 2} ${alignr}${top cpu 2}
 ${top name 3} ${alignr}${top cpu 3}
@@ -146,13 +147,13 @@ ${top name 5} ${alignr}${top cpu 5}
 #----------------------------------------
 #memory
 #----------------------------------------
-${voffset 10}${color4}${font :size=14:bold}Memory ${hr 2}${font}
-${voffset 5}${color3}${font :bold}Used: ${voffset -3}${color1}${font}$mem ($memperc%)${color1}
+${voffset 10}${color4}${font UbuntuMono:size=14:bold}Memory ${hr 0}${font}
+${voffset 5}${color3}${font UbuntuMono:size=14}Used: ${voffset -3}${color1}${font}$mem ($memperc%)${color1}
 ${color2}${membar}
-${voffset 5}${font :bold}${color3}Name${goto 180}Mem%${alignr}Mem${font}${color1}
-${top_mem name 1} ${goto 180}${top_mem mem 1}${alignr}${top_mem mem_res 1}
-${top_mem name 2} ${goto 180}${top_mem mem 2}${alignr}${top_mem mem_res 2}
-${top_mem name 3} ${goto 180}${top_mem mem 3}${alignr}${top_mem mem_res 3}
-${top_mem name 4} ${goto 180}${top_mem mem 4}${alignr}${top_mem mem_res 4}
-${top_mem name 5} ${goto 180}${top_mem mem 5}${alignr}${top_mem mem_res 5}
+${voffset 5}${font UbuntuMono:size=14}${color3}Name${alignr}Mem${font}${color1}
+${top_mem name 1} ${alignr}${top_mem mem_res 1}
+${top_mem name 2} ${alignr}${top_mem mem_res 2}
+${top_mem name 3} ${alignr}${top_mem mem_res 3}
+${top_mem name 4} ${alignr}${top_mem mem_res 4}
+${top_mem name 5} ${alignr}${top_mem mem_res 5}
 ]]
