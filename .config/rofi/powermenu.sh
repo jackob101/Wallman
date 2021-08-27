@@ -25,6 +25,7 @@ color="${styles[$(( $RANDOM % 8 ))]}"
 # comment this line to disable random colors
 #sed -i -e "s/@import .*/@import \"$color\"/g" $dir/styles/colors.rasi
 
+
 # comment these lines to disable random style
 #themes=($(ls -p --hide="powermenu.sh" --hide="styles" --hide="confirm.rasi" --hide="message.rasi" $dir))
 #theme="${themes[$(( $RANDOM % 24 ))]}"
@@ -108,6 +109,7 @@ case $chosen in
 			elif [[ "$DESKTOP_SESSION" == "i3" ]]; then
 				i3-msg exit
 			fi
+            echo "$DESKTOP_SESSION"
 		elif [[ $ans == "no" || $ans == "NO" || $ans == "n" || $ans == "N" ]]; then
 			exit 0
         else

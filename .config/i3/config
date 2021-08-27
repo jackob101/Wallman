@@ -223,13 +223,16 @@ set $l_gray #ebdbb2
 
 
 #Border settings
-default_border pixel 4 
+default_border pixel 4
 default_floating_border pixel 4 
 hide_edge_borders smart
 
 #Gaps
 gaps outer 3
-gaps inner 5 
+gaps inner 5
+
+workspace $ws1 gaps outer 0
+workspace $ws1 gaps inner 0
 
 set_from_resource $color1 color1_2 #ffffff
 set_from_resource $indicator color2_2 #ffffff
