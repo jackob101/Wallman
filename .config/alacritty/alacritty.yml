@@ -103,6 +103,7 @@ window:
   #history: 1000color variants.
 #draw_bold_text_with_bright_colors: false
 
+<<<<<<< HEAD
 
 font: 
   normal:
@@ -123,6 +124,8 @@ font:
 
   size: 14
 
+=======
+>>>>>>> c1b887c6d1e26636e6cda82969c72ab2cdaec1a9
 # Colors (Tomorrow Night)
 colors:
   # Default colors
@@ -184,6 +187,11 @@ colors:
   #line_indicator:
   #  foreground: '#ffffff' 
   #  background: None 
+<<<<<<< HEAD
+=======
+
+  # Selection colors
+>>>>>>> c1b887c6d1e26636e6cda82969c72ab2cdaec1a9
   #
   # Colors which should be used to draw the selection area.
   #
@@ -193,6 +201,30 @@ colors:
   #  text: CellBackground
   #  background: CellForeground
 
+<<<<<<< HEAD
+=======
+
+  normal:
+    black: "#282828"
+    red: "#cc241d"
+    green: "#98971a"
+    yellow: "#d79921"
+    blue: "#458588"
+    magenta: "#b16286"
+    cyan: "#689d6a"
+    white: "#a89984"
+  bright:
+    black: "#928374"
+    red: "#fb4934"
+    green: "#b8bb26"
+    yellow: "#fabd2f"
+    blue: "#83a598"
+    magenta: "#d3869b"
+    cyan: "#8ec07c"
+    white: "#ebdbb2"
+
+
+>>>>>>> c1b887c6d1e26636e6cda82969c72ab2cdaec1a9
   # Dim colors
   #
   # If the dim colors are not set, they will be calculated automatically based
@@ -446,7 +478,11 @@ cursor:
 #   - Paste
 #   - IncreaseFontSize
 #   - DecreaseFontSize
+<<<<<<< HEAD
 #   - ResetontSize
+=======
+#   - ResetFontSize
+>>>>>>> c1b887c6d1e26636e6cda82969c72ab2cdaec1a9
 #   - ScrollPageUp
 #   - ScrollPageDown
 #   - ScrollHalfPageUp
