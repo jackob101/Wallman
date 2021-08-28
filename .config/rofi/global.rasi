@@ -1,0 +1,6 @@
+* {
+primaryBackground: #282828;
+primaryForeground: #ebdbb2;
+accent: #b8bb26;
+font1: "UbuntuMono 13";
+}

@@ -1,0 +1,62 @@
+conky.config = {
+
+--  Window Settings
+    own_window = true,
+    own_window_type = 'override',
+    own_window_transparent = true,
+    own_window_class = 'Conky',
+    minimum_width = 700,
+    minimum_height = 140,
+    alignment = 'tm',
+    gap_x = -50,
+    gap_y = 95,
+
+--  Font Settings
+-- Use Xft (anti-aliased font and stuff)
+    use_xft = true,
+
+-- Alpha of Xft font. Must be a value at or between 1 and 0
+    xftalpha = 1,
+
+-- Force UTF8? requires XFT
+    override_utf8_locale = true,
+
+
+--  Color Settings
+    draw_shades = false,
+
+--  Miscellaneous Section
+-- Boolean value, if true, Conky will be forked to background when started.
+    background = true,
+
+-- Default and Minimum size is 256 - needs more for single commands that
+-- "call" a lot of text IE: bash scripts
+--text_buffer_size = 6144,
+
+-- Subtract (file system) buffers from used memory?
+    no_buffers = true,
+
+-- Imlib2 image cache size, in bytes. Default 4MiB Increase this value if you use
+-- $image lots. Set to 0 to disable the image cache.
+    imlib_cache_size = 0,
+
+-- Use the Xdbe extension? (eliminates flicker)
+-- It is highly recommended to use own window with this one
+-- so double buffer wont be so big.
+    double_buffer = true,
+
+---- Update interval in seconds
+    update_interval = 1,
+
+--  End Miscellaneous Section
+};
+
+
+---------------------------------------------------
+---------------------------------------------------
+
+conky.text = [[
+
+${font GE Inspira:size=82}${alignc}${color ebdbb2}${time %H:%M}${font GE Inspira:size=32}${goto 280}${color DFE09D}${voffset -50}${time %A}${voffset 50}${goto 280}${time %d %B}
+
+]]
