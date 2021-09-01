@@ -260,7 +260,7 @@ exec --no-startup-id spotify
 exec --no-startup-id telegram-desktop
 exec --no-startup-id discord
 exec --no-startup-id flameshot
-exec_always --no-startup-id feh --bg-scale /home/jakub/Pictures/wallpaper005.png
+exec_always --no-startup-id feh --bg-scale /home/jakub/Pictures/wallpaper008.jpg
 exec_always --no-startup-id dunst -c ~/.config/dunst/dunstrc
 exec_always --no-startup-id exec ~/.config/conky/runConky.sh
 exec_always --no-startup-id picom --experimental-backends --config ~/.config/picom/config
