@@ -89,6 +89,8 @@ element-text {
     horizontal-align:               0.5;
     vertical-align:                 0.5;
     margin:                         6.5% 4% 13.5% 4%;
+    background-color: inherit;
+    text-color:       inherit;
 }
 
 element normal.urgent,
