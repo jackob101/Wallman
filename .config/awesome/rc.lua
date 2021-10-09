@@ -14,16 +14,16 @@ local beautiful = require("beautiful")
 local menubar = require("menubar")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
+beautiful.init(os.getenv("HOME") .. "/.config/awesome/theme.lua")
 require("errors.startupHandling")
 require("awful.hotkeys_popup.keys")
 require("configs.layouts")
 require("configs.screens")
 require("configs.rules")
-root.keys(require("configs.keybinds"))
+root.keys(require("configs.keys.keybinds"))
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(os.getenv("HOME") .. "/.config/awesome/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "alacritty"
@@ -33,13 +33,6 @@ editor_cmd = terminal .. " -e " .. editor
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
-
--- Keyboard map indicator and switcher
-mykeyboardlayout = awful.widget.keyboardlayout()
-
--- {{{ Wibar
--- Create a textclock widget
-mytextclock = wibox.widget.textclock()
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
@@ -66,3 +59,5 @@ client.connect_signal("unfocus", function(c)
 	c.border_color = beautiful.border_normal
 end)
 -- }}}
+
+require("modules.autorun.init")

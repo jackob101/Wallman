@@ -3,6 +3,10 @@ local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
 
+mykeyboardlayout = awful.widget.keyboardlayout()
+
+mytextclock = wibox.widget.textclock()
+
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
 	awful.button({}, 1, function(t)

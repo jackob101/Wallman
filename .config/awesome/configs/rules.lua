@@ -1,6 +1,6 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
-local clientkeys = require("configs.clientKeys")
+local clientkeys = require("configs.keys.clientKeys")
 local clientbuttons = require("configs.clientbuttons")
 
 -- {{{ Rules
@@ -55,6 +55,26 @@ awful.rules.rules = {
 			},
 		},
 		properties = { floating = true },
+	},
+
+	{
+		rule = {
+			class = "discord",
+		},
+		properties = {
+			tag = "9",
+			screen = 2,
+		},
+	},
+	{
+
+		rule = {
+			class = "TelegramDesktop",
+		},
+		properties = {
+			tag = "8",
+			screen = 2,
+		},
 	},
 
 	-- Add titlebars to normal clients and dialogs
