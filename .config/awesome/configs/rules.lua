@@ -22,6 +22,7 @@ awful.rules.rules = {
 			screen = awful.screen.preferred,
 			placement = awful.placement.no_overlap + awful.placement.no_offscreen,
 		},
+		callback = awful.client.setslave,
 	},
 
 	-- Floating clients.
@@ -64,7 +65,7 @@ awful.rules.rules = {
 			class = "discord",
 		},
 		properties = {
-			tag = "9",
+			tag = "0",
 			screen = twoScreens and 2 or 1,
 		},
 	},
@@ -74,7 +75,7 @@ awful.rules.rules = {
 			class = "TelegramDesktop",
 		},
 		properties = {
-			tag = "8",
+			tag = "9",
 			screen = twoScreens and 2 or 1,
 		},
 	},

@@ -2,6 +2,7 @@ local awful = require("awful")
 local gears = require("gears")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local modkey = require("configs.keys.mod").modkey
+local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
 
 require("awful.hotkeys_popup.keys")
 
@@ -269,6 +270,56 @@ globalkeys = gears.table.join(
 		"k",
 		function() awful.screen.focus_relative(-1) end,
 		{ description = "focus the previous screen", group = "screen", }
+	),
+
+	awful.key(
+		{ },
+		"Print",
+		function() awful.spawn("flameshot gui") end,
+		{ description = "Print screen", group = "screen", }
+	),
+	-- 	█████╗ ██╗   ██╗██████╗ ██╗ ██████╗ 
+	-- ██╔══██╗██║   ██║██╔══██╗██║██╔═══██╗
+	-- ███████║██║   ██║██║  ██║██║██║   ██║
+	-- ██╔══██║██║   ██║██║  ██║██║██║   ██║
+	-- ██║  ██║╚██████╔╝██████╔╝██║╚██████╔╝
+	-- ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝ 
+										 
+	awful.key(
+		{  },
+		"XF86AudioRaiseVolume",
+		function() volume_widget:inc() end,
+		{description="Increase volume", group = "audio"}
+	),
+
+	awful.key(
+		{  },
+		"XF86AudioLowerVolume",
+		function() volume_widget:dec() end,
+		{description = "Descrease volume", group = "audio"}
+	),
+
+	awful.key(
+		{  },
+		"XF86AudioMute",
+		function() volume_widget:toggle() end,
+		{description = "Mute audio", group = "audio"}
+	),
+
+	-- ███████╗██╗   ██╗███████╗████████╗██████╗  █████╗ ██╗   ██╗
+	-- ██╔════╝╚██╗ ██╔╝██╔════╝╚══██╔══╝██╔══██╗██╔══██╗╚██╗ ██╔╝
+	-- ███████╗ ╚████╔╝ ███████╗   ██║   ██████╔╝███████║ ╚████╔╝ 
+	-- ╚════██║  ╚██╔╝  ╚════██║   ██║   ██╔══██╗██╔══██║  ╚██╔╝  
+	-- ███████║   ██║   ███████║   ██║   ██║  ██║██║  ██║   ██║   
+	-- ╚══════╝   ╚═╝   ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝  
+
+	awful.key(
+		{ modkey },
+		"=",
+		function()
+			 awful.screen.focused().systray.visible = not awful.screen.focused().systray.visible
+		end,
+		{description = "Toggle systray", group="systray"}
 	)
 )
 

@@ -4,6 +4,7 @@
 
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
+local xrdb = xresources.get_current_theme()
 local dpi = xresources.apply_dpi
 
 local gfs = require("gears.filesystem")
@@ -15,21 +16,37 @@ theme.font = "ubuntumono 10"
 
 theme.useless_gap = 5
 
-theme.bg_normal = "#222222"
-theme.bg_focus = "#535d6c"
-theme.bg_urgent = "#ff0000"
+theme.bg_normal = xrdb.background .. "77" or "#222222"
+theme.bg_focus = xrdb.color3 or "#535d6c"
+theme.bg_urgent = xrdb.color1 or "#ff0000"
 theme.bg_minimize = "#444444"
 theme.bg_systray = theme.bg_normal
 
-theme.fg_normal = "#aaaaaa"
-theme.fg_focus = "#ffffff"
+theme.fg_normal = xrdb.foreground or "#aaaaaa"
+theme.fg_focus = xrdb.background or "#FFFFFF"
 theme.fg_urgent = "#ffffff"
 theme.fg_minimize = "#ffffff"
 
+theme.systray_icon_spacing = 5
+
 theme.border_width = dpi(1)
-theme.border_normal = "#000000"
-theme.border_focus = "#535d6c"
-theme.border_marked = "#91231c"
+theme.border_normal = xrdb.background or "#000000"
+theme.border_focus = xrdb.color2 or "#535d6c"
+theme.border_marked = xrdb.color0 or "#91231c"
+
+-- Hotkeys
+
+theme.hotkeys_bg = xrdb.background .. "DD"
+theme.hotkeys_font = "Ubuntumono 11"
+theme.hotkeys_description_font = "Ubuntumono 10"
+theme.hotkeys_border_color = xrdb.color3
+theme.hotkeys_modifiers_fg = xrdb.color12
+
+-- Calendar
+
+theme.bg = xrdb.background .. "00" or "#222222"
+theme.bg_no_alpha = xrdb.background or "#222222"
+theme.fg = xrdb.foreground or "#FFFFFF"
 
 -- There are other variable sets
 -- overriding the default one when
