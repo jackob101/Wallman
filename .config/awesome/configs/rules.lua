@@ -2,9 +2,11 @@ local awful = require("awful")
 local beautiful = require("beautiful")
 local clientkeys = require("configs.keys.clientKeys")
 local clientbuttons = require("configs.clientbuttons")
+local naughty = require("naughty")
 
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
+twoScreens = screen:count() == 2
 awful.rules.rules = {
 	-- All clients will match this rule.
 	{
@@ -63,7 +65,7 @@ awful.rules.rules = {
 		},
 		properties = {
 			tag = "9",
-			screen = 2,
+			screen = twoScreens and 2 or 1,
 		},
 	},
 	{
@@ -73,7 +75,7 @@ awful.rules.rules = {
 		},
 		properties = {
 			tag = "8",
-			screen = 2,
+			screen = twoScreens and 2 or 1,
 		},
 	},
 

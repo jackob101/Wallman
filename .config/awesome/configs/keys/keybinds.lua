@@ -30,7 +30,7 @@ globalkeys = gears.table.join(
 	),
 
 	awful.key(
-		{ modkey, "Control" },
+		{ modkey, "Shift" },
 		"r",
 		awesome.restart,
 		{ description = "reload awesome", group = "awesome" }
@@ -279,7 +279,7 @@ globalkeys = gears.table.join(
 --    ██║   ██║  ██║╚██████╔╝███████║
 --    ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
 
-for i = 1, 9 do
+for i = 1, 10 do
 	globalkeys = gears.table.join(
 		globalkeys,
 		-- View tag only.
