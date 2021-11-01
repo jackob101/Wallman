@@ -2,4 +2,5 @@
 
 fileLocation="$HOME/.personalGoals"
 
-awk '{ print NR ". " $0 }' $fileLocation 
+awk '{ print  " " $0 }' $fileLocation 
+

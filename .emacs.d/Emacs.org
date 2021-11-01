@@ -154,6 +154,11 @@ Sets line numbers and display column number on /modeline/
 (add-hook 'prog-mode-hook 'toggle-truncate-lines)
 #+end_src
 
+** Hex higlight
+
+#+begin_src emacs-lisp
+(use-package rainbow-mode)
+#+end_src
 
 * Ivy
 

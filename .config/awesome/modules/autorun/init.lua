@@ -2,6 +2,7 @@ local awful = require("awful")
 
 applications = {
 	"picom --experimental-backends --config ~/.config/picom/config",
+        "conky -c $HOME/.config/conky/goals.conkyrc"
 }
 
 runOnce = {

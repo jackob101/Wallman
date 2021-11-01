@@ -1,10 +1,14 @@
 #! /bin/bash
 
 file_location="$HOME/.personalGoals"
+rofi_bmenu_theme="$HOME/.config/rofi/bmenu"
 
 function add_new_entry {
-    new_entry="$(rofi -p "Insert new goal" -dmenu)"
-    echo $new_entry >> $file_location
+    new_entry="$(rofi -p "Insert new goal" -dmenu -theme "$HOME/.config/rofi/wideInput")"
+    if [[ ${#new_entry} > 4 ]]
+    then
+	echo $new_entry >> $file_location
+    fi
 }
 
 function remove_entry {
@@ -20,21 +24,21 @@ function remove_entry {
 }
 
 
-option_one="Add new entry"
-option_two="Remove entry"
+option_one="1. Add new entry"
+option_two="2. Remove entry"
 
-choosen_option="$(echo -e "$option_one\n$option_two" | rofi -dmenu)"
+choosen_option="$(echo -e "$option_one\n$option_two" | rofi -theme $rofi_bmenu_theme -dmenu)"
 
 if [[ $choosen_option = $option_one ]]
 then
-    echo "This is first option"
     add_new_entry
 
 elif [[ $choosen_option = $option_two ]]
 then
-    echo "this is option two"
     remove_entry
 fi
     
+killall conky
+conky -c ~/.config/conky/goals.conkyrc 
 
 

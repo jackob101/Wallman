@@ -1,0 +1,88 @@
+conky.config = {
+
+-------------------------------------
+--  Generic Settings
+-------------------------------------
+background=true,
+update_interval=3,
+double_buffer=true,
+no_buffers=true,
+imlib_cache_size=10,
+
+draw_shades=false,
+draw_outline=false,
+draw_borders=false,
+draw_graph_borders=false,
+default_shade_color="#000000",
+default_graph_height=26,
+default_graph_width=80,
+show_graph_scale=false,
+show_graph_range=false,
+
+
+-------------------------------------
+--  Window Specifications
+-------------------------------------
+gap_y=50,
+gap_x=15,
+alignment='tl',
+minimum_height=350,
+minimum_width=300,
+own_window=true,
+own_window_colour="#000000",
+own_window_argb_visual=true,
+own_window_argb_value=00,
+own_window_class= Conky,
+own_window_type="override",
+own_window_transparent=yes,
+draw_shades=false,
+own_window_hints="undecorated,below,sticky,skip_taskbar,skip_pager",
+border_inner_margin=0,
+border_outer_margin=0,
+border_width=15,
+--own_window_argb_visual=true,
+--own_window_argb_value=0,
+
+
+-------------------------------------
+--  Text Settings
+-------------------------------------
+use_xft=true,
+xftalpha=1,
+text_buffer_size=256,
+override_utf8_locale=true,
+font='UbuntuMono:size=14',
+
+short_units=true,
+short_units=true,
+pad_percents=2,
+top_name_width=15,
+
+
+-------------------------------------
+--  Color Scheme
+-------------------------------------
+default_color="#ebdbb2",
+color1="#ebdbb2",
+color2="#fabd2f",
+color3="#b8bb26",
+color4="#fabd2f",
+color5="#DCDCDC",
+color6="#FFFFFF",
+color7="#FFFFFF",
+color8="#FFFFFF",
+
+}
+
+
+---------------------------------------------------
+---------------------------------------------------
+
+
+conky.text = [[
+#---------------------------------------
+#Goals
+#---------------------------------------
+${color3}${alignc}${font Ubuntu:size=20:bold}Goals
+${color1}${voffset 20}${font Iosevka Nerd Font:size=13}${execi 60000 ~/skripts/getPersonalGoals.sh}
+]]
