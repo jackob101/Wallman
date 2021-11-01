@@ -65,12 +65,23 @@ theme.fg = xrdb.foreground or "#FFFFFF"
 local taglist_square_size = dpi(4)
 theme.taglist_squares_sel = theme_assets.taglist_squares_sel(taglist_square_size, theme.fg_normal)
 theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_normal)
+theme.taglist_fg_focus = xrdb.background
+theme.taglist_fg_urgent = xrdb.background
 
 -- Variables set for theming notifications:
 -- notification_font
 -- notification_[bg|fg]
 -- notification_[width|height|margin]
 -- notification_[border_color|border_width|shape|opacity]
+
+-- theme.notification_bg = xrdb.background .. "AA"
+-- theme.notification_fg = xrdb.foreground
+-- theme.notification_icon_size = 32
+-- -- theme.notification_max_width = 300
+-- theme.notification_margin = 50
+-- -- theme.notification_width = 300
+-- theme.notification_border_color = xrdb.background
+-- theme.notification_height = 50
 
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]

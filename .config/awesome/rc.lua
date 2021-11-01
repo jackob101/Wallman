@@ -12,14 +12,17 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 -- Notification library
 local menubar = require("menubar")
+local naughty = require("naughty")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 beautiful.init(os.getenv("HOME") .. "/.config/awesome/theme.lua")
+require("modules.notifications.notificationConfig")
 require("errors.startupHandling")
 require("awful.hotkeys_popup.keys")
 require("configs.layouts")
 require("configs.screens")
 require("configs.rules")
+
 root.keys(require("configs.keys.keybinds"))
 
 -- {{{ Variable definitions
