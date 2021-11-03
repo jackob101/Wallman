@@ -33,3 +33,8 @@ prompt{
     width: 10%;
     text-color: @accent;
 }
+
+entry{
+    height: 100%;
+    padding: 0.5%;
+}
