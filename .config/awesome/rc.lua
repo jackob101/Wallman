@@ -22,6 +22,7 @@ require("awful.hotkeys_popup.keys")
 require("configs.layouts")
 require("configs.screens")
 require("configs.rules")
+require("modules.exit-screen")
 
 root.keys(require("configs.keys.keybinds"))
 

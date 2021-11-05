@@ -5,6 +5,11 @@
  * Copyright: Dave Davenport
  */
 
+configuration{
+    display-drun: "Applications:";
+    drun-display-format: "{name}";
+}
+
 @import "global.rasi"
 
 * {
@@ -13,28 +18,30 @@
     text-color:           @primaryForeground;
     font: @font1;
     font-size: 14;
+    gp: 5px;
 }
 
+
 window {
-    anchor:     south;
-    location:   south;
+    anchor:     north;
+    location:   north;
     width:      100%;
     children:   [ horibox ];
-    height: 30px;
 }
 
 horibox {
     orientation: horizontal;
-    children:   [ prompt, entry];
+    children:   [ prompt, entry ];
 }
 
 prompt{
-    padding: 0.5%;
-    width: 10%;
     text-color: @accent;
+    padding: @gp;
 }
 
-entry{
-    height: 100%;
-    padding: 0.5%;
+entry {
+    expand: false;
+    width:   10em;
+    padding: @gp;
+    placeholder: "Search";
 }

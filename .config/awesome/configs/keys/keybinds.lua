@@ -6,9 +6,6 @@ local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
 
 require("awful.hotkeys_popup.keys")
 
-root.buttons(gears.table.join(awful.button({}, 3, function()
-	mymainmenu:toggle()
-end)))
 
 -- stylua: ignore start
 globalkeys = gears.table.join(
@@ -54,7 +51,7 @@ globalkeys = gears.table.join(
 		{ description = "lua execute prompt", group = "awesome", }
 	),
 
-	-- 	██████╗██╗     ██╗███████╗███╗   ██╗████████╗
+	--  ██████╗██╗     ██╗███████╗███╗   ██╗████████╗
 	-- ██╔════╝██║     ██║██╔════╝████╗  ██║╚══██╔══╝
 	-- ██║     ██║     ██║█████╗  ██╔██╗ ██║   ██║
 	-- ██║     ██║     ██║██╔══╝  ██║╚██╗██║   ██║
@@ -152,7 +149,7 @@ globalkeys = gears.table.join(
 	awful.key(
 		{ modkey, "Shift" },
 		"e",
-		function() awful.spawn(os.getenv("HOME").."/.config/rofi/pmenu.sh") end,
+		function() awesome.emit_signal('module::exit_screen:show') end,
 		{ description = "Run power menu", group = "launcher" }
 	),
 
@@ -274,7 +271,7 @@ globalkeys = gears.table.join(
 		function() awful.spawn("flameshot gui") end,
 		{ description = "Print screen", group = "screen", }
 	),
-	-- 	█████╗ ██╗   ██╗██████╗ ██╗ ██████╗ 
+	--  █████╗ ██╗   ██╗██████╗ ██╗ ██████╗ 
 	-- ██╔══██╗██║   ██║██╔══██╗██║██╔═══██╗
 	-- ███████║██║   ██║██║  ██║██║██║   ██║
 	-- ██╔══██║██║   ██║██║  ██║██║██║   ██║

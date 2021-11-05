@@ -14,6 +14,7 @@ local theme = {}
 
 theme.font = "ubuntumono 10"
 
+theme.groups_bg = xrdb.background
 theme.useless_gap = 5
 
 theme.bg_normal = xrdb.background .. "77" or "#222222"
@@ -122,7 +123,7 @@ theme.titlebar_maximized_button_focus_inactive = themes_path .. "default/titleba
 theme.titlebar_maximized_button_normal_active = themes_path .. "default/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_active = themes_path .. "default/titlebar/maximized_focus_active.png"
 
-theme.wallpaper = os.getenv("HOME") .. "/Wallpapers/004.png"
+theme.wallpaper = os.getenv("HOME") .. "/Wallpapers/00018.png"
 
 -- You can use your own layout icons like this:
 theme.layout_fairh = themes_path .. "default/layouts/fairhw.png"

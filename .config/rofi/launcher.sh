@@ -10,4 +10,4 @@ theme="bmenu"
 dir="$HOME/.config/rofi"
 
 #exec command
-rofi -no-lazy-grab -show drun -modi drun -theme $dir/"$theme"
+rofi  -no-lazy-grab -show drun -p "Application name" -theme $dir/"$theme"
