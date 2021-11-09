@@ -41,7 +41,7 @@ prompt{
 
 entry {
     expand: false;
-    width:   10em;
+    width:   90%;
     padding: @gp;
     placeholder: "Search";
 }

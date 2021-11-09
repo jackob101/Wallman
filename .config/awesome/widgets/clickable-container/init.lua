@@ -1,5 +1,6 @@
 local wibox = require('wibox')
 local beautiful = require('beautiful')
+local naughty = require("naughty")
 
 local create_click_events = function(widget)
 
@@ -15,7 +16,8 @@ local create_click_events = function(widget)
 	container:connect_signal(
 		'mouse::enter',
 		function()
-			container.bg = beautiful.groups_bg
+			container.bg = beautiful.bg_focus
+
 			-- Hm, no idea how to get the wibox from this signal's arguments...
 			local w = mouse.current_wibox
 			if w then

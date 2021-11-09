@@ -16,6 +16,24 @@ local greeter_message = wibox.widget {
 	widget = wibox.widget.textbox
 }
 
+local profile_name = wibox.widget {
+	markup = 'Jackob',
+	font = 'Inter Bold 12',
+	align = 'center',
+	valign = 'center',
+	widget = wibox.widget.textbox
+}
+
+local profile_imagebox = wibox.widget {
+	image = icons.default,
+	resize = true,
+	forced_height = dpi(140),
+	clip_shape = gears.shape.circle,
+	widget = wibox.widget.imagebox
+}
+
+
+
 local build_power_button = function(name, icon, callback)
    local power_button_label=wibox.widget {
       text = name,
@@ -40,8 +58,8 @@ local build_power_button = function(name, icon, callback)
             widget = wibox.container.background
          },
          shape = gears.shape.rounded_rect,
-         forced_height = dpi(90),
-         forced_width = dpi(90),
+         forced_height = dpi(120),
+         forced_width = dpi(120),
          widget = clickable_container,
       },
       left = dpi(24),
@@ -68,7 +86,7 @@ end
 
 local suspend_command = function()
 	awesome.emit_signal('module::exit_screen:hide')
-	awful.spawn.with_shell(apps.default.lock .. ' & systemctl suspend')
+	awful.spawn.with_shell('systemctl suspend')
 end
 
 local logout_command = function()
@@ -90,11 +108,12 @@ local reboot_command = function()
 	awesome.emit_signal('module::exit_screen:hide')
 end
 
-local poweroff = build_power_button('Shutdown', icons.power, poweroff_command)
-local reboot = build_power_button('Restart', icons.restart, reboot_command)
-local suspend = build_power_button('Sleep', icons.sleep, suspend_command)
-local logout = build_power_button('Logout', icons.logout, logout_command)
+local poweroff = build_power_button('Shutdown(p)', icons.power, poweroff_command)
+local reboot = build_power_button('Restart(r)', icons.restart, reboot_command)
+local suspend = build_power_button('Sleep(s)', icons.sleep, suspend_command)
+local logout = build_power_button('Logout(e)', icons.logout, logout_command)
 local lock = build_power_button('Lock', icons.lock, lock_command)
+
 
 local create_exit_screen = function(s)
    s.exit_screen = wibox
@@ -149,12 +168,12 @@ local create_exit_screen = function(s)
                      layout = wibox.layout.align.horizontal,
                      expand = 'none',
                      nil,
---                     profile_imagebox,
+                     profile_imagebox,
                      nil
                   },
                   nil
                },
---               profile_name
+               profile_name
             },
             nil,
             expand = 'none',
@@ -166,7 +185,7 @@ local create_exit_screen = function(s)
             nil,
             {
                widget = wibox.container.margin,
-               margins = dpi(15),
+               margins = dpi(20),
                greeter_message
             },
             nil
@@ -250,7 +269,6 @@ awesome.connect_signal(
 awesome.connect_signal(
    'module::exit_screen:hide',
    function()
---      update_greeter_msg()
       exit_screen_grabber:stop()
       for s in screen do
          s.exit_screen.visible = false

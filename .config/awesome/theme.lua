@@ -14,7 +14,7 @@ local theme = {}
 
 theme.font = "ubuntumono 10"
 
-theme.groups_bg = xrdb.background
+theme.groups_bg = xrdb.background .. "77"
 theme.useless_gap = 5
 
 theme.bg_normal = xrdb.background .. "77" or "#222222"

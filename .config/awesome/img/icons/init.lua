@@ -5,5 +5,6 @@ return {
   restart = dir .. "restart.svg",
   sleep = dir .. "power-sleep.svg",
   logout = dir .. "logout.svg",
+  default = dir .. "default.svg",
   lock = dir .. "lock.svg",
 }
