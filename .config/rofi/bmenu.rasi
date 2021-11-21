@@ -21,8 +21,6 @@ configuration{
     gp: 5px;
 }
 
-
-
 window {
     anchor:     north;
     location:   north;
@@ -32,7 +30,7 @@ window {
 
 horibox {
     orientation: horizontal;
-    children:   [ prompt, entry, listview ];
+    children:   [ entry, listview ];
 }
 
 prompt{

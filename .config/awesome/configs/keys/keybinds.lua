@@ -142,7 +142,7 @@ globalkeys = gears.table.join(
 	awful.key(
 		{ modkey },
 		"d",
-		function() awful.spawn(os.getenv("HOME").."/.config/rofi/launcher.sh") end,
+		function() awful.spawn(os.getenv("HOME") .. "/.config/rofi/launcher.sh") end,
 		{ description = "Run rofi", group = "launcher" }
 	),
 
@@ -151,6 +151,12 @@ globalkeys = gears.table.join(
 		"e",
 		function() awesome.emit_signal('module::exit_screen:show') end,
 		{ description = "Run power menu", group = "launcher" }
+	),
+	awful.key(
+		{ modkey, "Shift" },
+		"c",
+		function() awful.spawn("rofi -show calc -modi calc -no-show-match -no-sort -theme " .. os.getenv("HOME") .. "/.config/rofi/calc.rasi") end,
+		{ description = "Spawn calculator", group = "launcher" }
 	),
 
 -- ██╗      █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗████████╗
@@ -281,14 +287,20 @@ globalkeys = gears.table.join(
 	awful.key(
 		{  },
 		"XF86AudioRaiseVolume",
-		function() volume_widget:inc() end,
+		function()
+			awful.spawn('amixer -D pulse sset Master 5%+', false)
+			awesome.emit_signal('module::volume:show', true)
+		end,
 		{description="Increase volume", group = "audio"}
 	),
 
 	awful.key(
 		{  },
 		"XF86AudioLowerVolume",
-		function() volume_widget:dec() end,
+		function()
+			awful.spawn('amixer -D pulse sset Master 5%-', false)
+			awesome.emit_signal('module::volume:show', true)
+		end,
 		{description = "Descrease volume", group = "audio"}
 	),
 

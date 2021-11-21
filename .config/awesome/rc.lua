@@ -23,6 +23,8 @@ require("configs.layouts")
 require("configs.screens")
 require("configs.rules")
 require("modules.exit-screen")
+require("modules.volume")
+require("modules.posture-check")
 
 root.keys(require("configs.keys.keybinds"))
 
@@ -37,6 +39,8 @@ editor_cmd = terminal .. " -e " .. editor
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
+
+gears.debug.print_error("test")
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.

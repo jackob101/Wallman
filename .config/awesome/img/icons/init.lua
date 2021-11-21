@@ -7,4 +7,6 @@ return {
   logout = dir .. "logout.svg",
   default = dir .. "default.svg",
   lock = dir .. "lock.svg",
+  volume = dir .. "volume.svg",
+  posture = dir .. "posture.png"
 }

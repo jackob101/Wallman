@@ -2,6 +2,8 @@ local awful = require("awful")
 local gears = require("gears")
 local modkey = require("configs.keys.mod").modkey
 local wibox = require("wibox")
+local beautiful = require('beautiful')
+local naughty = require("naughty")
 
 local taglist_buttons = gears.table.join(
 	awful.button({}, 1, function(t)
@@ -27,7 +29,7 @@ local taglist_buttons = gears.table.join(
 )
 
 function initTagList(s)
-	return awful.widget.taglist({
+return awful.widget.taglist({
 		screen = s,
 		filter = awful.widget.taglist.filter.all,
 		widget_template = {
@@ -41,7 +43,6 @@ function initTagList(s)
 			widget = wibox.container.background,
 		},
 		buttons = taglist_buttons,
-	})
-end
+	})end
 
 return initTagList

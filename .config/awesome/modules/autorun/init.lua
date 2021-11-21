@@ -2,7 +2,8 @@ local awful = require("awful")
 
 applications = {
 	"picom --experimental-backends --config ~/.config/picom/config",
-        "conky -c $HOME/.config/conky/goals.conkyrc"
+--    "conky -c $HOME/.config/conky/goals.conkyrc",
+	"easyeffects -l Bass Boosted --gapplication-service"
 }
 
 runOnce = {

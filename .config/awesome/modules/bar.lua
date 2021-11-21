@@ -76,7 +76,7 @@ awful.screen.connect_for_each_screen(function(s)
             s.mypromptbox,
          },
          {
-            layout = wibox.layout.margin,
+            layout = wibox.container.margin,
             left = 20,
             s.mytasklist,
          },
