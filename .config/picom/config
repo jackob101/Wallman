@@ -133,7 +133,13 @@ focus-exclude = [ "class_g = 'Cairo-clock'" ];
 #
  opacity-rule = [ "90:class_g = 'polybar'",
                   "90:class_g = 'tray'",
-                  "100:class_g = 'conky'"
+                  "100:class_g = 'conky'",
+                  "100:class_g = 'Brave-browser'",
+                  "100:_NET_WM_STATE@[0]:32a = '_NET_WM_STATE_FULLSCREEN'",
+                  "100:_NET_WM_STATE@[1]:32a = '_NET_WM_STATE_FULLSCREEN'",
+                  "100:_NET_WM_STATE@[2]:32a = '_NET_WM_STATE_FULLSCREEN'",
+                  "100:_NET_WM_STATE@[3]:32a = '_NET_WM_STATE_FULLSCREEN'",
+                  "100:_NET_WM_STATE@[4]:32a = '_NET_WM_STATE_FULLSCREEN'"
                   ];
 
 
@@ -339,7 +345,7 @@ xrender-sync-fence = false
 # Do not use EWMH to detect fullscreen windows.
 # Reverts to checking if a window is fullscreen based only on its size and coordinates.
 #
-# no-ewmh-fullscreen = false
+ no-ewmh-fullscreen = true
 
 # Dimming bright windows so their brightness doesn't exceed this set value.
 # Brightness of a window is estimated by averaging all pixels in the window,
