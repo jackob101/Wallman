@@ -5,7 +5,7 @@ return {
   restart = dir .. "restart.svg",
   sleep = dir .. "power-sleep.svg",
   logout = dir .. "logout.svg",
-  default = dir .. "default.svg",
+  default = dir .. "account.png",
   lock = dir .. "lock.svg",
   volume = dir .. "volume.svg",
   posture = dir .. "posture.png",

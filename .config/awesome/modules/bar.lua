@@ -34,7 +34,9 @@ local logo = wibox.widget {
   },
 
   right = 5,
-  left = 2,
+  left = 5,
+  top = 2,
+  bottom = 2,
   widget = wibox.container.margin,
 
 }

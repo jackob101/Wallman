@@ -34,13 +34,25 @@ function initTagList(s)
       filter = awful.widget.taglist.filter.all,
       widget_template = {
         {
-          id = "text_role",
-          widget = wibox.widget.textbox,
-          align = "center",
+          {
+            id = "text_role",
+            widget = wibox.widget.textbox,
+            align = "center",
+          },
+          id = "text_color",
+          widget = wibox.container.background,
         },
         forced_width = 25,
         id = "background_role",
         widget = wibox.container.background,
+        update_callback = function(self, c3 ,index, object)
+          if( #(c3:clients()) > 0)
+          then
+            self:get_children_by_id("text_color")[1].fg = beautiful.bg_focus
+          else
+            self:get_children_by_id("text_color")[1].fg = beautiful.fg_normal
+          end
+        end
       },
       buttons = taglist_buttons,
 })end
