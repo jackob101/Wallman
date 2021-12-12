@@ -6,7 +6,7 @@
 ## Twitter : @adi1090x
 
 #Path to style
-theme="bmenu"
+theme="dmenu"
 dir="$HOME/.config/rofi"
 
 #exec command

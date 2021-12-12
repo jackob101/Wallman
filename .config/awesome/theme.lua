@@ -12,7 +12,7 @@ local themes_path = gfs.get_themes_dir()
 
 local theme = {}
 
-theme.font = "ubuntumono 10"
+theme.font = "inter medium 9"
 
 theme.groups_bg = xrdb.background .. "77"
 theme.useless_gap = 5
@@ -63,8 +63,8 @@ theme.fg = xrdb.foreground or "#FFFFFF"
 --theme.taglist_bg_focus = "#ff0000"
 
 -- Generate taglist squares:
-local taglist_square_size = dpi(4)
-theme.taglist_squares_sel = theme_assets.taglist_squares_sel(taglist_square_size, theme.fg_normal)
+local taglist_square_size = dpi(5)
+theme.taglist_squares_sel = theme_assets.taglist_squares_sel(taglist_square_size, theme.fg_focus)
 theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_normal)
 theme.taglist_fg_focus = xrdb.background
 theme.taglist_fg_urgent = xrdb.background

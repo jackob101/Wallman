@@ -3,8 +3,8 @@
 *.primaryBackgroundTransparent: #77282828
 *.primaryForeground: #ebdbb2
 *.accent: #b8bb26
-*.fontPrimary: SourceCodePro
-*.fontSizeRegular: 10
+*.fontPrimary: inter
+*.fontSizeRegular: 9
 
 *.secondaryBackground: #3c3836
 

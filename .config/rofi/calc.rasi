@@ -8,6 +8,7 @@
     spacing:                     2;
     active-background:           @accent;
     foreground:                  @primaryForeground;
+    font: @font1;
 }
 element {
     padding: 1px ;

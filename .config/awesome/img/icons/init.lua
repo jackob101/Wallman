@@ -8,5 +8,6 @@ return {
   default = dir .. "default.svg",
   lock = dir .. "lock.svg",
   volume = dir .. "volume.svg",
-  posture = dir .. "posture.png"
+  posture = dir .. "posture.png",
+  logo = dir .. "arch.svg"
 }

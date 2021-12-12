@@ -3,7 +3,7 @@
     primaryForeground: #ebdbb2;
     accent: #b8bb26;
     accent-alpha: #b8bb26AA;
-    font1: "UbuntuMono 13";
+    font1: "inter medium 11";
     background-light: #282828;
     background-light-alpha: #282828BB;
 }

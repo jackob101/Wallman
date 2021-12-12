@@ -33,8 +33,14 @@ function initTaskList(s)
 			{
 				{
 					{
-						id = "icon_role",
-						widget = wibox.widget.imagebox,
+
+						{
+							id = "icon_role",
+							widget = wibox.widget.imagebox,
+						},
+						top = 2,
+						bottom = 2,
+						widget = wibox.container.margin,
 					},
 					spacing = 10,
 					{

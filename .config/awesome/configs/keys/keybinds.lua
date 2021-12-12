@@ -2,7 +2,7 @@ local awful = require("awful")
 local gears = require("gears")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local modkey = require("configs.keys.mod").modkey
-local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
+local volume_widget = require("widgets.volume-widget.volume")
 
 require("awful.hotkeys_popup.keys")
 

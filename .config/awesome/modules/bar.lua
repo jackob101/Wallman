@@ -3,8 +3,11 @@ local gears = require("gears")
 local wibox = require("wibox")
 local initTagList = require("widgets.taglist.init")
 local initTaskList = require("widgets.tasklist.init")
-local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
-local calendar_widget = require("awesome-wm-widgets.calendar-widget.calendar")
+local volume_widget = require("widgets.volume-widget.volume")
+local calendar_widget = require("widgets.calendar-widget.calendar")
+local icons = require("img.icons")
+local beautiful = require("beautiful")
+local dpi = beautiful.xresources.apply_dpi
 
 local mykeyboardlayout = awful.widget.keyboardlayout()
 
@@ -21,6 +24,20 @@ mytextclock:connect_signal("button::press", function(_, _, _, button)
          cw.toggle()
       end
 end)
+
+local logo = wibox.widget {
+
+  {
+    image = icons.logo,
+    resize = true,
+    widget = wibox.widget.imagebox,
+  },
+
+  right = 5,
+  left = 2,
+  widget = wibox.container.margin,
+
+}
 
 awful.screen.connect_for_each_screen(function(s)
    -- Each screen has its own tag table.
@@ -52,7 +69,7 @@ awful.screen.connect_for_each_screen(function(s)
    s.mytasklist = initTaskList(s)
 
    -- Create the wibox
-   s.mywibox = awful.wibar({ position = "top", screen = s })
+   s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(25) })
 
    -- systray
 
@@ -67,11 +84,13 @@ awful.screen.connect_for_each_screen(function(s)
 
    s.systray.visible = false
 
+
    -- Add widgets to the wibox
    s.mywibox:setup({
          layout = wibox.layout.align.horizontal,
          { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
+            logo,
             s.mytaglist,
             s.mypromptbox,
          },
@@ -86,6 +105,7 @@ awful.screen.connect_for_each_screen(function(s)
             mykeyboardlayout,
             mytextclock,
             s.systray,
+            spacing = dpi(8),
          },
    })
 end)
