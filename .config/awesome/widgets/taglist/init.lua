@@ -31,27 +31,40 @@ local taglist_buttons = gears.table.join(
 function initTagList(s)
   return awful.widget.taglist({
       screen = s,
-      filter = awful.widget.taglist.filter.all,
+      filter = awful.widget.taglist.filter.noempty,
       widget_template = {
         {
           {
-            id = "text_role",
-            widget = wibox.widget.textbox,
-            align = "center",
+            {
+              id = "text_role",
+              widget = wibox.widget.textbox,
+              align = "center",
+            },
+            id = "text_color",
+            widget = wibox.container.background,
           },
-          id = "text_color",
-          widget = wibox.container.background,
+          {
+            nil,
+            nil,
+            {
+              point = function (geo, args)
+                return {
+                  x = args.parent.width - geo.width,
+                  y = args.parent.height - geo.height,
+                }
+              end,
+              id = "background_role",
+              forced_height = 2,
+              widget = wibox.container.background,
+
+            },
+            widget = wibox.layout.align.vertical,
+          },
+          widget = wibox.layout.stack,
         },
         forced_width = 25,
-        id = "background_role",
         widget = wibox.container.background,
         update_callback = function(self, c3 ,index, object)
-          if( #(c3:clients()) > 0)
-          then
-            self:get_children_by_id("text_color")[1].fg = beautiful.bg_focus
-          else
-            self:get_children_by_id("text_color")[1].fg = beautiful.fg_normal
-          end
         end
       },
       buttons = taglist_buttons,

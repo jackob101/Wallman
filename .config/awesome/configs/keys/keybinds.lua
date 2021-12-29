@@ -158,6 +158,18 @@ globalkeys = gears.table.join(
 		function() awful.spawn("rofi -show calc -modi calc -no-show-match -no-sort -theme " .. os.getenv("HOME") .. "/.config/rofi/calc.rasi") end,
 		{ description = "Spawn calculator", group = "launcher" }
 	),
+	awful.key(
+		{ modkey },
+		"e",
+		function() awful.spawn("emacsclient -c -a 'emacs'") end,
+		{ description = "Spawn emacs", group = "launcher" }
+	),
+	--	awful.key(
+	--{ modkey, "Shift" },
+	--"s",
+	--function () awesome.emit_signal('module::settings_widget:show') end,
+	--	{ description = "Show settings", group = "launcher" }
+	--	),
 
 -- ██╗      █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗████████╗
 -- ██║     ██╔══██╗╚██╗ ██╔╝██╔═══██╗██║   ██║╚══██╔══╝

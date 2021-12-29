@@ -56,3 +56,7 @@
 (package! visual-fill-column)
 
 (package! yaml-mode)
+
+(package! activity-watch-mode)
+
+(package! lsp-java)
