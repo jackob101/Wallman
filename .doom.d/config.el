@@ -20,12 +20,12 @@
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
 (setq doom-font (font-spec :family "Ubuntu Mono" :weight 'medium  :size 18 )
-       doom-variable-pitch-font (font-spec :family "Inter" :weight 'medium :size 18))
+      doom-variable-pitch-font (font-spec :family "Inter" :weight 'medium :size 18))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-gruvbox)
+(setq doom-theme 'doom-nord)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -54,6 +54,24 @@
 ;; they are implemented.
 ;;
 
+
+(defun er-indent-buffer ()
+  "Indent the currently visited buffer."
+  (interactive)
+  (indent-region (point-min) (point-max)))
+
+(defun er-indent-region-or-buffer ()
+  "Indent a region if selected, otherwise the whole buffer."
+  (interactive)
+  (save-excursion
+    (if (region-active-p)
+        (progn
+          (indent-region (region-beginning) (region-end))
+          (message "Indented selected region."))
+      (progn
+        (er-indent-buffer)
+        (message "Indented buffer.")))))
+
 (map! :map company-active-map
       "C-l"  'company-complete-selection
       "<return>" nil
@@ -65,7 +83,8 @@
       "C-0" 'org-next-visible-heading
       "C-)" 'outline-up-heading)
 
-(map! "M-TAB" 'ace-window)
+(map! "M-TAB" 'ace-window
+      :leader :desc "Indent buffer" "b =" 'er-indent-region-or-buffer)
 
 (require 'org-tempo)
 

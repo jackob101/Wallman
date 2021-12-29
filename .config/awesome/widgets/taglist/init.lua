@@ -64,8 +64,6 @@ function initTagList(s)
         },
         forced_width = 25,
         widget = wibox.container.background,
-        update_callback = function(self, c3 ,index, object)
-        end
       },
       buttons = taglist_buttons,
 })end

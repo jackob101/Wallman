@@ -63,7 +63,7 @@ scrollbar {
     padding:      0;
     handle-width: 8px ;
     border:       0;
-    handle-color: @primaryForeground;
+    handle-color: @accent;
 }
 sidebar {
     border-color: var(separatorcolor);
@@ -107,14 +107,15 @@ entry {
     spacing:           0;
     placeholder-color: rgba ( 128, 128, 128, 100 % );
     placeholder:       "Enter expression";
+    text-color: @primaryForeground;
 }
 prompt {
     spacing:    0;
-    text-color: @primaryForeground;
+    text-color: @accent;
 }
 textbox-prompt-colon {
     margin:     0px 0.3000em 0.0000em 0.0000em ;
     expand:     false;
     str:        ":";
-    text-color: @primaryForeground;
+    text-color: @accent;
 }

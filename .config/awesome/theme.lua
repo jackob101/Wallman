@@ -14,40 +14,42 @@ local theme = {}
 
 theme.font = "inter medium 9"
 
-theme.groups_bg = xrdb.background .. "77"
+theme.groups_bg = xrdb.color2 .. "77"
 theme.useless_gap = 5
 
-theme.bg_normal = xrdb.background .. "77" or "#222222"
+theme.bg_normal = xrdb.color0 or "#2E3440"
 theme.bg_focus = xrdb.color3 or "#535d6c"
-theme.bg_urgent = xrdb.color1 or "#ff0000"
-theme.bg_minimize = "#444444"
+theme.bg_urgent = xrdb.color11 or "#D08770"
+theme.bg_minimize = xrdb.color1 or "#3B4252"
 theme.bg_systray = theme.bg_normal
 
-theme.fg_normal = xrdb.foreground or "#aaaaaa"
-theme.fg_focus = xrdb.background or "#FFFFFF"
-theme.fg_urgent = "#ffffff"
-theme.fg_minimize = "#ffffff"
+theme.fg_normal = xrdb.color5 or "#8DEE9"
+theme.fg_focus = xrdb.color6 or "#ECEFF4"
+theme.fg_urgent = xrdb.color11 or "#D08770"
+theme.fg_minimize = xrdb.color4 or "#D8DEE9"
 
 theme.systray_icon_spacing = 5
 
 theme.border_width = dpi(1)
-theme.border_normal = xrdb.background or "#000000"
-theme.border_focus = xrdb.color2 or "#535d6c"
+theme.border_normal = xrdb.color1 or "#000000"
+theme.border_focus = xrdb.color14 or "#535d6c"
 theme.border_marked = xrdb.color0 or "#91231c"
 
 -- Hotkeys
 
-theme.hotkeys_bg = xrdb.background .. "DD"
-theme.hotkeys_font = "Ubuntumono 11"
-theme.hotkeys_description_font = "Ubuntumono 10"
+theme.hotkeys_bg = xrdb.color0
+theme.hotkeys_font = "Ubuntu 10"
+theme.hotkeys_fg = xrdb.color4
+theme.hotkeys_description_font = "Ubuntu 10"
 theme.hotkeys_border_color = xrdb.color3
-theme.hotkeys_modifiers_fg = xrdb.color12
+theme.hotkeys_modifiers_fg = xrdb.color14
+theme.hotkeys_label_bg = xrdb.color3
 
 -- Calendar
 
-theme.bg = xrdb.background .. "00" or "#222222"
-theme.bg_no_alpha = xrdb.background or "#222222"
-theme.fg = xrdb.foreground or "#FFFFFF"
+theme.bg = xrdb.color0 .. "00" or "#2E3440"
+theme.bg_no_alpha = xrdb.color0 or "#2E3440"
+theme.fg = xrdb.color5 or "#E5E9F0"
 
 -- There are other variable sets
 -- overriding the default one when
@@ -66,8 +68,10 @@ theme.fg = xrdb.foreground or "#FFFFFF"
 local taglist_square_size = dpi(0)
 theme.taglist_squares_sel = theme_assets.taglist_squares_sel(taglist_square_size, theme.fg_focus)
 theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_normal)
-theme.taglist_fg_focus = xrdb.color3
-theme.taglist_fg_urgent = xrdb.color1
+theme.taglist_fg_focus = xrdb.color6
+theme.taglist_fg_urgent = xrdb.color11
+theme.taglist_bg_focus = xrdb.color6
+theme.taglist_bg_urgetn = xrdb.color11
 
 -- Variables set for theming notifications:
 -- notification_font
