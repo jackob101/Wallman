@@ -1,4 +1,4 @@
-local dir = os.getenv('HOME') .. '/.config/awesome/img/icons/'
+local dir = os.getenv('HOME') .. '/.config/awesome/icons/'
 
 return {
   power = dir .. "power.svg",
@@ -9,5 +9,7 @@ return {
   lock = dir .. "lock.svg",
   volume = dir .. "volume.svg",
   posture = dir .. "posture.png",
-  logo = dir .. "arch.svg"
+  logo = dir .. "arch.svg",
+  clock = dir .. "clock.svg",
+  keyboard = dir .. "keyboard.svg"
 }

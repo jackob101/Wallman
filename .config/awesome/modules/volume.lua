@@ -3,7 +3,7 @@ local gears = require("gears")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
-local icons = require("img.icons")
+local icons = require("icons")
 local naughty = require('naughty')
 
 local function INC_VOLUME_CMD(step) return 'amixer -D pulse sset Master ' .. step ..  '%+' end

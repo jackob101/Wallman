@@ -83,13 +83,15 @@
       "C-0" 'org-next-visible-heading
       "C-)" 'outline-up-heading)
 
-(map! "M-TAB" 'ace-window
-      :leader :desc "Indent buffer" "b =" 'er-indent-region-or-buffer)
+(map! :leader :desc "Ace window" "w TAB" 'ace-window)
+(map! :leader :desc "Indent buffer" "b =" 'er-indent-region-or-buffer)
 
 (require 'org-tempo)
 
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(setq org-src-preserve-indentation t)
+
+(setq org-src-preserve-indentation t
+      lsp-ui-doc-position 'bottom)
 
 (setq org-roam-directory "/home/jakub/notes")
 
@@ -147,3 +149,6 @@
 (+org-pretty-mode)
 
 (setq lua-indent-nested-block-content-align nil)
+
+(use-package! company-box
+  :hook (company-mode . company-box-mode))

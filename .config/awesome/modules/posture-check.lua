@@ -1,7 +1,7 @@
 local naughty = require("naughty")
 local awful = require("awful")
 local gears = require("gears")
-local icons = require("img.icons")
+local icons = require("icons")
 
 
 local posture = gears.timer {

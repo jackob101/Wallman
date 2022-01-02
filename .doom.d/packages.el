@@ -60,3 +60,5 @@
 (package! activity-watch-mode)
 
 (package! lsp-java)
+
+(package! company-box)

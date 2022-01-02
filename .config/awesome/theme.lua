@@ -17,6 +17,13 @@ theme.font = "inter medium 9"
 theme.groups_bg = xrdb.color2 .. "77"
 theme.useless_gap = 5
 
+theme.accent1 = xrdb.color10
+theme.accent2 = xrdb.color11
+theme.accent3 = xrdb.color12
+theme.accent4 = xrdb.color13
+theme.accent5 = xrdb.color14
+theme.accent6 = xrdb.color15
+
 theme.bg_normal = xrdb.color0 or "#2E3440"
 theme.bg_focus = xrdb.color3 or "#535d6c"
 theme.bg_urgent = xrdb.color11 or "#D08770"
@@ -29,6 +36,8 @@ theme.fg_urgent = xrdb.color11 or "#D08770"
 theme.fg_minimize = xrdb.color4 or "#D8DEE9"
 
 theme.systray_icon_spacing = 5
+
+theme.bar_height = 25
 
 theme.border_width = dpi(1)
 theme.border_normal = xrdb.color1 or "#000000"
@@ -81,12 +90,13 @@ theme.taglist_bg_urgetn = xrdb.color11
 
 -- theme.notification_bg = xrdb.background .. "AA"
 -- theme.notification_fg = xrdb.foreground
--- theme.notification_icon_size = 32
+theme.notification_icon_size = 86
 -- -- theme.notification_max_width = 300
 -- theme.notification_margin = 50
 -- -- theme.notification_width = 300
 -- theme.notification_border_color = xrdb.background
 -- theme.notification_height = 50
+theme.notification_spacing = 5
 
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]
