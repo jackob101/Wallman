@@ -54,6 +54,44 @@
 ;; they are implemented.
 ;;
 
+(setq web-mode-markup-indent-offset 2
+      web-mode-code-indent-offset 2
+      web-mode-css-indent-offset 2
+      company-idle-delay 0.0
+      web-mode-enable-current-element-highlight t)
+
+(use-package! projectile
+  :custom
+  (add-to-list 'projectile-globally-ignored-directories '"node_modules")
+  )
+
+
+(use-package! web-mode
+  :hook ( web-mode . emmet-mode )
+  :mode (("\\.js\\'" . web-mode)
+         ("\\.jsx\\'" .  web-mode)
+         ("\\.ts\\'" . web-mode)
+         ("\\.tsx\\'" . web-mode)
+         ("\\.html\\'" . web-mode)))
+
+(defun enable-minor-mode (my-pair)
+  "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
+  (if (buffer-file-name)
+      (if (string-match (car my-pair) buffer-file-name)
+          (funcall (cdr my-pair)))))
+
+(add-hook 'web-mode-hook #'(lambda ()
+                             (enable-minor-mode
+                              '("\\.jsx?\\'" . prettier-js-mode))
+                             (enable-minor-mode
+                              '("\\.tsx?\\'" . prettier-js-mode))))
+
+;; (use-package! typescript-mode
+;;   :mode "\\.tsx?$"
+;;   :hook
+;;   (typescript-mode . lsp)
+;;   :custom
+;;   (typescript-indent-level 2))
 
 (defun er-indent-buffer ()
   "Indent the currently visited buffer."
@@ -72,6 +110,14 @@
         (er-indent-buffer)
         (message "Indented buffer.")))))
 
+(defun shell-pop ()
+  "Pop up shell"
+  (interactive)
+  (shell "*shell-pop*"))
+
+(add-to-list 'display-buffer-alist
+             '("*shell-pop" (display-buffer-in-side-window) (side . bottom)))
+
 (map! :map company-active-map
       "C-l"  'company-complete-selection
       "<return>" nil
@@ -84,7 +130,8 @@
       "C-)" 'outline-up-heading)
 
 (map! :leader :desc "Ace window" "w TAB" 'ace-window)
-(map! :leader :desc "Indent buffer" "b =" 'er-indent-region-or-buffer)
+(map! :leader :desc "Indent buffer" "b =" 'er-indent-region-or-buffer
+      :leader :desc "Open shell" "o s" 'shell-pop)
 
 (require 'org-tempo)
 
@@ -152,3 +199,19 @@
 
 (use-package! company-box
   :hook (company-mode . company-box-mode))
+
+(after! org-agenda
+  (add-to-list 'org-agenda-custom-commands '("b" agenda "Today's Deadlines"
+                  ((org-agenda-span '1)
+                   (org-agenda-start-day "+0d")
+                   (org-agenda-overriding-header "Today's Tasks ")))
+  (add-to-list  'org-agenda-custom-commands '("w" agenda "Today's Deadlines"
+                  ((org-agenda-span '10)
+                   (org-agenda-overriding-header "Week tasks")
+                   (org-agenda-tag-filter-preset '("-repeating"))
+                   (org-agenda-start-day "-3d"))))))
+
+
+(after! org-agenda
+  (add-to-list 'org-agenda-files '"~/org/todos"))
+

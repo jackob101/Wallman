@@ -164,6 +164,12 @@ globalkeys = gears.table.join(
 		function() awful.spawn("emacsclient -c -a 'emacs'") end,
 		{ description = "Spawn emacs", group = "launcher" }
 	),
+	awful.key(
+		{ modkey, "Shift" },
+		"d",
+		function() awesome.emit_signal("dashboard::toggle") end,
+		{ description = "Display dashboard", group = "launcher" }
+	),
 	--	awful.key(
 	--{ modkey, "Shift" },
 	--"s",

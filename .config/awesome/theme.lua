@@ -44,6 +44,9 @@ theme.border_normal = xrdb.color1 or "#000000"
 theme.border_focus = xrdb.color14 or "#535d6c"
 theme.border_marked = xrdb.color0 or "#91231c"
 
+theme.dashboard_border_width = dpi(2)
+theme.dashboard_border_color = theme.bg_focus
+theme.dashboard_margin = dpi(20)
 -- Hotkeys
 
 theme.hotkeys_bg = xrdb.color0

@@ -26,6 +26,7 @@ require("modules.exit-screen")
 require("modules.volume")
 require("modules.posture-check")
 require("modules.settings")
+require("modules.dashboard")
 
 
 root.keys(require("configs.keys.keybinds"))

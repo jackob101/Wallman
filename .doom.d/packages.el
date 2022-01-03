@@ -62,3 +62,7 @@
 (package! lsp-java)
 
 (package! company-box)
+
+(package! prettier-js)
+
+(package! typescript-mode)
