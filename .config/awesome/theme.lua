@@ -44,6 +44,10 @@ theme.border_normal = xrdb.color1 or "#000000"
 theme.border_focus = xrdb.color14 or "#535d6c"
 theme.border_marked = xrdb.color0 or "#91231c"
 
+theme.notification_center_opacity = "FF"
+theme.notification_center_width = dpi(350)
+theme.notification_center_border_width = dpi(5)
+
 theme.dashboard_border_width = dpi(2)
 theme.dashboard_border_color = theme.bg_focus
 theme.dashboard_margin = dpi(20)

@@ -27,6 +27,8 @@ require("modules.volume")
 require("modules.posture-check")
 require("modules.settings")
 require("modules.dashboard")
+require("modules.notification-center")
+
 
 
 root.keys(require("configs.keys.keybinds"))

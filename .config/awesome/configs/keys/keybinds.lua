@@ -170,6 +170,13 @@ globalkeys = gears.table.join(
 		function() awesome.emit_signal("dashboard::toggle") end,
 		{ description = "Display dashboard", group = "launcher" }
 	),
+	awful.key(
+		{ modkey, "Ctrl" },
+		"n",
+		function() awesome.emit_signal("notificationcenter::toggle") end,
+		{ description = "Display notification center", group = "launcher" }
+	),
+
 	--	awful.key(
 	--{ modkey, "Shift" },
 	--"s",
