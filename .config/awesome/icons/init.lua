@@ -11,5 +11,6 @@ return {
   posture = dir .. "posture.png",
   logo = dir .. "arch.svg",
   clock = dir .. "clock.svg",
-  keyboard = dir .. "keyboard.svg"
+  keyboard = dir .. "keyboard.svg",
+  notification_center_open = dir .. "notification-center-open.svg"
 }

@@ -41,7 +41,7 @@ local function decorate_cell(widget, flag, date)
   local weekday = tonumber(os.date("%w", os.time(d)))
 
   -- Weekends bold text
-  if (weekday==0 or weekday==6) then
+  if (weekday==0 or weekday==6) and widget.get_text then
     widget:set_markup('<b>' .. widget:get_text() .. '</b>')
   end
   local default_fg = (weekday==0 or weekday==6) and beautiful.fg_focus
@@ -72,8 +72,8 @@ local calendar = wibox.widget({
           layout = wibox.layout.align.horizontal,
           expand = "outside",
         },
-        top = dpi(25),
-        bottom = dpi(25),
+        top = dpi(15),
+        bottom = dpi(15),
         widget = wibox.container.margin,
       },
       widget = wibox.container.background,

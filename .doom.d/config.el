@@ -19,8 +19,8 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "Ubuntu Mono" :weight 'medium  :size 18 )
-      doom-variable-pitch-font (font-spec :family "Inter" :weight 'medium :size 18))
+(setq doom-font (font-spec :family "Ubuntu Mono" :weight 'thin  :size 18 )
+      doom-variable-pitch-font (font-spec :family "Inter" :weight 'thin :size 18))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -59,6 +59,9 @@
       web-mode-css-indent-offset 2
       company-idle-delay 0.0
       web-mode-enable-current-element-highlight t)
+
+(after! flyspell
+  (setq flyspell-lazy-idle-seconds .4))
 
 (use-package! projectile
   :custom
@@ -129,9 +132,13 @@
       "C-0" 'org-next-visible-heading
       "C-)" 'outline-up-heading)
 
+
 (map! :leader :desc "Ace window" "w TAB" 'ace-window)
 (map! :leader :desc "Indent buffer" "b =" 'er-indent-region-or-buffer
-      :leader :desc "Open shell" "o s" 'shell-pop)
+      :leader :desc "Open shell" "o s" 'shell-pop
+      :leader :desc "Go to previous note" "n r b" 'org-mark-ring-goto
+      :leader :desc "Go to next error" "e f n" 'evil-next-flyspell-error
+      :leader :desc "Go to previous error" "e f p" 'evil-prev-flyspell-error)
 
 (require 'org-tempo)
 
@@ -146,28 +153,39 @@
 
 (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode 0)))
 
-(defun trix/org-mode-setup()
-  (org-indent-mode)
-  (visual-line-mode 1)
-
-  (dolist (face '(org-level-1
-                  org-level-2
-                  org-level-3
-                  org-level-4
-                  org-level-5
-                  org-level-6
-                  org-level-7
-                  org-level-8))
-    (set-face-attribute face nil :weight 'bold :height 1.1))
-  (set-face-attribute 'org-done nil :strike-through t)
-  (set-face-attribute 'org-headline-done nil
-                      :strike-through t
-                      :foreground "#474745"))
 
 (use-package! org
-  :hook (org-mode . trix/org-mode-setup)
+  :hook ((org-mode . trix/org-mode-setup)
+         (org-mode . mixed-pitch-mode))
   :config
   (setq org-ellipsis " ▾"))
+
+(after! org
+  (custom-set-faces!
+    '(org-level-8 :inherit outline-8 :height 1.05 :weight bold)
+    '(org-level-7 :inherit outline-7 :height 1.10 :weight bold)
+    '(org-level-6 :inherit outline-6 :height 1.15 :weight bold)
+    '(org-level-5 :inherit outline-5 :height 1.20 :weight bold)
+    '(org-level-4 :inherit outline-4 :height 1.25 :weight bold)
+    '(org-level-3 :inherit outline-3 :height 1.30 :weight bold)
+    '(org-level-2 :inherit outline-2 :height 1.35 :weight bold)
+    '(org-level-1 :inherit outline-1 :height 1.40  :weight bold)
+    '(org-document-title :underline nil)
+    '(variable-pitch :family "Inter" :weight light :height 100)
+    '(org-block :inherit fixed-pitch)
+    '(org-code :inherit (shadow fixed-pitch))
+    '(org-document-info :foreground "dark orange")
+    '(org-document-info-keyword :inherit (shadow fixed-pitch))
+    '(org-indent :inherit (org-hide fixed-pitch))
+    '(org-link :foreground "royal blue" :underline nil)
+    '(org-meta-line :inherit (font-lock-comment-face fixed-pitch))
+    '(org-property-value :inherit fixed-pitch)
+    '(org-special-keyword :inherit (font-lock-comment-face fixed-pitch))
+    '(org-table :inherit fixed-pitch :foreground "#83a598")
+    '(org-tag :inherit (shadow fixed-pitch) :weight bold :height 0.8)
+    '(org-verbatim :inherit (shadow fixed-pitch))
+    ))
+
 
 (use-package! org-bullets
   :after org
@@ -175,6 +193,14 @@
   :config
   (setq org-bullets-bullet-list '("⁖"))
   )
+
+(defun trix/org-mode-setup()
+  (org-indent-mode)
+  (visual-line-mode 1)
+  (set-face-attribute 'org-done nil :strike-through t)
+  (set-face-attribute 'org-headline-done nil
+                      :strike-through t
+                      :foreground "#474745"))
 
 (defun trix/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
@@ -202,14 +228,14 @@
 
 (after! org-agenda
   (add-to-list 'org-agenda-custom-commands '("b" agenda "Today's Deadlines"
-                  ((org-agenda-span '1)
-                   (org-agenda-start-day "+0d")
-                   (org-agenda-overriding-header "Today's Tasks ")))
-  (add-to-list  'org-agenda-custom-commands '("w" agenda "Today's Deadlines"
-                  ((org-agenda-span '10)
-                   (org-agenda-overriding-header "Week tasks")
-                   (org-agenda-tag-filter-preset '("-repeating"))
-                   (org-agenda-start-day "-3d"))))))
+                                             ((org-agenda-span '1)
+                                              (org-agenda-start-day "+0d")
+                                              (org-agenda-overriding-header "Today's Tasks ")))
+               (add-to-list  'org-agenda-custom-commands '("w" agenda "Today's Deadlines"
+                                                           ((org-agenda-span '10)
+                                                            (org-agenda-overriding-header "Week tasks")
+                                                            (org-agenda-tag-filter-preset '("-repeating"))
+                                                            (org-agenda-start-day "-3d"))))))
 
 
 (after! org-agenda

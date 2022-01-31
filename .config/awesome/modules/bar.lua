@@ -8,6 +8,9 @@ local icons = require("icons")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local utils = require("utils")
+-- local notification_center_button = require("widgets.notification-center-button")
+-- local gears = require("gears")
+
 
 local clock_widget = utils.create_widget_with_icon(icons.clock, "fa-clock", wibox.widget.textclock())
 
@@ -88,6 +91,7 @@ awful.screen.connect_for_each_screen(function(s)
           keyboard_widget,
           clock_widget,
           s.systray,
+          -- notification_center_button,
           spacing = dpi(8),
         },
     })
