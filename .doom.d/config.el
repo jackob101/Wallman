@@ -226,6 +226,10 @@
 (use-package! company-box
   :hook (company-mode . company-box-mode))
 
+(use-package! company
+  :config
+  (add-to-list 'company-frontends 'company-preview-frontend))
+
 (after! org-agenda
   (add-to-list 'org-agenda-custom-commands '("b" agenda "Today's Deadlines"
                                              ((org-agenda-span '1)
