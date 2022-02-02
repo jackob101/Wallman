@@ -108,7 +108,7 @@ awesome.connect_signal(
 
     local sinks = sound_sinks.get_input_sinks(example_widget)
 
-    for s in screen do
+    for s in s do
 
       s.settings_widget.visible=false;
     end
@@ -122,7 +122,7 @@ awesome.connect_signal(
   'module::settings_widget:hide',
   function ()
 	settings_widget_grabber:stop()
-    for s in screen do
+    for s in s do
       s.settings_widget.visible = false
     end
   end
