@@ -97,13 +97,15 @@ theme.taglist_bg_urgetn = xrdb.color11
 
 -- theme.notification_bg = xrdb.background .. "AA"
 -- theme.notification_fg = xrdb.foreground
-theme.notification_icon_size = 86
+ theme.notification_icon_size = 86
 -- -- theme.notification_max_width = 300
 -- theme.notification_margin = 50
--- -- theme.notification_width = 300
+ theme.notification_width = 350
 -- theme.notification_border_color = xrdb.background
--- theme.notification_height = 50
+theme.notification_height = 150
 theme.notification_spacing = 5
+theme.notification_box_margin = 10
+theme.notification_title_font = "inter medium 11"
 
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]

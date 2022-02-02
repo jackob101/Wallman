@@ -8,14 +8,12 @@ local posture = gears.timer {
   timeout = 1800,
   autostart = true,
   call_now = true,
-  urgency = "critical",
   callback = function()
     naughty.notification {
       title = "Posture check",
-      message = "Can you sit correctly you fat fuk",
+      message = "Are you sitting properly?",
       icon = icons.posture,
-      icon_size = 200,
-      margin = 15,
+      urgency = "normal",
     }
   end
 }

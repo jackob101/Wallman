@@ -258,7 +258,7 @@ local exit_screen_grabber = awful.keygrabber {
 awesome.connect_signal(
   'module::exit_screen:show',
   function()
-    for s in s do
+    for s in screen do
       s.exit_screen.visible = false
     end
     awful.screen.focused().exit_screen.visible = true
@@ -270,7 +270,7 @@ awesome.connect_signal(
   'module::exit_screen:hide',
   function()
     exit_screen_grabber:stop()
-    for s in s do
+    for s in screen do
       s.exit_screen.visible = false
     end
   end

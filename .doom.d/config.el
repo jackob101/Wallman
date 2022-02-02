@@ -245,3 +245,13 @@
 (after! org-agenda
   (add-to-list 'org-agenda-files '"~/org/todos"))
 
+(defhydra hydra-org-motion (org-mode-map "<f4>" :color amaranth)
+  "
+    Org motion           ^^Info
+    ---------------------------------------
+    _j_: Next heading      Heading:    %s(substring-no-properties (org-get-heading))
+    _k_: Previous heading  Subheading: %s(length (org-map-entries nil nil 'tree))
+    "
+  ("j" outline-next-visible-heading nil)
+  ("k" outline-previous-visible-heading nil)
+  ("q" nil "quit"))

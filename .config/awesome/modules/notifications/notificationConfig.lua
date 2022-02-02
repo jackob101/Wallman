@@ -2,33 +2,14 @@ local ruled = require("ruled")
 local naughty = require("naughty")
 local beautiful = require("beautiful")
 local xresources = beautiful.xresources
+local awful = require("awful")
 local xrdb = xresources.get_current_theme()
 local wibox = require("wibox")
 local gears = require("gears")
 local dpi = beautiful.xresources.apply_dpi
 local icons = require("icons")
 
--- stylua: ignore start
-
--- naughty.config.defaults.shape = function(cr, w, h)
---   gears.shape.rounded_rect(cr, w, h, dpi(6))
--- end
-
-
 ruled.notification.connect_signal("request::rules", function()
-
-    ruled.notification.append_rule {
-      rule = {},
-      properties = {
-        icon_size = 86,
-        fg = beautiful.fg_normal,
-        bg = beautiful.bg_normal,
-        width = 350,
-        margin = 20,
-        border_width = 2,
-      }
-    }
-
 
     ruled.notification.append_rule {
       rule       = { urgency = "critical" },
@@ -43,6 +24,108 @@ ruled.notification.connect_signal("request::rules", function()
     ruled.notification.append_rule {
       rule       = { urgency = "normal" },
       properties = {
+        timeout = 5,
       }
     }
+end)
+
+naughty.connect_signal("request::display",
+  function (n)
+
+    gears.debug.dump(n)
+
+    local left_part = wibox.widget {
+      {
+        {
+          {
+            {
+              naughty.widget.icon,
+              widget = wibox.container.margin,
+              margins = 10,
+            },
+            widget = wibox.container.background,
+            bg = beautiful.bg_normal,
+            shape = gears.shape.circle,
+          },
+          valign = "center",
+          widget = wibox.container.place,
+        },
+        left = 10,
+        right = 10,
+        expand = "outside",
+        widget = wibox.container.margin,
+      },
+      forced_width = dpi(70),
+      bg = beautiful.accent5,
+      widget = wibox.container.background,
+    }
+
+    local right_part = wibox.widget {
+
+      {
+
+        {
+          align = "center",
+          markup = "<b>" .. n.title .. "</b>",
+          font = beautiful.notification_title_font,
+          ellipsize = "end",
+          widget = wibox.widget.textbox,
+          forced_height = 25,
+        },
+        {
+          {
+            align = "center",
+            valign = "top",
+            wrap = "char",
+            widget = naughty.widget.message,
+          },
+          top = 5,
+          widget = wibox.container.margin,
+        },
+        expand = "inside",
+        spacing = 5,
+        layout = wibox.layout.align.vertical,
+
+      },
+      margins = beautiful.notification_box_margin,
+      widget = wibox.container.margin,
+    }
+
+    naughty.layout.box {
+      notification = n,
+      type = "notification",
+      screen = awful.screen.focused(),
+      shape = gears.shape.rectangle,
+      bg = "#FFFFFF00",
+      widget_template = {
+        {
+          {
+            {
+              left_part,
+              right_part,
+              layout = wibox.layout.align.horizontal,
+            },
+            strategy = 'max',
+            height = beautiful.notification_height,
+            widget = wibox.container.constraint,
+          },
+          strategy = 'exact',
+          width = beautiful.notification_width,
+          widget = wibox.container.constraint,
+        },
+        -- border_color = beautiful.accent5 ,
+        -- border_width = 2,
+        shape = gears.shape.rounded_rect,
+        bg = beautiful.bg_normal,
+        widget = wibox.container.background,
+      }
+    }
+  end
+)
+
+naughty.connect_signal("request::destroyed",
+  function (r, keep)
+
+    gears.debug.dump("Destroyes")
+
 end)

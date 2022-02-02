@@ -8,7 +8,7 @@ return {
   default = dir .. "account.png",
   lock = dir .. "lock.svg",
   volume = dir .. "volume.svg",
-  posture = dir .. "posture.png",
+  posture = dir .. "heart.svg",
   logo = dir .. "arch.svg",
   clock = dir .. "clock.svg",
   keyboard = dir .. "keyboard.svg",
