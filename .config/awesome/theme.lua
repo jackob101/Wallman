@@ -15,7 +15,7 @@ local theme = {}
 theme.font = "inter medium 9"
 
 theme.groups_bg = xrdb.color2 .. "77"
-theme.useless_gap = 5
+theme.useless_gap = 0
 
 theme.accent1 = xrdb.color10
 theme.accent2 = xrdb.color11
@@ -37,7 +37,7 @@ theme.fg_minimize = xrdb.color4 or "#D8DEE9"
 
 theme.systray_icon_spacing = 5
 
-theme.bar_height = 25
+theme.bar_height = 30
 
 theme.border_width = dpi(1)
 theme.border_normal = xrdb.color1 or "#000000"
@@ -66,6 +66,8 @@ theme.hotkeys_label_bg = xrdb.color3
 theme.bg = xrdb.color0 .. "00" or "#2E3440"
 theme.bg_no_alpha = xrdb.color0 or "#2E3440"
 theme.fg = xrdb.color5 or "#E5E9F0"
+
+theme.tooltip_margins = dpi(10)
 
 -- There are other variable sets
 -- overriding the default one when
@@ -97,7 +99,7 @@ theme.taglist_bg_urgetn = xrdb.color11
 
 -- theme.notification_bg = xrdb.background .. "AA"
 -- theme.notification_fg = xrdb.foreground
- theme.notification_icon_size = 86
+ theme.notification_icon_size = 46
 -- -- theme.notification_max_width = 300
 -- theme.notification_margin = 50
  theme.notification_width = 350

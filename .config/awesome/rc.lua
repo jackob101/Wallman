@@ -29,9 +29,9 @@ require("modules.settings")
 require("modules.dashboard")
 require("modules.notification-center")
 
+require("configs.keys.keybinds-configuration")
 
 
-root.keys(require("configs.keys.keybinds"))
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.

@@ -4,6 +4,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 local modkey = require("configs.keys.mod").modkey
 local volume_widget = require("widgets.volume-widget.volume")
 
+
 require("awful.hotkeys_popup.keys")
 
 
@@ -36,16 +37,24 @@ globalkeys = gears.table.join(
 		awesome.quit,
 		{ description = "quit awesome", group = "awesome" }
 	),
+	awful.key(
+		{modkey, "Shift", "Control"},
+		"m",
+		function ()
+			awesome.emit_signal("macros::toggle")
+		end,
+		{ description = "Toggle macros", group = "awesome" }
+	),
 
 	awful.key(
 		{ modkey },
 		"x",
 		function()
 			awful.prompt.run({
-				prompt = "Run Lua code: ",
-				textbox = awful.screen.focused().mypromptbox.widget,
-				exe_callback = awful.util.eval,
-				history_path = awful.util.get_cache_dir() .. "/history_eval",
+					prompt = "Run Lua code: ",
+					textbox = awful.screen.focused().mypromptbox.widget,
+					exe_callback = awful.util.eval,
+					history_path = awful.util.get_cache_dir() .. "/history_eval",
 			})
 		end,
 		{ description = "lua execute prompt", group = "awesome", }
@@ -184,12 +193,12 @@ globalkeys = gears.table.join(
 	--	{ description = "Show settings", group = "launcher" }
 	--	),
 
--- ██╗      █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗████████╗
--- ██║     ██╔══██╗╚██╗ ██╔╝██╔═══██╗██║   ██║╚══██╔══╝
--- ██║     ███████║ ╚████╔╝ ██║   ██║██║   ██║   ██║
--- ██║     ██╔══██║  ╚██╔╝  ██║   ██║██║   ██║   ██║
--- ███████╗██║  ██║   ██║   ╚██████╔╝╚██████╔╝   ██║
--- ╚══════╝╚═╝  ╚═╝   ╚═╝    ╚═════╝  ╚═════╝    ╚═╝
+	-- ██╗      █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗████████╗
+	-- ██║     ██╔══██╗╚██╗ ██╔╝██╔═══██╗██║   ██║╚══██╔══╝
+	-- ██║     ███████║ ╚████╔╝ ██║   ██║██║   ██║   ██║
+	-- ██║     ██╔══██║  ╚██╔╝  ██║   ██║██║   ██║   ██║
+	-- ███████╗██║  ██║   ██║   ╚██████╔╝╚██████╔╝   ██║
+	-- ╚══════╝╚═╝  ╚═╝   ╚═╝    ╚═════╝  ╚═════╝    ╚═╝
 
 	awful.key(
 		{ modkey },
@@ -308,7 +317,7 @@ globalkeys = gears.table.join(
 	-- ██╔══██║██║   ██║██║  ██║██║██║   ██║
 	-- ██║  ██║╚██████╔╝██████╔╝██║╚██████╔╝
 	-- ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝ 
-										 
+
 	awful.key(
 		{  },
 		"XF86AudioRaiseVolume",
@@ -347,7 +356,7 @@ globalkeys = gears.table.join(
 		{ modkey },
 		"=",
 		function()
-			 awful.screen.focused().systray.visible = not awful.screen.focused().systray.visible
+			awful.screen.focused().systray.visible = not awful.screen.focused().systray.visible
 		end,
 		{description = "Toggle systray", group="systray"}
 	)
@@ -365,49 +374,49 @@ for i = 1, 10 do
 		globalkeys,
 		-- View tag only.
 		awful.key({ modkey }, "#" .. i + 9, function()
-			local screen = awful.screen.focused()
-			local tag = screen.tags[i]
-			if tag then
-				tag:view_only()
-			end
+				local screen = awful.screen.focused()
+				local tag = screen.tags[i]
+				if tag then
+					tag:view_only()
+				end
 		end, {
-			description = "view tag #" .. i,
-			group = "tag",
+				description = "view tag #" .. i,
+				group = "tag",
 		}),
 		-- Toggle tag display.
 		awful.key({ modkey, "Control" }, "#" .. i + 9, function()
-			local screen = awful.screen.focused()
-			local tag = screen.tags[i]
-			if tag then
-				awful.tag.viewtoggle(tag)
-			end
+				local screen = awful.screen.focused()
+				local tag = screen.tags[i]
+				if tag then
+					awful.tag.viewtoggle(tag)
+				end
 		end, {
-			description = "toggle tag #" .. i,
-			group = "tag",
+				description = "toggle tag #" .. i,
+				group = "tag",
 		}),
 		-- Move client to tag.
 		awful.key({ modkey, "Shift" }, "#" .. i + 9, function()
-			if client.focus then
-				local tag = client.focus.screen.tags[i]
-				if tag then
-					client.focus:move_to_tag(tag)
+				if client.focus then
+					local tag = client.focus.screen.tags[i]
+					if tag then
+						client.focus:move_to_tag(tag)
+					end
 				end
-			end
 		end, {
-			description = "move focused client to tag #" .. i,
-			group = "tag",
+				description = "move focused client to tag #" .. i,
+				group = "tag",
 		}),
 		-- Toggle tag on focused client.
 		awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9, function()
-			if client.focus then
-				local tag = client.focus.screen.tags[i]
-				if tag then
-					client.focus:toggle_tag(tag)
+				if client.focus then
+					local tag = client.focus.screen.tags[i]
+					if tag then
+						client.focus:toggle_tag(tag)
+					end
 				end
-			end
 		end, {
-			description = "toggle focused client on tag #" .. i,
-			group = "tag",
+				description = "toggle focused client on tag #" .. i,
+				group = "tag",
 		})
 	)
 end

@@ -8,6 +8,7 @@ local icons = require("icons")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local utils = require("utils")
+local macros_widget = require("widgets.macros-status")
 -- local notification_center_button = require("widgets.notification-center-button")
 -- local gears = require("gears")
 
@@ -70,7 +71,7 @@ awful.screen.connect_for_each_screen(function(s)
         right = 10,
     })
 
-    s.systray.visible = false
+    s.systray.visible = true
 
     -- Add widgets to the wibox
     s.mywibox:setup({
@@ -87,6 +88,7 @@ awful.screen.connect_for_each_screen(function(s)
         },
         { -- Right widgets
           layout = wibox.layout.fixed.horizontal,
+          macros_widget,
           volume_widget(),
           keyboard_widget,
           clock_widget,

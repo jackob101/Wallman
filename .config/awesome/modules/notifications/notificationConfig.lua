@@ -32,20 +32,12 @@ end)
 naughty.connect_signal("request::display",
   function (n)
 
-    gears.debug.dump(n)
-
     local left_part = wibox.widget {
       {
         {
           {
-            {
-              naughty.widget.icon,
-              widget = wibox.container.margin,
-              margins = 10,
-            },
+            naughty.widget.icon,
             widget = wibox.container.background,
-            bg = beautiful.bg_normal,
-            shape = gears.shape.circle,
           },
           valign = "center",
           widget = wibox.container.place,
@@ -56,7 +48,7 @@ naughty.connect_signal("request::display",
         widget = wibox.container.margin,
       },
       forced_width = dpi(70),
-      bg = beautiful.accent5,
+      bg = beautiful.bg_focus,
       widget = wibox.container.background,
     }
 
@@ -126,6 +118,5 @@ naughty.connect_signal("request::display",
 naughty.connect_signal("request::destroyed",
   function (r, keep)
 
-    gears.debug.dump("Destroyes")
 
 end)
