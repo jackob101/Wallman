@@ -13,7 +13,8 @@ local button = wibox.widget(
 
 local button_wrapper = wibox.widget({
     button,
-    margins = 2,
+    left = 2,
+    right = 2,
     widget = wibox.container.margin,
 })
 

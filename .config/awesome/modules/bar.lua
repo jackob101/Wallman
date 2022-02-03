@@ -79,16 +79,11 @@ awful.screen.connect_for_each_screen(function(s)
     -- systray
     s.systray = wibox.widget({
         {
-          {
-            screen = "primary",
-            widget = wibox.widget.systray,
-          },
-          spacing_widget,
-          layout = wibox.layout.fixed.horizontal,
+          screen = "primary",
+          widget = wibox.widget.systray,
         },
-        top = 4,
-        bottom = 4,
-        widget = wibox.container.margin,
+        spacing_widget,
+        layout = wibox.layout.fixed.horizontal,
     })
 
     s.systray.visible = true
@@ -107,13 +102,18 @@ awful.screen.connect_for_each_screen(function(s)
           s.mytasklist,
         },
         { -- Right widgets
-          layout = wibox.layout.fixed.horizontal,
-          add_with_space(macros_widget),
-          add_with_space(volume_widget()),
-          add_with_space(keyboard_widget),
-          add_with_space(clock_widget),
-          s.systray,
-          add_with_space(notification_center_button),
+          {
+            layout = wibox.layout.fixed.horizontal,
+            add_with_space(macros_widget),
+            add_with_space(volume_widget()),
+            add_with_space(keyboard_widget),
+            add_with_space(clock_widget),
+            s.systray,
+            add_with_space(notification_center_button),
+          },
+          top = 5,
+          bottom = 5,
+          widget = wibox.container.margin,
         },
     })
 end)
