@@ -71,11 +71,13 @@ end)
 
     if isVisible then
       focused.notification_center_animation.target = 0
+      awesome.emit_signal("notification_center::closed")
     else
       for s in screen do
         s.notification_center_animation.target = 0
       end
       focused.notification_center_animation.target = 1
+      awesome.emit_signal("notification_center::opened")
     end
 
   end

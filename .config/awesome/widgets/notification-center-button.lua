@@ -5,20 +5,27 @@ local gears = require("gears")
 local wibox = require("wibox")
 
 
-local button_wrapper = wibox{
-  visible = true,
-  ontop = true,
-}
-
-local button = wibox.widget({
+local button = wibox.widget(
+  {
     image = icons.notification_center_open,
     widget = wibox.widget.imagebox,
 })
 
-button_wrapper:setup{
-  button,
-  valign = "center",
-  layout = wibox.layout.place
-}
+local button_wrapper = wibox.widget({
+    button,
+    margins = 2,
+    widget = wibox.container.margin,
+})
+
+local toggle_closed = function ()
+  button.image = icons.notification_center_open
+end
+
+local toggle_opened = function ()
+  button.image = icons.notification_center_close
+end
+
+awesome.connect_signal("notification_center::closed", toggle_closed)
+awesome.connect_signal("notification_center::opened", toggle_opened)
 
 return button_wrapper

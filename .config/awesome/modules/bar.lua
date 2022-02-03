@@ -9,7 +9,7 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local utils = require("utils")
 local macros_widget = require("widgets.macros-status")
--- local notification_center_button = require("widgets.notification-center-button")
+local notification_center_button = require("widgets.notification-center-button")
 -- local gears = require("gears")
 
 
@@ -45,6 +45,20 @@ local logo = wibox.widget {
 
 }
 
+local spacing_widget = wibox.widget {
+  widget = wibox.container.background,
+  forced_width = dpi(8),
+}
+
+local function add_with_space(w)
+
+  return wibox.widget {
+    w,
+    spacing_widget,
+    layout = wibox.layout.fixed.horizontal,
+  }
+end
+
 awful.screen.connect_for_each_screen(function(s)
 
     -- Each screen has its own tag table.
@@ -57,18 +71,24 @@ awful.screen.connect_for_each_screen(function(s)
     s.mytasklist = initTaskList(s)
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = beautiful.bar_height})
+    s.mywibox = awful.wibar({
+        position = "top",
+        screen = s,
+        height = beautiful.bar_height})
 
     -- systray
     s.systray = wibox.widget({
         {
-          widget = wibox.widget.systray,
+          {
+            screen = "primary",
+            widget = wibox.widget.systray,
+          },
+          spacing_widget,
+          layout = wibox.layout.fixed.horizontal,
         },
+        top = 4,
+        bottom = 4,
         widget = wibox.container.margin,
-        top = 2,
-        bottom = 2,
-        left = 10,
-        right = 10,
     })
 
     s.systray.visible = true
@@ -88,13 +108,12 @@ awful.screen.connect_for_each_screen(function(s)
         },
         { -- Right widgets
           layout = wibox.layout.fixed.horizontal,
-          macros_widget,
-          volume_widget(),
-          keyboard_widget,
-          clock_widget,
+          add_with_space(macros_widget),
+          add_with_space(volume_widget()),
+          add_with_space(keyboard_widget),
+          add_with_space(clock_widget),
           s.systray,
-          -- notification_center_button,
-          spacing = dpi(8),
+          add_with_space(notification_center_button),
         },
     })
 end)
