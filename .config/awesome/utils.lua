@@ -2,8 +2,10 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local gears = require('gears')
+local awful = require("awful")
 
 local utils = {}
+
 
 function utils.create_stylesheet (class_name)
   return "."..class_name.."{color: ".. beautiful.fg_normal .. ";}"
@@ -52,6 +54,21 @@ function utils.draw_box(content, width, height)
   }
 
   return box
+end
+
+
+function utils.generate_tooltip(target, text)
+
+  awful.tooltip {
+    objects = {target},
+    text = text,
+    bg = beautiful.tooltip_bg,
+    margins = beautiful.tooltip_margins,
+    shape = function (cr, width, height)
+      gears.shape.rounded_rect(cr, width, height, dpi(5))
+    end,
+  }
+
 end
 
 return utils

@@ -38,7 +38,7 @@ local profile_box = wibox.widget {
       {
         name,
         fg = beautiful.accent3,
-        widget = wibox.widget.background,
+        widget = wibox.container.background,
       },
       uptime,
       spacing = dpi(2),

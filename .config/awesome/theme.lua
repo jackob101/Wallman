@@ -24,6 +24,8 @@ theme.accent4 = xrdb.color13
 theme.accent5 = xrdb.color14
 theme.accent6 = xrdb.color15
 
+theme.bar_height = 30
+
 theme.bg_normal = xrdb.color0 or "#2E3440"
 theme.bg_focus = xrdb.color3 or "#535d6c"
 theme.bg_urgent = xrdb.color11 or "#D08770"
@@ -37,7 +39,6 @@ theme.fg_minimize = xrdb.color4 or "#D8DEE9"
 
 theme.systray_icon_spacing = 5
 
-theme.bar_height = 30
 
 theme.border_width = dpi(1)
 theme.border_normal = xrdb.color1 or "#000000"
@@ -67,7 +68,8 @@ theme.bg = xrdb.color0 .. "00" or "#2E3440"
 theme.bg_no_alpha = xrdb.color0 or "#2E3440"
 theme.fg = xrdb.color5 or "#E5E9F0"
 
-theme.tooltip_margins = dpi(10)
+theme.tooltip_bg = xrdb.color2
+theme.tooltip_margins = dpi(8)
 
 -- There are other variable sets
 -- overriding the default one when
@@ -81,6 +83,7 @@ theme.tooltip_margins = dpi(10)
 -- hotkeys_[bg|fg|border_width|border_color|shape|opacity|modifiers_fg|label_bg|label_fg|group_margin|font|description_font]
 -- Example:
 --theme.taglist_bg_focus = "#ff0000"
+theme.tasklist_fg_urgent = xrdb.color0
 
 -- Generate taglist squares:
 local taglist_square_size = dpi(0)

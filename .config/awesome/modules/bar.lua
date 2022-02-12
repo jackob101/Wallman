@@ -29,31 +29,14 @@ end)
 
 local keyboard_widget = utils.create_widget_with_icon(icons.keyboard, "fa-keyboard", awful.widget.keyboardlayout())
 
-local logo = wibox.widget {
-
-  {
-    image = icons.logo,
-    resize = true,
-    widget = wibox.widget.imagebox,
-  },
-
-  right = 5,
-  left = 5,
-  top = 2,
-  bottom = 2,
-  widget = wibox.container.margin,
-
-}
-
 local spacing_widget = wibox.widget {
   widget = wibox.container.background,
   forced_width = dpi(8),
 }
 
-local function add_with_space(w)
-
+local function add_with_space(widget)
   return wibox.widget {
-    w,
+    widget,
     spacing_widget,
     layout = wibox.layout.fixed.horizontal,
   }
@@ -74,7 +57,9 @@ awful.screen.connect_for_each_screen(function(s)
     s.mywibox = awful.wibar({
         position = "top",
         screen = s,
-        height = beautiful.bar_height})
+        height = beautiful.bar_height,
+        bg = beautiful.bg_normal ,
+    })
 
     -- systray
     s.systray = wibox.widget({
@@ -93,7 +78,7 @@ awful.screen.connect_for_each_screen(function(s)
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
           layout = wibox.layout.fixed.horizontal,
-          logo,
+          require("widgets.bar-logo"),
           s.mytaglist,
         },
         {
