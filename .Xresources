@@ -27,22 +27,22 @@
 ! Awesomewm theme config
 background: #282828
 foreground: #ebdbb2
-#define COLOR0 #2E3440
-#define COLOR1 #3B4252
-#define COLOR2 #434C5E
-#define COLOR3 #4C566A
-#define COLOR4 #D8DEE9
-#define COLOR5 #E5E9F0
-#define COLOR6 #ECEFF4
+#define COLOR0 #2e2e2e
+#define COLOR1 #343434
+#define COLOR2 #434343
+#define COLOR3 #525252
+#define COLOR4 #d6d6d6
+#define COLOR5 #fafafa
+#define COLOR6 #f0f0f0
 #define COLOR7 #8FBCBB
 #define COLOR8 #88C0D0
 #define COLOR9 #81A1C1
-#define COLOR10 #5E81AC
-#define COLOR11 #BF616A
-#define COLOR12 #D08770
-#define COLOR13 #EBCB8B
-#define COLOR14 #A3BE8C
-#define COLOR15 #B48EAD
+#define COLOR10 #ec99bb
+#define COLOR11 #b05279
+#define COLOR12 #e87d3e
+#define COLOR13 #e5b567
+#define COLOR14 #b4d273
+#define COLOR15 #9e86c8
 
 color0: COLOR0
 color1: COLOR1

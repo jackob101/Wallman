@@ -25,7 +25,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-nord)
+(setq doom-theme 'doom-monokai-pro)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -58,7 +58,8 @@
       web-mode-code-indent-offset 2
       web-mode-css-indent-offset 2
       company-idle-delay 0.0
-      web-mode-enable-current-element-highlight t)
+      web-mode-enable-current-element-highlight t
+      +zen-text-scale 1)
 
 (after! flyspell
   (setq flyspell-lazy-idle-seconds .4))

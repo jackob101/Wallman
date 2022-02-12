@@ -1,6 +1,7 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local clientkeys = require("configs.keys.clientKeys")
+local gears = require("gears")
 
 local clientbuttons = require("configs.clientbuttons")
 local naughty = require("naughty")
@@ -8,6 +9,8 @@ local naughty = require("naughty")
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
 twoScreens = screen:count() == 2
+local poe = nil
+
 awful.rules.rules = {
   -- All clients will match this rule.
   {
@@ -45,6 +48,7 @@ awful.rules.rules = {
         "Wpa_gui",
         "veromix",
         "xtightvncviewer",
+        "awakened-poe-trade"
       },
 
       -- Note that the name property shown in xprop might be set slightly after creation of the client
@@ -83,9 +87,21 @@ awful.rules.rules = {
 
   -- Add titlebars to normal clients and dialogs
   { rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = true } },
-
+  {
+    rule_any = {
+      class = {"awakened-poe-trade", "poe-overlay"},
+    },
+    properties = {
+      y = 0,
+      screen = 1,
+      height = 1080,
+      width = 1200,
+    },
+  }
   -- Set Firefox to always map on the tag named "2" on screen 1.
   -- { rule = { class = "Firefox" },
   --   properties = { screen = 1, tag = "2" } },
 }
 -- }}}
+--
+

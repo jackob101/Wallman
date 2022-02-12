@@ -64,6 +64,18 @@ function initTagList(s)
         },
         forced_width = 25,
         widget = wibox.container.background,
+        create_callback = function(self, c3, index, objects) --luacheck: no unused args
+          self:connect_signal("mouse::enter", function()
+              if self.bg ~= beautiful.accent4 .. "88" then
+                self.backup     = self.bg
+                self.has_backup = true
+              end
+              self.bg = beautiful.accent4 .. "88"
+          end)
+          self:connect_signal("mouse::leave", function()
+              if self.has_backup then self.bg = self.backup end
+          end)
+        end,
       },
       buttons = taglist_buttons,
 })end

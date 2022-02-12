@@ -15,7 +15,7 @@ local theme = {}
 theme.font = "inter medium 9"
 
 theme.groups_bg = xrdb.color2 .. "77"
-theme.useless_gap = 0
+theme.useless_gap = dpi(5)
 
 theme.accent1 = xrdb.color10
 theme.accent2 = xrdb.color11
@@ -86,10 +86,11 @@ theme.tooltip_margins = dpi(10)
 local taglist_square_size = dpi(0)
 theme.taglist_squares_sel = theme_assets.taglist_squares_sel(taglist_square_size, theme.fg_focus)
 theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_normal)
-theme.taglist_fg_focus = xrdb.color6
+theme.taglist_fg_focus = xrdb.color14
 theme.taglist_fg_urgent = xrdb.color11
-theme.taglist_bg_focus = xrdb.color6
-theme.taglist_bg_urgetn = xrdb.color11
+theme.taglist_bg_focus = xrdb.color14
+theme.taglist_bg_urgent = xrdb.color11
+theme.taglist_font = "inter bold 10"
 
 -- Variables set for theming notifications:
 -- notification_font

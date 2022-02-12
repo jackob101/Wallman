@@ -8,128 +8,117 @@
  */
 
 configuration {
-	font:							"GE Inspira 12";
     show-icons:                     true;
 	icon-theme: 					"Papirus";
-    display-drun: 					" Applications";
+    display-drun: 					"";
     drun-display-format:            "{name}";
     disable-history:                false;
-    fullscreen:                     false;
-	hide-scrollbar: 				true;
 	sidebar-mode: 					false;
 }
 
-* {
-  al:  #00000000;
-  bg:  #282828ff;
-  se:  #504945FF;
-  fg:  #ebdbb2ff;
-  ac:  #8ec07cff;
-  fgd: #1d2021ff;
-}
+@import "global.rasi"
 
 window {
+    font: "Inter 10";
     transparency:                   "real";
-    background-color:               @bg;
-    text-color:                     @fg;
-	border:							0px;
-	border-color:					@ac;
+    background-color:               @primaryBackground;
+    text-color:                     @primaryForeground;
+	border:						0 2px 0 0;
+	border-color:					@accent;
     border-radius:                  0px;
-	width:							50%;
-    location:                       center;
-    x-offset:                       0;
-    y-offset:                       0;
+	height:						@height;
+	width:							18%;
+    location:                       southwest;
 }
 
 prompt {
     enabled: 						true;
-	padding: 						1.25% 0.75% 1.25% 0.75%;
-	background-color: 				@ac;
-	text-color: 					@fgd;
-	font:							"GE Inspira 14";
-    border-radius:                  0%;
-}
+	background-color: 				@primaryBackground;
+	text-color: 					@primaryForeground;
+    padding: 0% 0% 0% -1.5%;
+    margin: 0% 1.5% 0% 0%;
+    font:							"FantasqueSansMono Nerd Font 24";
 
-textbox-prompt-colon {
-	padding: 						1.40% 0% 1% 0%;
-	background-color: 				@se;
-	text-color: 					@fg;
-	expand: false;
-	str: " :: ";
 }
 
 entry {
-    background-color:               @al;
-    text-color:                     @fg;
-    placeholder-color:              @fg;
-    expand:                         true;
+    background-color:               @background-light;
+    text-color:                     @primaryForeground;
+    placeholder-color:              @foreground-alpha;
     horizontal-align:               0;
     placeholder:                    "Search";
-	padding: 						1.5% 0.5% 1% 0%;
     blink:                          true;
+    padding: 0.6% 0% 0% 0.5%;
+    font: "Inter 12";
 }
 
 inputbar {
-	children: 						[ prompt, textbox-prompt-colon, entry ];
-    background-color:               @se;
-    text-color:                     @fg;
+	children: 						[ prompt, entry ];
+    background-color:               @primaryBackground;
+    text-color:                     @primaryForeground;
     expand:                         false;
-	border:							0%;
-    border-radius:                  100%;
-	border-color:					@ac;
+	border:						0 0 0 0;
+    border-radius:                  0px;
+	border-color:					@accent;
+    margin:                         0% 0% 0% 0%;
+    padding:                        2%;
 }
 
 listview {
-    background-color:               @al;
+    background-color:               @primaryBackground;
     padding:                        0px;
-    columns:                        6;
-    lines:                          3;
-    spacing:                       	1%;
+    columns:                        1;
+    lines:                          5;
+    spacing:                        0%;
     cycle:                          false;
     dynamic:                        true;
     layout:                         vertical;
 }
 
 mainbox {
-    background-color:               @al;
-	border:							10px 0px 10px 0px;
-    border-radius:                  0px;
+    background-color:               @primaryBackground;
+	border:							0% 0% 0% 0%;
+    border-radius:                  0% 0% 0% 0%;
 	border-color:					@ac;
     children:                       [ inputbar, listview ];
-    spacing:                       	2%;
-    padding:                        4% 2% 2% 2%;
-}
-
-element {
-    background-color:               @bg;
-    text-color:                     @fg;
-    orientation:                    vertical;
-    border-radius:                  0%;
+    spacing:                       	0%;
     padding:                        0%;
 }
 
-element-icon {
-    size:                           64px;
-    border:                         1%;
-    border-color:                  	@se;
-    border-radius:                  5px;
-    background-color:               @se;
-	padding: 						2% 1% 2% 1%;
-}
-
-element-text {
-    expand:                         true;
-    horizontal-align:               0.5;
-    vertical-align:                 0.5;
-    margin:                         0.5% 0.25% 0.5% 0.25%;
+element {
+    background-color:               @primaryBackground;
+    text-color:                     @primaryForeground;
+    orientation:                    horizontal;
+    border-radius:                  0%;
     padding:                        1% 0.5% 1% 0.5%;
 }
 
-element-text selected {
-    expand:                         true;
+element-icon {
+    background-color: 				inherit;
+    text-color:       				inherit;
     horizontal-align:               0.5;
     vertical-align:                 0.5;
-    background-color:               @ac;
-    text-color:                     @fgd;
-    border-radius:                  5px;
+    size:                           32px;
+    border:                         0px;
+}
+
+element-text {
+    background-color: 				@primaryBackground;
+    text-color:       				inherit;
+    expand:                         true;
+    horizontal-align:               0;
+    vertical-align:                 0.5;
+    margin:                         0% 0.25% 0% 0.25%;
+}
+
+element selected {
+    background-color:               @accent;
+    text-color:                     @primaryBackground;
+	border:						0% 0% 0% 0%;
+    border-radius:                  0px;
+    border-color:                   @accent-alpha;
+}
+
+element-text selected {
+    background-color: @accent;
 }

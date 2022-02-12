@@ -1,9 +1,11 @@
 * {
-    primaryBackground: #2E3440;
-    primaryForeground: #E5E9F0;
-    accent: #A3BE8C;
-    accent-alpha: #A3BE8CAA;
+    primaryBackground: #2e2e2e;
+    primaryForeground: #d6d6d6;
+    foreground-alpha: #d6d6d6BB;
+    accent: #b4d273;
+    accent-alpha: #b4d273AA;
     font1: "inter medium 11";
-    background-light: #4C566A;
-    background-light-alpha: #4C566ABB;
+    background-light: #434343;
+    background-light-alpha: #434343BB;
+    height: calc(100% - 30px);
 }

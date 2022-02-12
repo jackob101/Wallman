@@ -21,15 +21,15 @@ local function mouse_button_press (button_id, x, y)
 end
 
 local macro_keybinds = gears.table.join(
-  awful.key(
-    {},
-    "s",
-    nil,
-    function ()
-      pop_flasks()
-    end,
-    { description = "Pop flask from slot 2-4", group = "Macros" }
-  ),
+  -- awful.key(
+  --   {},
+  --   "s",
+  --   nil,
+  --   function ()
+  --     pop_flasks()
+  --   end,
+  --   { description = "Pop flask from slot 2-4", group = "Macros" }
+  -- ),
   awful.key(
     {},
     "F1",
