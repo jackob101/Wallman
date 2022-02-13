@@ -1,4 +1,3 @@
-
 /**
  * ROFI Color theme
  * User: Qball
@@ -22,12 +21,12 @@ configuration{
 
 
 window {
-    background-color: @primary-background-alpha;
+    background-color: @primaryBackground;
     width:      50%;
-    height:     5%;
+    height:     10%;
     location:   center;
-    children:   [ horibox];
-    y-offset: -2.5%;
+    children:   [ horibox, options];
+    y-offset: -5%;
     border: 1px solid;
     border-color: @accent;
     expand: false;
@@ -54,4 +53,45 @@ entry {
     placeholder: "Search";
     padding: 0.6%;
     font: "Inter 12";
+}
+
+options {
+    background-color: @primaryBackground;
+    orientation: horizontal;
+    children: [dummybox, listview, dummybox];
+}
+
+dummybox {
+    background-color: @primaryBackground;
+    expand: true;
+}
+
+listview {
+    columns: 3;
+    lines: 3;
+    background-color: @primaryBackground;
+    layout: vertical;
+    fixed-columns: true;
+}
+
+element {
+    background-color: @background-light;
+    width: 6%;
+    padding: 1% 1% 1% 1%;
+}
+
+element selected{
+    background-color: @accent;
+    text-color: @primaryBackground;
+}
+
+element-icon {
+    enabled: false;
+}
+element-text {
+    horizontal-align: 0.5;
+}
+element-text, element-icon{
+    background-color: inherit;
+    text-color: inherit;
 }

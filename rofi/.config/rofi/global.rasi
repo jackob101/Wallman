@@ -1,5 +1,6 @@
 * {
     primaryBackground: #2e2e2e;
+    primary-background-alpha: #2e2e2eEE;
     primaryForeground: #d6d6d6;
     foreground-alpha: #d6d6d6BB;
     accent: #b4d273;
