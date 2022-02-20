@@ -27,7 +27,7 @@ theme.accent6 = xrdb.color15
 theme.bar_height = 30
 
 theme.bg_normal = xrdb.color0 or "#2E3440"
-theme.bg_focus = xrdb.color3 or "#535d6c"
+theme.bg_focus = xrdb.color2 or "#535d6c"
 theme.bg_urgent = xrdb.color11 or "#D08770"
 theme.bg_minimize = xrdb.color1 or "#3B4252"
 theme.bg_systray = theme.bg_normal

@@ -27,9 +27,9 @@
 ! Awesomewm theme config
 background: #282828
 foreground: #ebdbb2
-#define COLOR0 #2e2e2e
-#define COLOR1 #343434
-#define COLOR2 #434343
+#define COLOR0 #272822
+#define COLOR1 #3e3d32
+#define COLOR2 #75715e
 #define COLOR3 #525252
 #define COLOR4 #d6d6d6
 #define COLOR5 #fafafa

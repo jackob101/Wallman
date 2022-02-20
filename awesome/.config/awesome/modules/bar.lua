@@ -10,7 +10,8 @@ local dpi = beautiful.xresources.apply_dpi
 local utils = require("utils")
 local macros_widget = require("widgets.macros-status")
 local notification_center_button = require("widgets.notification-center-button")
--- local gears = require("gears")
+local gears = require("gears")
+local logo = require("widgets.bar-logo")
 
 
 local clock_widget = utils.create_widget_with_icon(icons.clock, "fa-clock", wibox.widget.textclock())
@@ -44,6 +45,7 @@ end
 
 awful.screen.connect_for_each_screen(function(s)
 
+    gears.debug.dump("This is screen number".. s.index)
     -- Each screen has its own tag table.
     awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" }, s, awful.layout.layouts[1])
 
@@ -78,7 +80,7 @@ awful.screen.connect_for_each_screen(function(s)
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
           layout = wibox.layout.fixed.horizontal,
-          require("widgets.bar-logo"),
+          logo.create_widget(),
           s.mytaglist,
         },
         {
