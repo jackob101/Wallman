@@ -62,7 +62,7 @@ function initTagList(s)
           },
           widget = wibox.layout.stack,
         },
-        forced_width = 25,
+        forced_width = beautiful.bar_height,
         widget = wibox.container.background,
         create_callback = function(self, c3, index, objects) --luacheck: no unused args
           self:connect_signal("mouse::enter", function()

@@ -43,9 +43,33 @@ local function add_with_space(widget)
   }
 end
 
+local function create_spacing_widget()
+
+  local function create_ball()
+    return wibox.widget{
+      widget = wibox.container.background,
+      shape = gears.shape.circle,
+      forced_width = dpi(4),
+      forced_height = dpi(4),
+      bg = beautiful.fg_normal,
+    }
+  end
+
+  return wibox.widget{
+    {
+      create_ball(),
+      create_ball(),
+      create_ball(),
+      layout = wibox.layout.align.vertical,
+    },
+    widget = wibox.container.margin,
+    top = 5,
+    bottom = 5,
+  }
+end
+
 awful.screen.connect_for_each_screen(function(s)
 
-    gears.debug.dump("This is screen number".. s.index)
     -- Each screen has its own tag table.
     awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" }, s, awful.layout.layouts[1])
 
@@ -55,12 +79,22 @@ awful.screen.connect_for_each_screen(function(s)
     -- Create a tasklist widget
     s.mytasklist = initTaskList(s)
 
+
     -- Create the wibox
     s.mywibox = awful.wibar({
         position = "top",
         screen = s,
         height = beautiful.bar_height,
-        bg = beautiful.bg_normal ,
+        -- bg = "#ffffff00",
+        bg = beautiful.bg_normal,
+        shape = function(c, width, height)
+          return gears.shape.rounded_rect(c, width, height, 5)
+        end,
+        margins = {
+          top = dpi(5),
+          left = dpi(10),
+          right = dpi(10),
+        } ,
     })
 
     -- systray
@@ -75,33 +109,63 @@ awful.screen.connect_for_each_screen(function(s)
 
     s.systray.visible = true
 
+    local left_widget = wibox.widget{
+      {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = 10,
+        s.mytaglist,
+        create_spacing_widget()
+      },
+      widget = wibox.container.background,
+      bg = beautiful.bg_normal
+    }
+
+    local middle_widget = wibox.container {
+      nil,
+      s.mytasklist,
+      layout = wibox.layout.align.horizontal,
+      expand = "outside",
+    }
+
+    local right_widget = wibox.widget{
+      {
+        {
+          layout = wibox.layout.fixed.horizontal,
+          add_with_space(macros_widget),
+          add_with_space(volume_widget()),
+          add_with_space(keyboard_widget),
+          add_with_space(clock_widget),
+          s.systray,
+          add_with_space(notification_center_button),
+        },
+        top = 5,
+        bottom = 5,
+        widget = wibox.container.margin,
+      },
+      widget = wibox.container.background,
+      shape = function (cr, width, height)
+        return gears.shape.rounded_rect(cr, width, height, 5)
+      end,
+      bg = beautiful.bg_normal,
+    }
+
+    local real_bar = wibox.widget{
+      layout = wibox.layout.stack,
+      {
+        layout = wibox.layout.align.horizontal,
+        expand = "inside",
+        left_widget,
+        nil,
+        right_widget
+      },
+      middle_widget
+    }
+
     -- Add widgets to the wibox
     s.mywibox:setup({
         layout = wibox.layout.align.horizontal,
-        { -- Left widgets
-          layout = wibox.layout.fixed.horizontal,
-          logo.create_widget(),
-          s.mytaglist,
-        },
-        {
-          layout = wibox.container.margin,
-          left = 20,
-          s.mytasklist,
-        },
-        { -- Right widgets
-          {
-            layout = wibox.layout.fixed.horizontal,
-            add_with_space(macros_widget),
-            add_with_space(volume_widget()),
-            add_with_space(keyboard_widget),
-            add_with_space(clock_widget),
-            s.systray,
-            add_with_space(notification_center_button),
-          },
-          top = 5,
-          bottom = 5,
-          widget = wibox.container.margin,
-        },
+        expand = "outside",
+        real_bar
     })
-end)
 
+end)

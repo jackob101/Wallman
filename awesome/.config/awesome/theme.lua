@@ -24,7 +24,7 @@ theme.accent4 = xrdb.color13
 theme.accent5 = xrdb.color14
 theme.accent6 = xrdb.color15
 
-theme.bar_height = 30
+theme.bar_height = 32
 
 theme.bg_normal = xrdb.color0 or "#2E3440"
 theme.bg_focus = xrdb.color2 or "#535d6c"
@@ -84,6 +84,7 @@ theme.tooltip_margins = dpi(8)
 -- Example:
 --theme.taglist_bg_focus = "#ff0000"
 theme.tasklist_fg_urgent = xrdb.color0
+theme.tasklist_bg_focus = theme.bg_normal
 
 -- Generate taglist squares:
 local taglist_square_size = dpi(0)
