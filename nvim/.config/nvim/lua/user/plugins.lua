@@ -97,6 +97,9 @@ return packer.startup(function(use)
 	-- Bufferline
 	use("akinsho/bufferline.nvim")
 
+  -- Status linte
+  use("nvim-lualine/lualine.nvim")
+
 	use("moll/vim-bbye")
 
 	-- whichkey
