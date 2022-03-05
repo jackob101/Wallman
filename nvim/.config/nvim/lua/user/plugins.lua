@@ -53,6 +53,9 @@ return packer.startup(function(use)
 	-- use "lunarvim/colorschemes" -- A bunch of colorschemes you can try out
 	use("lunarvim/darkplus.nvim")
 
+  -- Hex colors highlighting
+  use("norcalli/nvim-colorizer.lua")
+
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	-- Cmp Plugins

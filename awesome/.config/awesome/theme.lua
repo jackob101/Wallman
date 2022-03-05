@@ -39,7 +39,6 @@ theme.fg_minimize = xrdb.color4 or "#D8DEE9"
 
 theme.systray_icon_spacing = 5
 
-
 theme.border_width = dpi(1)
 theme.border_normal = xrdb.color1 or "#000000"
 theme.border_focus = xrdb.color14 or "#535d6c"
@@ -90,11 +89,12 @@ theme.tasklist_bg_focus = theme.bg_normal
 local taglist_square_size = dpi(0)
 theme.taglist_squares_sel = theme_assets.taglist_squares_sel(taglist_square_size, theme.fg_focus)
 theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_normal)
-theme.taglist_fg_focus = xrdb.color14
-theme.taglist_fg_urgent = xrdb.color11
+theme.taglist_fg_focus = theme.bg_normal
+theme.taglist_fg_urgent = theme.bg_normal
 theme.taglist_bg_focus = xrdb.color14
 theme.taglist_bg_urgent = xrdb.color11
 theme.taglist_font = "inter bold 10"
+theme.taglist_bg_hover = theme.fg_normal .. "44"
 
 -- Variables set for theming notifications:
 -- notification_font
@@ -104,10 +104,10 @@ theme.taglist_font = "inter bold 10"
 
 -- theme.notification_bg = xrdb.background .. "AA"
 -- theme.notification_fg = xrdb.foreground
- theme.notification_icon_size = 46
+theme.notification_icon_size = 46
 -- -- theme.notification_max_width = 300
 -- theme.notification_margin = 50
- theme.notification_width = 350
+theme.notification_width = 350
 -- theme.notification_border_color = xrdb.background
 theme.notification_height = 150
 theme.notification_spacing = 5

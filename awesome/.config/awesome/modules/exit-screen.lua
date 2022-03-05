@@ -6,8 +6,6 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local clickable_container = require("widgets.clickable-container")
 
-local message = 'Exit'
-
 local greeter_message = wibox.widget {
   markup = 'Choose wisely!',
   font = 'Inter UltraLight 48',

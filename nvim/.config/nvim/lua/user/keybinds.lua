@@ -104,6 +104,14 @@ wk.register({
 			":lua vim.lsp.buf.code_action()<cr>",
 			"Show code actions",
 		},
+		k = {
+			":lua vim.lsp.buf.hover()<cr>",
+			"Show on hover",
+		},
+    r = {
+      ":lua vim.lsp.buf.rename()<cr>",
+      "Rename variable"
+    },
 		d = {
 			name = "Diagnostics",
 			o = {
@@ -138,7 +146,7 @@ wk.register({
 				"Go to implementation",
 			},
 			r = {
-				":lua vim.lsp.buf.references()<cr>",
+				":Telescope lsp_references<cr>",
 				"Go to references",
 			},
 		},
