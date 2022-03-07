@@ -1,34 +1,24 @@
 -- If LuaRocks is installed, make sure that packages installed through it are
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
-
--- Standard awesome library
-local gears = require("gears")
 local awful = require("awful")
 require("awful.autofocus")
--- Widget and layout library
-local wibox = require("wibox")
--- Theme handling library
 local beautiful = require("beautiful")
--- Notification library
 local menubar = require("menubar")
-local naughty = require("naughty")
--- Enable hotkeys help widget for VIM and other apps
--- when client with a matching name is opened:
 beautiful.init(os.getenv("HOME") .. "/.config/awesome/theme.lua")
+
 require("modules.notifications.notificationConfig")
 require("errors.startupHandling")
 require("awful.hotkeys_popup.keys")
 require("configs.layouts")
 require("configs.screens")
+require("modules.bar")
 require("configs.rules")
 require("modules.exit-screen")
-require("modules.volume")
-require("modules.posture-check")
-require("modules.settings")
+require("modules.volume.volume-popup")
+require("modules.notifications.posture-check")
 require("modules.dashboard")
 require("modules.notification-center")
-
 require("configs.keys.keybinds-configuration")
 
 

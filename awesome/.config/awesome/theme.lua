@@ -72,7 +72,7 @@ theme.fg = xrdb.color5 or "#E5E9F0"
 theme.tooltip_bg = xrdb.color1
 theme.tooltip_margins = dpi(8)
 
-theme.hover_bg = xrdb.color2 
+theme.hover_bg = xrdb.color2
 -- There are other variable sets
 -- overriding the default one when
 -- defined, the sets are:
@@ -107,7 +107,7 @@ theme.taglist_bg_hover = theme.fg_normal .. "44"
 
 -- theme.notification_bg = xrdb.background .. "AA"
 -- theme.notification_fg = xrdb.foreground
-theme.notification_icon_size = 46
+theme.notification_icon_size = 45
 -- -- theme.notification_max_width = 300
 -- theme.notification_margin = 50
 theme.notification_width = 350

@@ -3,16 +3,17 @@ local wibox = require("wibox")
 local tagList = require("modules.bar.taglist")
 local taskList = require("modules.bar.tasklist")
 local volume_widget = require("widgets.volume-widget.volume")
-local calendar_widget = require("widgets.calendar-widget.calendar")
+local calendar_widget = require("modules.bar.calendar")
 local icons = require("icons")
 local beautiful = require("beautiful")
 local utils = require("utils")
-local macros_widget = require("widgets.macros-status")
-local notification_center_button = require("widgets.notification-center-button")
+local macros_widget = require("modules.bar.macros-status")
+local notification_center_button = require("modules.notification-center.notification-center-button")
 local bar_utils = require("modules.bar.bar-utils")
 
 local time_widget = utils.create_widget_with_icon(icons.clock, "fa-clock", wibox.widget.textclock())
 local keyboard_widget = utils.create_widget_with_icon(icons.keyboard, "fa-keyboard", awful.widget.keyboardlayout())
+utils.hover_effect(time_widget)
 
 local callendar_widget = calendar_widget({
 	theme = "naughty",

@@ -1,10 +1,8 @@
 local awful = require("awful")
-local gears = require("gears")
 local beautiful = require("beautiful")
 local wibox = require("wibox")
 local rubato = require("lib.rubato")
-local calendar = require("widgets.calendar-styled")
-local notification_scroller = require("widgets.notification-scroller")
+local calendar = require("modules.notification-center.notification-calendar")
 
 local notification_center_border = wibox.widget({
     bg = beautiful.border_normal,

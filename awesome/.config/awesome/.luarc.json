@@ -5,6 +5,8 @@
         "client",
         "screen",
         "awesome",
-        "mouse"
+        "mouse",
+        "mousegrabber",
+        "root"
     ]
 }

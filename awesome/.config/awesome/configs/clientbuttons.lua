@@ -3,7 +3,7 @@ local gears = require("gears")
 
 local modkey = require("configs.keys.mod").modkey
 
-clientbuttons = gears.table.join(
+local clientbuttons = gears.table.join(
 	awful.button({}, 1, function(c)
 		c:emit_signal("request::activate", "mouse_click", { raise = true })
 	end),

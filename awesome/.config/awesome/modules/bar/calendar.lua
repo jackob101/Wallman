@@ -242,8 +242,14 @@ local function worker(user_args)
 			else
 				awful.placement.top(popup, { margins = { top = 30 }, parent = awful.screen.focused() })
 			end
-
 			popup.visible = true
+			mousegrabber.run(function(mouse)
+        if mouse.buttons[1] then
+          calendar_widget.toggle()
+          return false
+        end
+				return true
+			end, "left_ptr")
 		end
 	end
 

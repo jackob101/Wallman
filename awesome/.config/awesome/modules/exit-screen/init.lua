@@ -4,7 +4,8 @@ local wibox = require("wibox")
 local icons = require("icons")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
-local clickable_container = require("widgets.clickable-container")
+local clickable_container = require("modules.exit-screen.clickable-container")
+local naughty = require("naughty")
 
 local greeter_message = wibox.widget {
   markup = 'Choose wisely!',
@@ -93,7 +94,7 @@ end
 
 local lock_command = function()
   awesome.emit_signal('module::exit_screen:hide')
-  awful.spawn.with_shell(apps.default.lock)
+  naughty.notification{title = "Warning", text= "Not yet implemented"}
 end
 
 local poweroff_command = function()
@@ -231,7 +232,7 @@ screen.connect_signal(
 local exit_screen_grabber = awful.keygrabber {
   auto_start = true,
   stop_event = 'release',
-  keypressed_callback = function(self, mod, key, command)
+  keypressed_callback = function( _, _, key, _)
     if key == 's' then
       suspend_command()
 

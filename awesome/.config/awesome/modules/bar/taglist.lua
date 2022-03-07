@@ -3,6 +3,7 @@ local gears = require("gears")
 local modkey = require("configs.keys.mod").modkey
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local utils = require("utils")
 
 local M = {}
 
@@ -29,19 +30,8 @@ local taglist_buttons = gears.table.join(
 	end)
 )
 
-local function onHover(self, _, _, _)
-	self:connect_signal("mouse::enter", function()
-		if self.bg ~= beautiful.taglist_bg_hover then
-			self.backup = self.bg
-			self.has_backup = true
-		end
-		self.bg = beautiful.taglist_bg_hover
-	end)
-	self:connect_signal("mouse::leave", function()
-		if self.has_backup then
-			self.bg = self.backup
-		end
-	end)
+local function widget_create_callback(self)
+	utils.hover_effect(self)
 	self:connect_signal("button::press", function()
 		self.backup = beautiful.taglist_bg_focus
 	end)
@@ -60,7 +50,7 @@ function M.initTagList(s)
 			widget = wibox.container.background,
 			id = "background_role",
 			forced_width = beautiful.bar_height,
-			create_callback = onHover,
+			create_callback = widget_create_callback,
 		},
 		buttons = taglist_buttons,
 	})

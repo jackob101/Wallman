@@ -69,6 +69,13 @@ wk.register({
 			"Create new file in current directory",
 		},
 	},
+  b = {
+    name = "Buffer",
+    c = {
+      ":Bdelete!<cr>",
+      "Close buffer"
+    }
+  },
 	w = {
 		name = "Window",
 		v = {
@@ -101,7 +108,7 @@ wk.register({
 			"Format buffer",
 		},
 		a = {
-			":lua vim.lsp.buf.code_action()<cr>",
+			":Telescope lsp_code_actions<cr>",
 			"Show code actions",
 		},
 		k = {
@@ -138,8 +145,8 @@ wk.register({
 				"Go to declaration",
 			},
 			d = {
-				":lua vim.lsp.buf.definition()<cr>",
-				"Go to definition",
+				":Telescope lsp_definitions<cr>",
+				"Show definitions",
 			},
 			i = {
 				":lua vim.lsp.buf.implementation()<cr>",

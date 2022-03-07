@@ -3,13 +3,14 @@ local gears = require("gears")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local modkey = require("configs.keys.mod").modkey
 local volume_widget = require("widgets.volume-widget.volume")
-
+local input_helpers = require("configs.keys.input_helpers")
 
 require("awful.hotkeys_popup.keys")
 
+local keys = {}
 
 -- stylua: ignore start
-globalkeys = gears.table.join(
+keys.globalkeys = gears.table.join(
 	--  █████╗ ██╗    ██╗███████╗███████╗ ██████╗ ███╗   ███╗███████╗
 	-- ██╔══██╗██║    ██║██╔════╝██╔════╝██╔═══██╗████╗ ████║██╔════╝
 	-- ███████║██║ █╗ ██║█████╗  ███████╗██║   ██║██╔████╔██║█████╗  
@@ -180,8 +181,8 @@ globalkeys = gears.table.join(
 		{ description = "Display dashboard", group = "launcher" }
 	),
 	awful.key(
-		{ modkey, "Ctrl" },
-		"n",
+		{ modkey },
+		"c",
 		function() awesome.emit_signal("notificationcenter::toggle") end,
 		{ description = "Display notification center", group = "launcher" }
 	),
@@ -370,8 +371,8 @@ globalkeys = gears.table.join(
 --    ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
 
 for i = 1, 10 do
-	globalkeys = gears.table.join(
-		globalkeys,
+	keys.globalkeys = gears.table.join(
+		keys.globalkeys,
 		-- View tag only.
 		awful.key({ modkey }, "#" .. i + 9, function()
 				local screen = awful.screen.focused()
@@ -421,6 +422,147 @@ for i = 1, 10 do
 	)
 end
 
+-- ██████╗██╗     ██╗███████╗███╗   ██╗████████╗
+--██╔════╝██║     ██║██╔════╝████╗  ██║╚══██╔══╝
+--██║     ██║     ██║█████╗  ██╔██╗ ██║   ██║   
+--██║     ██║     ██║██╔══╝  ██║╚██╗██║   ██║   
+--╚██████╗███████╗██║███████╗██║ ╚████║   ██║   
+-- ╚═════╝╚══════╝╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   
+                               
+keys.clientkeys = gears.table.join(
+  awful.key(
+    { modkey },
+    "f",
+    function(c)
+      c.fullscreen = not c.fullscreen
+      c:raise()
+    end,
+    { description = "toggle fullscreen", group = "client", }
+  ),
+
+  awful.key(
+    { modkey, "Shift" },
+    "q",
+    function(c) c:kill() end,
+    { description = "close", group = "client" }),
+
+  awful.key(
+    { modkey, "Control" },
+    "space",
+    awful.client.floating.toggle,
+    { description = "toggle floating", group = "client" }
+  ),
+
+  awful.key(
+    { modkey, "Control" },
+    "Return",
+    function(c) c:swap(awful.client.getmaster()) end,
+    { description = "move to master", group = "client", }
+  ),
+
+  awful.key(
+    { modkey },
+    "o",
+    function(c) c:move_to_screen() end,
+    { description = "move to screen", group = "client", }
+  ),
+  awful.key(
+    {modkey, "Shift"},
+    "o",
+    function(c)
+      local currentIndex = c.screen.index
+      local nextIndex = ((currentIndex) % (screen.count())) + 1
+      c:move_to_screen(nextIndex)
+      local tags = screen[nextIndex].tags
+      for k, v in pairs(tags) do
+        local clientsLength = #(v:clients())
+        if clientsLength == 0 then
+          c:move_to_tag(screen[nextIndex].tags[k])
+          v:view_only()
+          break
+        end
+      end
+    end,
+    { description = "Move to free tag on next screen and focus it", group = "client" }
+  ),
+  awful.key(
+    {modkey, "Shift", "Ctrl"},
+    "o",
+    function(c)
+      local currentIndex = c.screen.index
+      local nextIndex = ((currentIndex) % (screen.count())) + 1
+      c:move_to_screen(nextIndex)
+      local tags = screen[nextIndex].tags
+      for k, v in pairs(tags) do
+        local clientsLength = #(v:clients())
+        if clientsLength == 0 then
+          c:move_to_tag(screen[nextIndex].tags[k])
+          c.urgent = true
+          break
+        end
+      end
+    end,
+    { description = "Move to free tag on next screen without focusing", group = "client" }
+  ),
+  awful.key(
+    { modkey },
+    "t",
+    function(c) c.ontop = not c.ontop end,
+    { description = "toggle keep on top", group = "client", }
+  ),
+  awful.key(
+    { modkey },
+    "n",
+    function(c) c.minimized = true end,
+    { description = "minimize", group = "client", }
+  ),
+
+  awful.key(
+    { modkey },
+    "m",
+    function(c)
+      c.maximized = not c.maximized
+      c:raise()
+    end,
+    { description = "(un)maximize", group = "client", }
+  )
+
+)
+
+keys.macro_keybinds = gears.table.join(
+  awful.key(
+    {},
+    "F1",
+    function ()
+      input_helpers.mouse_button_press(1)
+    end,
+    { description = "Spam click LMB", group = "Macros" }
+  ),
+  awful.key(
+    {"Shift"},
+    "F1",
+    function ()
+      root.fake_input("key_press", "Shift_L")
+      input_helpers.mouse_button_press(1)
+    end,
+    function ()
+      root.fake_input("key_release", "Shift_L")
+    end,
+    { description = "Spam click Shift + LMB", group = "Macros" }
+  ),
+  awful.key(
+    {"Ctrl"},
+    "F1",
+    function ()
+      root.fake_input("key_press", "Control_L")
+      input_helpers.mouse_button_press(1)
+    end,
+    function ()
+      root.fake_input("key_release", "Control_L")
+    end,
+    { description = "Spam click Control + LMB", group = "Macros" }
+  )
+)
 
 -- stylua:ignore end
-return globalkeys
+return keys 

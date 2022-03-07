@@ -1,5 +1,3 @@
-
-
 local utils = {}
 
 local function split(string_to_split, separator)

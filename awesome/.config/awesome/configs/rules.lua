@@ -1,15 +1,11 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
-local clientkeys = require("configs.keys.clientKeys")
-local gears = require("gears")
-
+local clientkeys = require("configs.keys.keybinds").clientkeys
 local clientbuttons = require("configs.clientbuttons")
-local naughty = require("naughty")
 
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
-twoScreens = screen:count() == 2
-local poe = nil
+local twoScreens = screen:count() == 2
 
 awful.rules.rules = {
   -- All clients will match this rule.
