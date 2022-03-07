@@ -69,9 +69,10 @@ theme.bg = xrdb.color0 .. "00" or "#2E3440"
 theme.bg_no_alpha = xrdb.color0 or "#2E3440"
 theme.fg = xrdb.color5 or "#E5E9F0"
 
-theme.tooltip_bg = xrdb.color2
+theme.tooltip_bg = xrdb.color1
 theme.tooltip_margins = dpi(8)
 
+theme.hover_bg = xrdb.color2 
 -- There are other variable sets
 -- overriding the default one when
 -- defined, the sets are:
