@@ -43,13 +43,14 @@ function M.initTaskList(s)
 					id = "icon_role",
 					widget = wibox.widget.imagebox,
 					scaling_quility = "good",
+          -- resize = false,
 				},
 				widget = wibox.container.margin,
 				margins = dpi(2),
 			},
 			id = "background_role",
 			widget = wibox.container.background,
-			create_callback = function(self, c, index, clients)
+			create_callback = function(self, c, _, _)
 				self:connect_signal("mouse::enter", function()
 					if self.bg ~= beautiful.accent4 .. "88" then
 						self.backup = self.bg
