@@ -69,13 +69,17 @@ wk.register({
 			"Create new file in current directory",
 		},
 	},
-  b = {
-    name = "Buffer",
-    c = {
-      ":Bdelete!<cr>",
-      "Close buffer"
-    }
-  },
+	b = {
+		name = "Buffer",
+		c = {
+			":Bdelete!<cr>",
+			"Close buffer",
+		},
+		f = {
+			":Telescope current_buffer_fuzzy_find<cr>",
+			"Search in buffer",
+		},
+	},
 	w = {
 		name = "Window",
 		v = {
@@ -87,12 +91,24 @@ wk.register({
 			"Close window",
 		},
 	},
+	h = {
+		name = "Help",
+		t = {
+			":Telescope help_tags<cr>",
+			"Help tags",
+		},
+	},
 	t = {
 		name = "Toggle",
 		e = {
 			":NvimTreeToggle<cr>",
 			"Toggle file explorer",
 		},
+    g = {
+      ":Neogit<cr>",
+      "Toggle neogit"
+
+    }
 	},
 	v = {
 		name = "vim",
@@ -101,61 +117,5 @@ wk.register({
 			"Source file",
 		},
 	},
-	l = {
-		name = "Lsp",
-		f = {
-			":lua vim.lsp.buf.formatting_sync()<cr>",
-			"Format buffer",
-		},
-		a = {
-			":Telescope lsp_code_actions<cr>",
-			"Show code actions",
-		},
-		k = {
-			":lua vim.lsp.buf.hover()<cr>",
-			"Show on hover",
-		},
-    r = {
-      ":lua vim.lsp.buf.rename()<cr>",
-      "Rename variable"
-    },
-		d = {
-			name = "Diagnostics",
-			o = {
-				":lua vim.diagnostic.open_float({border = 'rounded'})<cr>",
-				"Open Diagnostics",
-			},
-			p = {
-				": lua vim.diagnostic.goto_prev({ border = 'rounded'})<CR>",
-				"Previous diagnostic",
-			},
-			n = {
-				":lua vim.diagnostic.goto_next({border = 'rounded'})<cr>",
-				"Next Diagnostics",
-			},
-			l = {
-				":lua vim.diagnostic.setloclist()<cr>",
-				"Show list of Diagnostics",
-			},
-		},
-		g = {
-			name = "Go to",
-			D = {
-				":lua vim.lsp.buf.declaration()<cr>",
-				"Go to declaration",
-			},
-			d = {
-				":Telescope lsp_definitions<cr>",
-				"Show definitions",
-			},
-			i = {
-				":lua vim.lsp.buf.implementation()<cr>",
-				"Go to implementation",
-			},
-			r = {
-				":Telescope lsp_references<cr>",
-				"Go to references",
-			},
-		},
-	},
+
 }, { prefix = "<leader>" })

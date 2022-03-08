@@ -40,7 +40,6 @@ packer.init({
 
 -- Install your plugins here
 return packer.startup(function(use)
-
 	use("lewis6991/impatient.nvim")
 
 	-- My plugins here
@@ -53,8 +52,8 @@ return packer.startup(function(use)
 	-- use "lunarvim/colorschemes" -- A bunch of colorschemes you can try out
 	use("lunarvim/darkplus.nvim")
 
-  -- Hex colors highlighting
-  use("norcalli/nvim-colorizer.lua")
+	-- Hex colors highlighting
+	use("norcalli/nvim-colorizer.lua")
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
@@ -100,8 +99,11 @@ return packer.startup(function(use)
 	-- Bufferline
 	use("akinsho/bufferline.nvim")
 
-  -- Status linte
-  use("nvim-lualine/lualine.nvim")
+	-- Status linte
+	use("nvim-lualine/lualine.nvim")
+
+	-- Diagnostic highlighter
+	use("folke/trouble.nvim")
 
 	use("moll/vim-bbye")
 
@@ -118,6 +120,9 @@ return packer.startup(function(use)
 	})
 
 	use("goolord/alpha-nvim")
+
+	-- Git client
+	use({ "TimUntersberger/neogit", requires = "nvim-lua/plenary.nvim" })
 
 	if PACKER_BOOTSTRAP then
 		require("packer").sync()

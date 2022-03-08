@@ -1,6 +1,7 @@
+local lsp_keybinds = require("user.lsp.lsp_keybinds")
 -- Autmatica diagnostic display
 vim.o.updatetime = 250
-vim.cmd [[autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
+vim.cmd([[autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]])
 
 local M = {}
 
@@ -64,6 +65,7 @@ local function lsp_highlight_document(client)
 end
 
 M.on_attach = function(client, bufnr)
+	lsp_keybinds.register_keybinds(bufnr)
 	lsp_highlight_document(client)
 end
 
