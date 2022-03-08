@@ -51,6 +51,7 @@ return packer.startup(function(use)
 	-- Colorschemes
 	-- use "lunarvim/colorschemes" -- A bunch of colorschemes you can try out
 	use("lunarvim/darkplus.nvim")
+  use({"catppuccin/nvim", ass="catppuccin"})
 
 	-- Hex colors highlighting
 	use("norcalli/nvim-colorizer.lua")
@@ -66,6 +67,7 @@ return packer.startup(function(use)
 	use("numToStr/Comment.nvim")
 	use("hrsh7th/cmp-nvim-lsp")
 	use("hrsh7th/cmp-nvim-lua")
+  
 
 	-- snippets
 	use("L3MON4D3/LuaSnip") --snippet engine

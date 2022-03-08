@@ -61,7 +61,7 @@ function M.generate_tooltip(target, text)
 		bg = beautiful.tooltip_bg,
 		margins = beautiful.tooltip_margins,
 		shape = function(cr, width, height)
-			gears.shape.rounded_rect(cr, width, height, dpi(5))
+			gears.shape.rounded_rect(cr, width, height, dpi(2))
 		end,
 	})
 end
@@ -69,11 +69,11 @@ end
 function M.hover_effect(self)
 	local old_cursor, old_wibox
 	self:connect_signal("mouse::enter", function()
-		if self.bg ~= beautiful.hover_bg then
+		if self.bg ~= beautiful.bg_hover then
 			self.backup = self.bg
 			self.has_backup = true
 		end
-		self.bg = beautiful.hover_bg
+		self.bg = beautiful.bg_hover
 		local w = mouse.current_wibox
 		old_cursor, old_wibox = w.cursor, w
 		w.cursor = "hand1"

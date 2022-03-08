@@ -107,7 +107,6 @@ wk.register({
     g = {
       ":Neogit<cr>",
       "Toggle neogit"
-
     }
 	},
 	v = {

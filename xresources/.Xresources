@@ -25,8 +25,8 @@
 *.color6_2: #fb4934
 
 ! Awesomewm theme config
-background: #282828
-foreground: #ebdbb2
+! background: #282828
+! foreground: #ebdbb2
 #define COLOR0 #272822
 #define COLOR1 #3e3d32
 #define COLOR2 #75715e
@@ -44,19 +44,44 @@ foreground: #ebdbb2
 #define COLOR14 #b4d273
 #define COLOR15 #9e86c8
 
-color0: COLOR0
-color1: COLOR1
-color2: COLOR2
-color3: COLOR3
-color4: COLOR4
-color5: COLOR5
-color6: COLOR6
-color7: COLOR7
-color8: COLOR8
-color9: COLOR9
-color10: COLOR10
-color11: COLOR11
-color12: COLOR12
-color13: COLOR13
-color14: COLOR14
-color15: COLOR15
+#define backgroundoverlay #302d41
+#define backgroundfocus #575268
+#define backgroundHover #575268
+#define borderactive #c9cbff
+#define borderinactive #575268
+
+background: #1e1e2e
+foreground: #d9e0ee
+
+color1: backgroundoverlay
+color2: backgroundfocus
+color3: backgroundHover 
+color4:
+color5: borderactive
+color6: borderinactive
+color7:
+color8: #988ba2
+color9: #f28fad
+color10: #ABE9B3
+color11: #fae3b0
+color12: #96cdfb
+color13: #f5c2e7
+color14: #89dceb
+color15: #c9cbff
+
+! color0: COLOR0
+! color1: COLOR1
+! color2: COLOR2
+! color3: COLOR3
+! color4: COLOR4
+! color5: COLOR5
+! color6: COLOR6
+! color7: COLOR7
+! color8: COLOR8
+! color9: COLOR9
+! color10: COLOR10
+! color11: COLOR11
+! color12: COLOR12
+! color13: COLOR13
+! color14: COLOR14
+! color15: COLOR15
