@@ -10,6 +10,7 @@ local utils = require("utils")
 local macros_widget = require("modules.bar.macros-status")
 local notification_center_button = require("modules.notification-center.notification-center-button")
 local bar_utils = require("modules.bar.bar-utils")
+local dpi = beautiful.xresources.apply_dpi
 
 local time_widget = utils.create_widget_with_icon(icons.clock, "fa-clock", wibox.widget.textclock())
 local keyboard_widget = utils.create_widget_with_icon(icons.keyboard, "fa-keyboard", awful.widget.keyboardlayout())
@@ -59,8 +60,12 @@ awful.screen.connect_for_each_screen(function(s)
 
 	local left_widget = wibox.widget({
 		layout = wibox.layout.fixed.horizontal,
-		spacing = 10,
+		require("modules.bar.launcher").create(),
 		s.mytaglist,
+		{
+			widget = wibox.container.background,
+			forced_width = dpi(5),
+		},
 		bar_utils.create_spacing_widget(),
 	})
 
@@ -88,17 +93,17 @@ awful.screen.connect_for_each_screen(function(s)
 
 	local real_bar = wibox.widget({
 		widget = wibox.container.background,
-		bg = beautiful.bg_normal,
+		bg = beautiful.bg_normal .. beautiful.bar_opacity,
 		{
-				layout = wibox.layout.stack,
-				{
-					layout = wibox.layout.align.horizontal,
-					expand = "inside",
-					left_widget,
-					nil,
-					right_widget,
-				},
-				middle_widget,
+			layout = wibox.layout.stack,
+			{
+				layout = wibox.layout.align.horizontal,
+				expand = "inside",
+				left_widget,
+				nil,
+				right_widget,
+			},
+			middle_widget,
 		},
 	})
 

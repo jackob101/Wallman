@@ -1,7 +1,6 @@
 require("user.impatient")
 require("user.options")
 require("user.plugins")
-require("user.colorscheme")
 require("user.cmp")
 require("user.lsp")
 require("user.telescope")
@@ -17,5 +16,4 @@ require("user.tree")
 require("user.statusLine")
 require("user.colorizer")
 require("user.trouble")
-
-
+require("user.colorscheme")

@@ -1,13 +1,5 @@
-/*
- *
- * Author  : Aditya Shakya
- * Mail    : adi1090x@gmail.com
- * Github  : @adi1090x
- * Twitter : @adi1090x
- *
- */
-
 configuration {
+	font:							"Noto Sans Bold 10";
     show-icons:                     true;
 	icon-theme: 					"Papirus";
     display-drun: 					"";
@@ -16,109 +8,106 @@ configuration {
 	sidebar-mode: 					false;
 }
 
-@import "global.rasi"
+* {
+    background:                     #1e1e2e60;
+    background-alt:              	#57526800;
+    background-bar:                 #575268;
+    foreground:                     #f2f2f2EE;
+    accent:			            	#ffffff66;
+}
 
 window {
-    font: "Inter 10";
     transparency:                   "real";
-    background-color:               @primaryBackground;
-    text-color:                     @primaryForeground;
-	border:						0 2px 0 0;
-	border-color:					@accent;
+    background-color:               @background;
+    text-color:                     @foreground;
+	border:							0px;
+	border-color:					@border;
     border-radius:                  0px;
-	height:						@height;
-	width:							18%;
-    location:                       southwest;
+	width:							100%;
+	height:							100%;
 }
 
 prompt {
     enabled: 						true;
-	background-color: 				@primaryBackground;
-	text-color: 					@primaryForeground;
-    padding: 0% 0% 0% -1.5%;
-    margin: 0% 1.5% 0% 0%;
-    font:							"FantasqueSansMono Nerd Font 24";
-
+	padding: 						0.30% 1% 0% -0.5%;
+	background-color: 				@background-alt;
+	text-color: 					@foreground;
+	font:							"FantasqueSansMono Nerd Font 12";
 }
 
 entry {
-    background-color:               @background-light;
-    text-color:                     @primaryForeground;
-    placeholder-color:              @foreground-alpha;
+    background-color:               @background-alt;
+    text-color:                     @foreground;
+    placeholder-color:              @foreground;
+    expand:                         true;
     horizontal-align:               0;
     placeholder:                    "Search";
+    padding:                        0.10% 0% 0% 0%;
     blink:                          true;
-    padding: 0.6% 0% 0% 0.5%;
-    font: "Inter 12";
 }
 
 inputbar {
 	children: 						[ prompt, entry ];
-    background-color:               @primaryBackground;
-    text-color:                     @primaryForeground;
+    background-color:               @background-bar;
+    text-color:                     @foreground;
     expand:                         false;
-	border:						0 0 0 0;
-    border-radius:                  0px;
+	border:							0.1%;
+    border-radius:                  6px;
 	border-color:					@accent;
-    margin:                         0% 0% 0% 0%;
-    padding:                        2%;
+    margin:                         0% 30% 0% 30%;
+    padding:                        1%;
 }
 
 listview {
-    background-color:               @primaryBackground;
-    padding:                        0px;
-    columns:                        1;
-    lines:                          5;
-    spacing:                        0%;
+    background-color:               @background-alt;
+    columns:                        7;
+    lines:                          4;
+    spacing:                        2%;
     cycle:                          false;
     dynamic:                        true;
     layout:                         vertical;
 }
 
 mainbox {
-    background-color:               @primaryBackground;
+    background-color:               @background-alt;
 	border:							0% 0% 0% 0%;
     border-radius:                  0% 0% 0% 0%;
-	border-color:					@ac;
+	border-color:					@accent;
     children:                       [ inputbar, listview ];
-    spacing:                       	0%;
-    padding:                        0%;
+    spacing:                       	8%;
+    padding:                        10% 8.5% 10% 8.5%;
 }
 
 element {
-    background-color:               @primaryBackground;
-    text-color:                     @primaryForeground;
-    orientation:                    horizontal;
+    background-color:               @background-alt;
+    text-color:                     @foreground;
+    orientation:                    vertical;
     border-radius:                  0%;
-    padding:                        1% 0.5% 1% 0.5%;
+    padding:                        2.5% 0% 2.5% 0%;
 }
 
 element-icon {
-    background-color: 				inherit;
+    background-color: 				@background-alt;
     text-color:       				inherit;
     horizontal-align:               0.5;
     vertical-align:                 0.5;
-    size:                           32px;
+    size:                           81px;
     border:                         0px;
 }
 
 element-text {
-    background-color: 				@primaryBackground;
+    background-color: 				@background-alt;
     text-color:       				inherit;
     expand:                         true;
-    horizontal-align:               0;
+    horizontal-align:               0.5;
     vertical-align:                 0.5;
-    margin:                         0% 0.25% 0% 0.25%;
+    margin:                         0.5% 0.5% -0.5% 0.5%;
 }
 
 element selected {
-    background-color:               @accent;
-    text-color:                     @primaryBackground;
-	border:						0% 0% 0% 0%;
-    border-radius:                  0px;
-    border-color:                   @accent-alpha;
-}
-
-element-text selected {
-    background-color: @accent;
+    background-color:               @background-bar;
+    text-color:                     @foreground;
+	border:							0% 0% 0% 0%;
+    border-radius:                  12px;
+    border-color:                  	@accent;
 }

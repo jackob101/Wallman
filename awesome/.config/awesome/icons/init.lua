@@ -14,6 +14,7 @@ return {
   keyboard = dir .. "keyboard.svg",
   macros = dir .. "macro.svg",
   bell = dir .. "bell.svg",
+  launcher = dir .. "launcher.svg",
   notification_center_open = dir .. "notification-center-open.svg",
   notification_center_close = dir .. "notification-center-close.svg",
 }

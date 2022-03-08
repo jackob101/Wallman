@@ -30,6 +30,7 @@ theme.accent5 = xrdb.color14
 theme.accent6 = xrdb.color15
 
 theme.bar_height = 32
+theme.bar_opacity = "AA"
 
 theme.bg_normal = xrdb.background or "#2E3440"
 theme.bg_focus = xrdb.color2 or "#535d6c"
