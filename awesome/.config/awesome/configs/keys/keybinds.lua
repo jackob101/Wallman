@@ -323,8 +323,7 @@ keys.globalkeys = gears.table.join(
 		{  },
 		"XF86AudioRaiseVolume",
 		function()
-			awful.spawn('amixer -D pulse sset Master 5%+', false)
-			awesome.emit_signal('module::volume:show', true)
+			awesome.emit_signal('module::volume:up', true)
 		end,
 		{description="Increase volume", group = "audio"}
 	),
@@ -333,8 +332,7 @@ keys.globalkeys = gears.table.join(
 		{  },
 		"XF86AudioLowerVolume",
 		function()
-			awful.spawn('amixer -D pulse sset Master 5%-', false)
-			awesome.emit_signal('module::volume:show', true)
+			awesome.emit_signal('module::volume:down', true)
 		end,
 		{description = "Descrease volume", group = "audio"}
 	),
@@ -342,7 +340,7 @@ keys.globalkeys = gears.table.join(
 	awful.key(
 		{  },
 		"XF86AudioMute",
-		function() volume_widget:toggle() end,
+		function() awesome.emit_signal('module::volume:toggle') end,
 		{description = "Mute audio", group = "audio"}
 	),
 

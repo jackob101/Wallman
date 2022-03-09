@@ -22,6 +22,7 @@ theme.font = "inter medium 9"
 theme.groups_bg = xrdb.color2 .. "77"
 theme.useless_gap = dpi(5)
 
+
 theme.accent1 = xrdb.color10
 theme.accent2 = xrdb.color11
 theme.accent3 = xrdb.color12
@@ -29,8 +30,11 @@ theme.accent4 = xrdb.color13
 theme.accent5 = xrdb.color14
 theme.accent6 = xrdb.color15
 
-theme.bar_height = 32
+theme.bar_height = dpi(32) 
 theme.bar_opacity = "AA"
+theme.bar_font = "Inter medium 11"
+theme.bar_icon_text_spacing = dpi(5)
+theme.bar_icon_margin = dpi(2)
 
 theme.bg_normal = xrdb.background or "#2E3440"
 theme.bg_focus = xrdb.color2 or "#535d6c"
@@ -70,6 +74,8 @@ theme.taglist_fg_focus = theme.bg_normal
 theme.taglist_fg_urgent = theme.bg_normal
 theme.taglist_bg_focus = xrdb.color10
 theme.taglist_bg_urgent = xrdb.color9
+theme.taglist_bg_occupied = xrdb.color15
+theme.taglist_fg_occupied = xrdb.background
 theme.taglist_font = "inter medium 12"
 
 theme.notification_icon_size = 45

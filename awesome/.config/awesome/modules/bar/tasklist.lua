@@ -30,7 +30,7 @@ local tasklist_buttons = gears.table.join(
 )
 
 local function widget_create_callback(self, c)
-  utils.hover_effect(self)
+	utils.hover_effect(self)
 	utils.generate_tooltip(self, c.class)
 end
 
@@ -44,17 +44,22 @@ function M.initTaskList(s)
 		},
 		widget_template = {
 			{
+        nil,
 				{
-					id = "icon_role",
-					widget = wibox.widget.imagebox,
-					scaling_quility = "good",
+					{
+						id = "icon_role",
+						widget = wibox.widget.imagebox,
+						scaling_quility = "good",
+					},
+					widget = wibox.container.margin,
+					margins = dpi(2),
 				},
-				widget = wibox.container.margin,
-				margins = dpi(2),
+        layout = wibox.layout.align.horizontal,
+        expand = "outside",
 			},
-			id = "background_role",
 			widget = wibox.container.background,
-			create_callback = widget_create_callback
+			create_callback = widget_create_callback,
+			forced_width = beautiful.bar_height * 1.5,
 		},
 		buttons = tasklist_buttons,
 	})

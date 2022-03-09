@@ -1,7 +1,5 @@
 local awful = require("awful")
 local wibox = require("wibox")
-local tagList = require("modules.bar.taglist")
-local taskList = require("modules.bar.tasklist")
 local volume_widget = require("widgets.volume-widget.volume")
 local calendar_widget = require("modules.bar.calendar")
 local icons = require("icons")
@@ -33,10 +31,10 @@ awful.screen.connect_for_each_screen(function(s)
 	awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" }, s, awful.layout.layouts[1])
 
 	-- Create a taglist widget
-	s.mytaglist = tagList.initTagList(s)
+	s.mytaglist = require("modules.bar.taglist").initTagList(s)
 
 	-- Create a tasklist widget
-	s.mytasklist = taskList.initTaskList(s)
+	s.mytasklist = require("modules.bar.tasklist").initTaskList(s)
 
 	-- Create the wibar
 	s.mywibox = awful.wibar({

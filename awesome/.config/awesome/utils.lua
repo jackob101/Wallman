@@ -55,7 +55,7 @@ function M.draw_box(content, width, height)
 end
 
 function M.generate_tooltip(target, text)
-	awful.tooltip({
+	return awful.tooltip({
 		objects = { target },
 		text = text,
 		bg = beautiful.tooltip_bg,
@@ -75,8 +75,10 @@ function M.hover_effect(self)
 		end
 		self.bg = beautiful.bg_hover
 		local w = mouse.current_wibox
-		old_cursor, old_wibox = w.cursor, w
-		w.cursor = "hand1"
+		if w then
+			old_cursor, old_wibox = w.cursor, w
+			w.cursor = "hand1"
+		end
 	end)
 	self:connect_signal("mouse::leave", function()
 		if self.has_backup then

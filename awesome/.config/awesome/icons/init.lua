@@ -15,6 +15,11 @@ return {
   macros = dir .. "macro.svg",
   bell = dir .. "bell.svg",
   launcher = dir .. "launcher.svg",
+  calendar = dir .. "calendar.svg",
+  volume_high = dir .. "volume-high.svg",
+  volume_medium = dir .. "volume-medium.svg",
+  volume_low = dir .. "volume-low.svg",
+  volume_mute = dir .. "volume-mute.svg",
   notification_center_open = dir .. "notification-center-open.svg",
   notification_center_close = dir .. "notification-center-close.svg",
 }

@@ -40,7 +40,7 @@ end
 function M.initTagList(s)
 	return awful.widget.taglist({
 		screen = s,
-		filter = awful.widget.taglist.filter.noempty,
+		filter = awful.widget.taglist.filter.all,
 		widget_template = {
 			{
 				widget = wibox.widget.textbox,
