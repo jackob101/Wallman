@@ -130,6 +130,7 @@ return packer.startup(function(use)
 
 	-- Git client
 	use({ "TimUntersberger/neogit", requires = "nvim-lua/plenary.nvim" })
+  use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
 
 	if PACKER_BOOTSTRAP then
 		require("packer").sync()
