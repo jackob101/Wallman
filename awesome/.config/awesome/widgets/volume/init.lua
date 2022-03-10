@@ -80,9 +80,10 @@ end
 awesome.connect_signal("module::volume::widgets:update", update)
 
 widget:connect_signal("button::press", function(_, _, _, b)
-	print(b)
 	if b == 1 then
 		awesome.emit_signal("module::volume:toggle")
+  elseif b == 3 then
+    awful.spawn("pavucontrol")
 	elseif b == 4 then
 		awesome.emit_signal("module::volume:up")
 	elseif b == 5 then

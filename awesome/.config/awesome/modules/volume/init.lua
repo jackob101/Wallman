@@ -1,15 +1,12 @@
 local awful = require("awful")
 
-local GET_VOLUME_CMD = "amixer -D pulse sget Master"
 local INC_VOLUME_CMD = "amixer -D pulse sset Master 5%+"
 local DEC_VOLUME_CMD = "amixer -D pulse sset Master 5%-"
 local TOG_VOLUME_CMD = "amixer -D pulse sset Master toggle"
 local UPDATE_SIGNAL = "module::volume::widgets:update"
 
 awesome.connect_signal("module::volume:up", function()
-	print("Up")
 	awful.spawn.easy_async_with_shell(INC_VOLUME_CMD, function()
-		print("Up async")
 		awesome.emit_signal(UPDATE_SIGNAL)
 	end)
 end)

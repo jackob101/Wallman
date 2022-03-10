@@ -25,13 +25,6 @@ awful.screen.connect_for_each_screen(function(s)
 		bg = beautiful.bg_normal .. beautiful.bar_opacity,
 	})
 
-	-- systray
-	s.systray = wibox.widget({
-		screen = "primary",
-		widget = wibox.widget.systray,
-		visible = true,
-	})
-
   -- Add spacing only after tags and divider widget
 	local left_widget = wibox.widget({
 		layout = wibox.layout.fixed.horizontal,

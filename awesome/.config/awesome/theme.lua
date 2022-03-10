@@ -15,13 +15,19 @@ awesome.set_preferred_icon_size(128)
 
 local theme = {}
 
-gears.debug.dump(xrdb)
-
 theme.font = "inter medium 9"
 
 theme.groups_bg = xrdb.color2 .. "77"
 theme.useless_gap = dpi(5)
 
+theme.color8 = xrdb.color8
+theme.color9 = xrdb.color9
+theme.color10 = xrdb.color10
+theme.color11 = xrdb.color11
+theme.color12 = xrdb.color12
+theme.color13 = xrdb.color13
+theme.color14 = xrdb.color14
+theme.color15 = xrdb.color15
 
 theme.accent1 = xrdb.color10
 theme.accent2 = xrdb.color11
@@ -37,6 +43,7 @@ theme.bar_icon_text_spacing = dpi(5)
 theme.bar_icon_margin = dpi(2)
 
 theme.bg_normal = xrdb.background or "#2E3440"
+theme.bg_overlay = xrdb.color1
 theme.bg_focus = xrdb.color2 or "#535d6c"
 theme.bg_hover = xrdb.color3
 theme.bg_urgent = xrdb.color9 or "#D08770"
@@ -74,13 +81,13 @@ theme.taglist_fg_focus = theme.bg_normal
 theme.taglist_fg_urgent = theme.bg_normal
 theme.taglist_bg_focus = xrdb.color10
 theme.taglist_bg_urgent = xrdb.color9
-theme.taglist_bg_occupied = xrdb.color15
+theme.taglist_bg_occupied = xrdb.color12
 theme.taglist_fg_occupied = xrdb.background
 theme.taglist_font = "inter medium 12"
 
-theme.notification_icon_size = 45
-theme.notification_width = 350
-theme.notification_height = 150
+theme.notification_icon_size = dpi(50) 
+theme.notification_max_width = dpi(400)
+-- theme.notification_height = 150
 theme.notification_spacing = 5
 theme.notification_box_margin = 10
 theme.notification_title_font = "inter medium 11"
@@ -159,7 +166,7 @@ theme.awesome_icon = theme_assets.awesome_icon(theme.menu_height, theme.bg_focus
 
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
-theme.icon_theme = nil
+theme.icon_theme = "gnome"
 
 return theme
 

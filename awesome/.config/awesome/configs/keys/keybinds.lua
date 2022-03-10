@@ -39,6 +39,14 @@ keys.globalkeys = gears.table.join(
 		{ description = "quit awesome", group = "awesome" }
 	),
 	awful.key(
+		{ modkey, "Shift", "Control" },
+		"t",
+    function ()
+     awesome.emit_signal("modules::dnd:toggle")
+    end,
+		{ description = "toggle Do not disturb mode", group = "awesome" }
+	),
+	awful.key(
 		{modkey, "Shift", "Control"},
 		"m",
 		function ()

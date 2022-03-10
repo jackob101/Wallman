@@ -20,8 +20,8 @@ require("modules.volume.volume-popup")
 require("modules.notifications.posture-check")
 require("modules.dashboard")
 require("modules.notification-center")
+require("modules.do-not-disturb-mode")
 require("configs.keys.keybinds-configuration")
-
 
 
 -- {{{ Variable definitions
@@ -64,3 +64,5 @@ end)
 -- }}}
 
 require("modules.autorun.init")
+
+awesome.emit_signal("modules::volume:widgets:update")
