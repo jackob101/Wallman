@@ -64,5 +64,3 @@ end)
 -- }}}
 
 require("modules.autorun.init")
-
-awesome.emit_signal("modules::volume:widgets:update")

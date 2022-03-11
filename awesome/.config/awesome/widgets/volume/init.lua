@@ -104,6 +104,4 @@ widget:connect_signal("mouse::leave", function()
 	end
 end)
 
-update()
-
 return widget
