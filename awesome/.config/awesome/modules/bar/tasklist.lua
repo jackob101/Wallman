@@ -4,6 +4,7 @@ local wibox = require("wibox")
 local dpi = require("beautiful").xresources.apply_dpi
 local utils = require("utils")
 local beautiful = require("beautiful")
+local icons = require("icons")
 
 local M = {}
 
@@ -19,8 +20,11 @@ local tasklist_buttons = gears.table.join(
 		c:kill()
 	end),
 	awful.button({}, 3, function(c)
-  --   print("Test")
-		-- c.popup.show()
+		if c.popup.visible then
+			c.popup.visible = not c.popup.visible
+		else
+			c.popup:move_next_to(mouse.current_widget_geometry)
+		end
 	end),
 	awful.button({}, 4, function()
 		awful.client.focus.byidx(1)
@@ -34,8 +38,38 @@ local function widget_create_callback(self, c, index)
 	utils.hover_effect(self)
 	utils.generate_tooltip(self, c.class)
 
-	c.popup = require("widgets.task-popup")
-  c.popup.create(c)
+	local menu_items = {
+		{
+			name = "Minimize",
+			onclick = function()
+				c.minimized = not c.minimized
+			end,
+			icon = icons.window_minimize,
+		},
+		{
+			name = "Maximize",
+			onclick = function()
+				c.maximized = not c.maximized
+			end,
+      icon = icons.window_maximize
+		},
+		{
+			name = "Fullscreen",
+			onclick = function()
+				c.fullscreen = not c.fullscreen
+			end,
+      icon = icons.window_fullscreen
+		},
+		{
+			name = "Kill client",
+			onclick = function()
+				c:kill()
+			end,
+      icon = icons.window_close
+		},
+	}
+	c.popup = require("widgets.menu")(menu_items)
+  c.popup.offset = {x = 40}
 end
 
 function M.initTaskList(s)

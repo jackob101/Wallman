@@ -102,6 +102,8 @@ theme.dashboard_border_width = dpi(2)
 theme.dashboard_border_color = theme.bg_focus
 theme.dashboard_margin = dpi(20)
 
+theme.menu_icon_size = dpi(16)
+theme.menu_icon_color = theme.fg_normal
 -- Some default values
 
 -- Variables set for theming the menu:
