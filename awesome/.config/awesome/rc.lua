@@ -7,6 +7,7 @@ local beautiful = require("beautiful")
 local menubar = require("menubar")
 beautiful.init(os.getenv("HOME") .. "/.config/awesome/theme.lua")
 
+require("layout")
 require("modules.notifications.notificationConfig")
 require("errors.startupHandling")
 require("awful.hotkeys_popup.keys")

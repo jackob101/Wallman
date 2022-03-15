@@ -56,6 +56,14 @@ keys.globalkeys = gears.table.join(
 	),
 
 	awful.key(
+		{modkey, "Shift", "Control"},
+		"d",
+		function ()
+      awful.screen.focused().central_panel:toggle()
+		end,
+		{ description = "Toggle macros", group = "awesome" }
+	),
+	awful.key(
 		{ modkey },
 		"x",
 		function()

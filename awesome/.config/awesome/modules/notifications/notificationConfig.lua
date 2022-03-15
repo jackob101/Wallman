@@ -23,7 +23,8 @@ ruled.notification.connect_signal("request::rules", function()
 	ruled.notification.append_rule({
 		rule = { urgency = "normal" },
 		properties = {
-			timeout = 5,
+			timeout = 1,
+			implicit_timeout = 1,
 			bg = beautiful.color10,
 		},
 	})
@@ -97,12 +98,11 @@ naughty.connect_signal("request::display", function(n)
 			shape = gears.shape.rectangle,
 			bg = beautiful.bg_overlay,
 			widget_template = {
-				left_part,
-				right_part,
-				layout = wibox.layout.align.horizontal,
+				{ left_part, right_part, layout = wibox.layout.align.horizontal },
+				widget = wibox.container.constraint,
+				width = beautiful.notification_max_width,
+				strategy = "max",
 			},
 		})
 	end
 end)
-
-naughty.connect_signal("request::destroyed", function(_, _) end)

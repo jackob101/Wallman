@@ -66,29 +66,42 @@ function M.generate_tooltip(target, text)
 	})
 end
 
-function M.hover_effect(self)
+function M.cursor_hover(widget)
 	local old_cursor, old_wibox
-	self:connect_signal("mouse::enter", function()
-		if self.bg ~= beautiful.bg_hover then
-			self.backup = self.bg
-			self.has_backup = true
-		end
-		self.bg = beautiful.bg_hover
+	widget:connect_signal("mouse::enter", function()
 		local w = mouse.current_wibox
 		if w then
 			old_cursor, old_wibox = w.cursor, w
 			w.cursor = "hand1"
 		end
 	end)
-	self:connect_signal("mouse::leave", function()
-		if self.has_backup then
-			self.bg = self.backup
-		end
+
+	widget:connect_signal("mouse::leave", function()
 		if old_wibox then
 			old_wibox.cursor = old_cursor
 			old_wibox = nil
 		end
 	end)
+end
+
+function M.background_hover(widget)
+	widget:connect_signal("mouse::enter", function()
+		if widget.bg ~= beautiful.bg_hover then
+			widget.backup = widget.bg
+			widget.has_backup = true
+		end
+		widget.bg = beautiful.bg_hover
+	end)
+	widget:connect_signal("mouse::leave", function()
+		if widget.has_backup then
+			widget.bg = widget.backup
+		end
+	end)
+end
+
+function M.hover_effect(widget)
+	M.cursor_hover(widget)
+	M.background_hover(widget)
 end
 
 return M

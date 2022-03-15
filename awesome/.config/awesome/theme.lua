@@ -102,6 +102,9 @@ theme.dashboard_border_width = dpi(2)
 theme.dashboard_border_color = theme.bg_focus
 theme.dashboard_margin = dpi(20)
 
+theme.central_panel_max_width = dpi(800)
+theme.central_panel_max_height = dpi(700)
+
 theme.menu_icon_size = dpi(16)
 theme.menu_icon_color = theme.fg_normal
 -- Some default values
