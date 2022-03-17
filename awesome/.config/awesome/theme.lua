@@ -16,6 +16,7 @@ awesome.set_preferred_icon_size(128)
 local theme = {}
 
 theme.font = "inter medium 9"
+theme.transparent = "#FFFFFF00"
 
 theme.groups_bg = xrdb.color2 .. "77"
 theme.useless_gap = dpi(5)

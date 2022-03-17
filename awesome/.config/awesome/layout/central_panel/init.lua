@@ -7,6 +7,8 @@ local dpi = beautiful.xresources.apply_dpi
 
 local function create(s)
 	s.notif_center = notif_center(s)
+	s.profile = require("widgets.user-profile")
+	s.calendar = require("widgets.notif-calendar")
 
 	local panel = awful.popup({
 		screen = s,
@@ -22,13 +24,17 @@ local function create(s)
 		width = beautiful.central_panel_max_width,
 		height = beautiful.central_panel_max_height,
 		widget = {
-      widget = wibox.container.margin,
-      margins = dpi(5),
+			widget = wibox.container.margin,
+			margins = dpi(15),
 			{
 				widget = wibox.container.background,
 				layout = wibox.layout.flex.horizontal,
+        expand = "none",
 				{
-					widget = wibox.container.background,
+					layout = wibox.layout.fixed.vertical,
+					spacing = dpi(7),
+					s.profile,
+          s.calendar
 				},
 				nil,
 				s.notif_center,
@@ -38,10 +44,10 @@ local function create(s)
 
 	awful.placement.bottom_right(panel, {
 		honor_workarea = true,
-    margins ={
-      bottom = beautiful.bar_height + dpi(5),
-      right = dpi(5)
-    }
+		margins = {
+			bottom = beautiful.bar_height + dpi(5),
+			right = dpi(5),
+		},
 	})
 
 	s.central_backdrop = wibox({

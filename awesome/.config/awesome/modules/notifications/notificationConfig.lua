@@ -23,8 +23,8 @@ ruled.notification.connect_signal("request::rules", function()
 	ruled.notification.append_rule({
 		rule = { urgency = "normal" },
 		properties = {
-			timeout = 1,
-			implicit_timeout = 1,
+			timeout = 5,
+			implicit_timeout = 5,
 			bg = beautiful.color10,
 		},
 	})
