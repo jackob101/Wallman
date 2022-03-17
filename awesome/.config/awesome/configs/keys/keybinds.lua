@@ -56,8 +56,8 @@ keys.globalkeys = gears.table.join(
 	),
 
 	awful.key(
-		{modkey, "Shift", "Control"},
-		"d",
+		{modkey },
+		"c",
 		function ()
       awful.screen.focused().central_panel:toggle()
 		end,
@@ -196,19 +196,6 @@ keys.globalkeys = gears.table.join(
 		function() awesome.emit_signal("dashboard::toggle") end,
 		{ description = "Display dashboard", group = "launcher" }
 	),
-	awful.key(
-		{ modkey },
-		"c",
-		function() awesome.emit_signal("notificationcenter::toggle") end,
-		{ description = "Display notification center", group = "launcher" }
-	),
-
-	--	awful.key(
-	--{ modkey, "Shift" },
-	--"s",
-	--function () awesome.emit_signal('module::settings_widget:show') end,
-	--	{ description = "Show settings", group = "launcher" }
-	--	),
 
 	-- ██╗      █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗████████╗
 	-- ██║     ██╔══██╗╚██╗ ██╔╝██╔═══██╗██║   ██║╚══██╔══╝

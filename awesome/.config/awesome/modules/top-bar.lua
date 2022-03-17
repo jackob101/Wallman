@@ -22,7 +22,7 @@ awful.screen.connect_for_each_screen(function(s)
 		position = "bottom",
 		screen = s,
 		height = beautiful.bar_height,
-		bg = beautiful.bg_normal .. beautiful.bar_opacity,
+		bg = beautiful.bg_overlay_transparent
 	})
 
   -- Add spacing only after tags and divider widget
@@ -50,6 +50,7 @@ awful.screen.connect_for_each_screen(function(s)
 			require("widgets.volume"),
 			require("widgets.clock")(s),
 			require("widgets.calendar")(s),
+      require("widgets.central_panel_toggle")()
 		},
 		top = 5,
 		bottom = 5,

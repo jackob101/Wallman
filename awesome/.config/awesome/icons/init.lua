@@ -26,6 +26,7 @@ return {
 	window_expand = dir .. "expand.svg",
 	window_fullscreen = dir .. "fullscreen.svg",
 	window_close = dir .. "close.svg",
+  list_clear = dir .. "list-clear.svg",
 
 	notification_center_open = dir .. "notification-center-open.svg",
 	notification_center_close = dir .. "notification-center-close.svg",

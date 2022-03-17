@@ -8,9 +8,12 @@ local utils = require("utils")
 
 local notif_core = require("widgets.notif-center.notif-list")
 
+local stylesheet = "*{fill: ".. beautiful.fg_normal .. "; }"
+
 local clear_all_text = wibox.widget({
 	widget = wibox.widget.imagebox,
-	image = icons.window_close,
+	image = icons.list_clear,
+  stylesheet = stylesheet,
 	valign = "center",
 	halign = "center",
 	resize = true,
@@ -25,7 +28,7 @@ local button = wibox.widget({
 		margins = dpi(8),
 	},
 	widget = wibox.container.background,
-	bg = beautiful.bg_overlay,
+	bg = beautiful.bg_overlay_transparent,
 	shape = gears.shape.circle,
 })
 

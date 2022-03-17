@@ -44,8 +44,11 @@ theme.bar_icon_margin = dpi(2)
 
 theme.bg_normal = xrdb.background or "#2E3440"
 theme.bg_overlay = xrdb.color1
+theme.bg_transparent = theme.bg_normal .. "AA"
 theme.bg_focus = xrdb.color2 or "#535d6c"
+theme.bg_overlay_transparent = theme.bg_overlay .. "AA"
 theme.bg_hover = xrdb.color3
+theme.bg_hover_transparent = theme.bg_hover .. "AA"
 theme.bg_urgent = xrdb.color9 or "#D08770"
 theme.bg_minimize = xrdb.color8 or "#3B4252"
 

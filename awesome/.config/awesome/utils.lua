@@ -59,10 +59,12 @@ function M.generate_tooltip(target, text)
 		objects = { target },
 		text = text,
 		bg = beautiful.tooltip_bg,
+    mode = "outside",
 		margins = beautiful.tooltip_margins,
 		shape = function(cr, width, height)
 			gears.shape.rounded_rect(cr, width, height, dpi(2))
 		end,
+    gaps = dpi(5),
 	})
 end
 
