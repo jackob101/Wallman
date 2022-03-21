@@ -2,7 +2,7 @@ local naughty = require("naughty")
 local gears = require("gears")
 local icons = require("icons")
 
-local configured = false
+local configured = true 
 
 local function posture_callback()
 	if configured then
@@ -11,6 +11,7 @@ local function posture_callback()
 			message = "Are you sitting properly?",
 			icon = icons.posture,
 			urgency = "normal",
+      store = false,
 		})
 	end
 end
