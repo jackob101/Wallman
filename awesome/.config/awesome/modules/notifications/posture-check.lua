@@ -2,7 +2,7 @@ local naughty = require("naughty")
 local gears = require("gears")
 local icons = require("icons")
 
-local configured = true 
+local configured = false
 
 local function posture_callback()
 	if configured then
