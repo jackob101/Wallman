@@ -3,6 +3,7 @@ local gears = require("gears")
 local icons = require("icons")
 
 local configured = false
+
 local function posture_callback()
 	if configured then
 		naughty.notification({

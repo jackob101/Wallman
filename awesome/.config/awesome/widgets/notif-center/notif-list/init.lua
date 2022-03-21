@@ -59,7 +59,10 @@ local notifbox_add_expired = function(n)
 end
 
 naughty.connect_signal("request::display", function(n)
-	notifbox_add_expired(n)
+  gears.debug.dump(n)
+	if n.title ~= "Posture check" then
+		notifbox_add_expired(n)
+	end
 end)
 
 notif_core.connect_count = function(counter)
