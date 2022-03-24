@@ -9,7 +9,7 @@ local dpi = beautiful.xresources.apply_dpi
 
 awful.screen.connect_for_each_screen(function(s)
 	-- Each screen has its own tag table.
-	awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" }, s, awful.layout.layouts[1])
+	-- awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" }, s, awful.layout.layouts[1])
 
 	-- Create a taglist widget
 	s.mytaglist = tagList.initTagList(s)
@@ -22,22 +22,22 @@ awful.screen.connect_for_each_screen(function(s)
 		position = "bottom",
 		screen = s,
 		height = beautiful.bar_height,
-		bg = beautiful.bg_overlay_transparent
+		bg = beautiful.bg_overlay_transparent,
 	})
 
-    -- Add spacing only after tags and divider widget
+	-- Add spacing only after tags and divider widget
 	local left_widget = wibox.widget({
 		layout = wibox.layout.fixed.horizontal,
 		require("modules.bar.launcher").create(),
 		s.mytaglist,
 		{
-          widget = wibox.container.background,
-          forced_width = dpi(5),
+			widget = wibox.container.background,
+			forced_width = dpi(5),
 		},
 		bar_utils.create_spacing_widget(),
 		{
-          widget = wibox.container.background,
-          forced_width = dpi(5),
+			widget = wibox.container.background,
+			forced_width = dpi(5),
 		},
 		s.mytasklist,
 	})
@@ -50,14 +50,14 @@ awful.screen.connect_for_each_screen(function(s)
 
 	local right_widget = wibox.widget({
 		{
-          layout = wibox.layout.fixed.horizontal,
-          spacing = dpi(10),
-          bar_utils.add_with_space(macros_widget),
-          -- s.systray,
-          require("widgets.volume"),
-          require("widgets.clock")(s),
-          require("widgets.calendar")(s),
-          require("widgets.central_panel_toggle")()
+			layout = wibox.layout.fixed.horizontal,
+			spacing = dpi(10),
+			bar_utils.add_with_space(macros_widget),
+			-- s.systray,
+			require("widgets.volume"),
+			require("widgets.clock")(s),
+			require("widgets.calendar")(s),
+			require("widgets.central_panel_toggle")(),
 		},
 		top = 5,
 		bottom = 5,
@@ -72,11 +72,11 @@ awful.screen.connect_for_each_screen(function(s)
 		widget = wibox.container.background,
 		bg = beautiful.bg_normal .. beautiful.bar_opacity,
 		{
-          layout = wibox.layout.align.horizontal,
-          expand = "inside",
-          left_widget,
-          nil,
-          right_widget,
+			layout = wibox.layout.align.horizontal,
+			expand = "inside",
+			left_widget,
+			nil,
+			right_widget,
 		},
 	})
 end)

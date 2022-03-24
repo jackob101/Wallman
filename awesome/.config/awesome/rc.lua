@@ -23,7 +23,7 @@ require("modules.dashboard")
 require("modules.notification-center")
 require("modules.do-not-disturb-mode")
 require("configs.keys.keybinds-configuration")
-
+require("configs.tags")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
@@ -37,17 +37,16 @@ editor_cmd = terminal .. " -e " .. editor
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
-
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function(c)
-    -- Set the windows at the slave,
-    -- i.e. put it at the end of others instead of setting it master.
-    -- if not awesome.startup then awful.client.setslave(c) end
+	-- Set the windows at the slave,
+	-- i.e. put it at the end of others instead of setting it master.
+	-- if not awesome.startup then awful.client.setslave(c) end
 
-    if awesome.startup and not c.size_hints.user_position and not c.size_hints.program_position then
-      -- Prevent clients from being unreachable after screen count changes.
-      awful.placement.no_offscreen(c)
+	if awesome.startup and not c.size_hints.user_position and not c.size_hints.program_position then
+		-- Prevent clients from being unreachable after screen count changes.
+		awful.placement.no_offscreen(c)
 	end
 end)
 
