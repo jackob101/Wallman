@@ -70,13 +70,13 @@
   )
 
 
-(use-package! web-mode
-  :hook ( web-mode . emmet-mode )
-  :mode (("\\.js\\'" . web-mode)
-         ("\\.jsx\\'" .  web-mode)
-         ("\\.ts\\'" . web-mode)
-         ("\\.tsx\\'" . web-mode)
-         ("\\.html\\'" . web-mode)))
+;; (use-package! web-mode
+;;   :hook ( web-mode . emmet-mode )
+;;   :mode (("\\.js\\'" . web-mode)
+;;          ("\\.jsx\\'" .  web-mode)
+;;          ("\\.ts\\'" . web-mode)
+;;          ("\\.tsx\\'" . web-mode)
+;;          ("\\.html\\'" . web-mode)))
 
 (defun enable-minor-mode (my-pair)
   "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
@@ -123,9 +123,8 @@
              '("*shell-pop" (display-buffer-in-side-window) (side . bottom)))
 
 (map! :map company-active-map
-      "C-l"  'company-complete-selection
       "<return>" nil
-      "TAB" 'company-complete-selection
+      "<tab>" 'company-complete-selection
       "RET" nil)
 
 (map! :map org-mode-map
@@ -133,13 +132,20 @@
       "C-0" 'org-next-visible-heading
       "C-)" 'outline-up-heading)
 
+(map!
+ :desc "Switch to next buffer" "C-S-l" 'centaur-tabs-forward
+ :desc "Switch to previous buffer" "C-S-h" 'centaur-tabs-backward
+ :desc "Next window" "C-M-h" 'evil-window-left
+ :desc "Next window" "C-M-l" 'evil-window-right)
 
 (map! :leader :desc "Ace window" "w TAB" 'ace-window)
 (map! :leader :desc "Indent buffer" "b =" 'er-indent-region-or-buffer
       :leader :desc "Open shell" "o s" 'shell-pop
       :leader :desc "Go to previous note" "n r b" 'org-mark-ring-goto
       :leader :desc "Go to next error" "e f n" 'evil-next-flyspell-error
-      :leader :desc "Go to previous error" "e f p" 'evil-prev-flyspell-error)
+      :leader :desc "Go to previous error" "e f p" 'evil-prev-flyspell-error
+      :leader :desc "Toggle treemacs" "o t" 'treemacs)
+
 
 (require 'org-tempo)
 
@@ -153,6 +159,22 @@
 (setq ispell-current-dictionary "en_US")
 
 (add-hook 'org-mode-hook (lambda () (display-line-numbers-mode 0)))
+
+(use-package! centaur-tabs
+  :demand
+  :config
+  (centaur-tabs-mode t)
+  (centaur-tabs-headline-match)
+  (setq centaur-tabs-style "bar"
+        centaur-tabs-height 32
+        centaur-tabs-set-icons t
+        centaur-tabs-gray-out-icons 'buffer
+        centaur-tabs-set-modified-marker t
+        centaur-tabs-modified-marker ""
+        centaur-tabs-cycle-scope 'tabs)
+  :bind
+  ("C-<prior>" . centaur-tabs-backward)
+  ("C-<next>" . centaur-tabs-forward))
 
 
 (use-package! org
@@ -224,8 +246,8 @@
 
 (setq lua-indent-nested-block-content-align nil)
 
-(use-package! company-box
-  :hook (company-mode . company-box-mode))
+;; (use-package! company-box
+;;   :hook (company-mode . company-box-mode))
 
 (use-package! company
   :config
@@ -257,3 +279,14 @@
   ("k" outline-previous-visible-heading nil)
   ("q" nil "quit"))
 
+
+(setq lsp-clients-lua-language-server-main-location "/home/jakub/.emacs.d/.local/etc/lsp/lua-language-server/bin/main.lua"
+      lsp-clients-lua-language-server-bin "/home/jakub/.emacs.d/.local/etc/lsp/lua-language-server/bin/lua-language-server")
+
+(advice-add #'lsp-completion--looking-back-trigger-characterp
+            :filter-args
+            (lambda (r) (seq-remove (lambda (it) (equal it " ")) r))
+            '((name . --filter-spaces)))
+
+;; (after! lsp-mode
+;;   (add-to-list 'lsp-clients-lua-language-server-args "--preview"))

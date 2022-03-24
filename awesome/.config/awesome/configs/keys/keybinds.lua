@@ -20,7 +20,7 @@ keys.globalkeys = gears.table.join(
 
 	awful.key(
 		{ modkey },
-		"s",
+		"F1",
 		hotkeys_popup.show_help,
 		{ description = "show help", group = "awesome" }
 	),
@@ -41,9 +41,9 @@ keys.globalkeys = gears.table.join(
 	awful.key(
 		{ modkey, "Shift", "Control" },
 		"t",
-    function ()
-     awesome.emit_signal("modules::dnd:toggle")
-    end,
+		function ()
+			awesome.emit_signal("modules::dnd:toggle")
+		end,
 		{ description = "toggle Do not disturb mode", group = "awesome" }
 	),
 	awful.key(
@@ -59,7 +59,7 @@ keys.globalkeys = gears.table.join(
 		{modkey },
 		"c",
 		function ()
-      awful.screen.focused().central_panel:toggle()
+			awful.screen.focused().central_panel:toggle()
 		end,
 		{ description = "Toggle macros", group = "awesome" }
 	),
@@ -429,141 +429,161 @@ end
 --██║     ██║     ██║██╔══╝  ██║╚██╗██║   ██║   
 --╚██████╗███████╗██║███████╗██║ ╚████║   ██║   
 -- ╚═════╝╚══════╝╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   
-                               
+
 keys.clientkeys = gears.table.join(
-  awful.key(
-    { modkey },
-    "f",
-    function(c)
-      c.fullscreen = not c.fullscreen
-      c:raise()
-    end,
-    { description = "toggle fullscreen", group = "client", }
-  ),
+	awful.key(
+		{ modkey },
+		"f",
+		function(c)
+			c.fullscreen = not c.fullscreen
+			c:raise()
+		end,
+		{ description = "toggle fullscreen", group = "client", }
+	),
 
-  awful.key(
-    { modkey, "Shift" },
-    "q",
-    function(c) c:kill() end,
-    { description = "close", group = "client" }),
+	awful.key(
+		{ modkey, "Shift" },
+		"q",
+		function(c) c:kill() end,
+		{ description = "close", group = "client" }),
 
-  awful.key(
-    { modkey, "Control" },
-    "space",
-    awful.client.floating.toggle,
-    { description = "toggle floating", group = "client" }
-  ),
+	awful.key(
+		{ modkey, "Control" },
+		"space",
+		awful.client.floating.toggle,
+		{ description = "toggle floating", group = "client" }
+	),
 
-  awful.key(
-    { modkey, "Control" },
-    "Return",
-    function(c) c:swap(awful.client.getmaster()) end,
-    { description = "move to master", group = "client", }
-  ),
+	awful.key(
+		{ modkey, "Control" },
+		"Return",
+		function(c) c:swap(awful.client.getmaster()) end,
+		{ description = "move to master", group = "client", }
+	),
+	awful.key(
+		{modkey},
+		"s",
+		function ()
+			local focused_screen = awful.screen.focused()
+			local focused_screen_clients = focused_screen.selected_tag:clients()
 
-  awful.key(
-    { modkey },
-    "o",
-    function(c) c:move_to_screen() end,
-    { description = "move to screen", group = "client", }
-  ),
-  awful.key(
-    {modkey, "Shift"},
-    "o",
-    function(c)
-      local currentIndex = c.screen.index
-      local nextIndex = ((currentIndex) % (screen.count())) + 1
-      c:move_to_screen(nextIndex)
-      local tags = screen[nextIndex].tags
-      for k, v in pairs(tags) do
-        local clientsLength = #(v:clients())
-        if clientsLength == 0 then
-          c:move_to_tag(screen[nextIndex].tags[k])
-          v:view_only()
-          break
-        end
-      end
-    end,
-    { description = "Move to free tag on next screen and focus it", group = "client" }
-  ),
-  awful.key(
-    {modkey, "Shift", "Ctrl"},
-    "o",
-    function(c)
-      local currentIndex = c.screen.index
-      local nextIndex = ((currentIndex) % (screen.count())) + 1
-      c:move_to_screen(nextIndex)
-      local tags = screen[nextIndex].tags
-      for k, v in pairs(tags) do
-        local clientsLength = #(v:clients())
-        if clientsLength == 0 then
-          c:move_to_tag(screen[nextIndex].tags[k])
-          c.urgent = true
-          break
-        end
-      end
-    end,
-    { description = "Move to free tag on next screen without focusing", group = "client" }
-  ),
-  awful.key(
-    { modkey },
-    "t",
-    function(c) c.ontop = not c.ontop end,
-    { description = "toggle keep on top", group = "client", }
-  ),
-  awful.key(
-    { modkey },
-    "n",
-    function(c) c.minimized = true end,
-    { description = "minimize", group = "client", }
-  ),
+			local next_screen_index = (focused_screen.index % 2) + 1
+			local next_screen = screen[next_screen_index]
+			local next_screen_clients = next_screen.selected_tag:clients()
 
-  awful.key(
-    { modkey },
-    "m",
-    function(c)
-      c.maximized = not c.maximized
-      c:raise()
-    end,
-    { description = "(un)maximize", group = "client", }
-  )
+			for _,c in ipairs(focused_screen_clients) do
+				c:move_to_screen(next_screen)
+			end
+
+			for _,c in ipairs(next_screen_clients) do
+				c:move_to_screen(focused_screen)
+			end
+		end,
+		{description = "Switch currently focused clients between screens", group = "client"}
+	),
+	awful.key(
+		{ modkey },
+		"o",
+		function(c) c:move_to_screen() end,
+		{ description = "move to screen", group = "client", }
+	),
+	awful.key(
+		{modkey, "Shift"},
+		"o",
+		function(c)
+			local currentIndex = c.screen.index
+			local nextIndex = ((currentIndex) % (screen.count())) + 1
+			c:move_to_screen(nextIndex)
+			local tags = screen[nextIndex].tags
+			for k, v in pairs(tags) do
+				local clientsLength = #(v:clients())
+				if clientsLength == 0 then
+					c:move_to_tag(screen[nextIndex].tags[k])
+					v:view_only()
+					break
+				end
+			end
+		end,
+		{ description = "Move to free tag on next screen and focus it", group = "client" }
+	),
+	awful.key(
+		{modkey, "Shift", "Ctrl"},
+		"o",
+		function(c)
+			local currentIndex = c.screen.index
+			local nextIndex = ((currentIndex) % (screen.count())) + 1
+			c:move_to_screen(nextIndex)
+			local tags = screen[nextIndex].tags
+			for k, v in pairs(tags) do
+				local clientsLength = #(v:clients())
+				if clientsLength == 0 then
+					c:move_to_tag(screen[nextIndex].tags[k])
+					c.urgent = true
+					break
+				end
+			end
+		end,
+		{ description = "Move to free tag on next screen without focusing", group = "client" }
+	),
+	awful.key(
+		{ modkey },
+		"t",
+		function(c) c.ontop = not c.ontop end,
+		{ description = "toggle keep on top", group = "client", }
+	),
+	awful.key(
+		{ modkey },
+		"n",
+		function(c) c.minimized = true end,
+		{ description = "minimize", group = "client", }
+	),
+
+	awful.key(
+		{ modkey },
+		"m",
+		function(c)
+			c.maximized = not c.maximized
+			c:raise()
+		end,
+		{ description = "(un)maximize", group = "client", }
+	)
 
 )
 
 keys.macro_keybinds = gears.table.join(
-  awful.key(
-    {},
-    "F1",
-    function ()
-      input_helpers.mouse_button_press(1)
-    end,
-    { description = "Spam click LMB", group = "Macros" }
-  ),
-  awful.key(
-    {"Shift"},
-    "F1",
-    function ()
-      root.fake_input("key_press", "Shift_L")
-      input_helpers.mouse_button_press(1)
-    end,
-    function ()
-      root.fake_input("key_release", "Shift_L")
-    end,
-    { description = "Spam click Shift + LMB", group = "Macros" }
-  ),
-  awful.key(
-    {"Ctrl"},
-    "F1",
-    function ()
-      root.fake_input("key_press", "Control_L")
-      input_helpers.mouse_button_press(1)
-    end,
-    function ()
-      root.fake_input("key_release", "Control_L")
-    end,
-    { description = "Spam click Control + LMB", group = "Macros" }
-  )
+	awful.key(
+		{},
+		"F1",
+		function ()
+			input_helpers.mouse_button_press(1)
+		end,
+		{ description = "Spam click LMB", group = "Macros" }
+	),
+	awful.key(
+		{"Shift"},
+		"F1",
+		function ()
+			root.fake_input("key_press", "Shift_L")
+			input_helpers.mouse_button_press(1)
+		end,
+		function ()
+			root.fake_input("key_release", "Shift_L")
+		end,
+		{ description = "Spam click Shift + LMB", group = "Macros" }
+	),
+	awful.key(
+		{"Ctrl"},
+		"F1",
+		function ()
+			root.fake_input("key_press", "Control_L")
+			input_helpers.mouse_button_press(1)
+		end,
+		function ()
+			root.fake_input("key_release", "Control_L")
+		end,
+		{ description = "Spam click Control + LMB", group = "Macros" }
+	)
 )
 
--- stylua:ignore end
+-- Stylua:ignore end
 return keys 
