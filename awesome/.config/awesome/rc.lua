@@ -16,6 +16,7 @@ require("configs.layouts")
 require("modules.volume")
 require("modules.top-bar")
 require("configs.rules")
+require("configs.tags")
 require("modules.exit-screen")
 require("modules.volume.volume-popup")
 require("modules.notifications.posture-check")
@@ -23,7 +24,6 @@ require("modules.dashboard")
 require("modules.notification-center")
 require("modules.do-not-disturb-mode")
 require("configs.keys.keybinds-configuration")
-require("configs.tags")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.

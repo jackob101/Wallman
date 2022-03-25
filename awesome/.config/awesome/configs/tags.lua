@@ -81,7 +81,7 @@ local conf = {
 screen.connect_signal("request::desktop_decoration", function(s)
 	if conf[s.index] ~= nil then
 		for i, t in ipairs(conf[s.index]) do
-			awful.tag.add(t.name, {
+			awful.tag.add(i, {
 				icon_only = false,
 				screen = s,
 				icon_widget = t.icon_widget or icons.circle.widget,

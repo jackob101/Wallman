@@ -59,8 +59,7 @@ awful.rules.rules = {
 				"pop-up", -- e.g. Google Chrome's (detached) Developer Tools.
 			},
 		},
-		properties = { floating = true,
-    placement = awful.placement.centered},
+		properties = { floating = true, placement = awful.placement.centered },
 	},
 
 	{
@@ -68,7 +67,7 @@ awful.rules.rules = {
 			class = "discord",
 		},
 		properties = {
-			tag = "0",
+			tag = "10",
 			screen = twoScreens and 2 or 1,
 		},
 	},
