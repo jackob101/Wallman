@@ -3,12 +3,9 @@ local beautiful = require("beautiful")
 local clientkeys = require("configs.keys.keybinds").clientkeys
 local clientbuttons = require("configs.clientbuttons")
 
--- {{{ Rules
--- Rules to apply to new clients (through the "manage" signal).
 local twoScreens = screen:count() == 2
 
 awful.rules.rules = {
-	-- All clients will match this rule.
 	{
 		rule = {},
 		properties = {
@@ -47,9 +44,6 @@ awful.rules.rules = {
 				"awakened-poe-trade",
 				"Pavucontrol",
 			},
-
-			-- Note that the name property shown in xprop might be set slightly after creation of the client
-			-- and the name shown there might not match defined rules here.
 			name = {
 				"Event Tester", -- xev.
 			},
@@ -72,7 +66,6 @@ awful.rules.rules = {
 		},
 	},
 	{
-
 		rule = {
 			class = "TelegramDesktop",
 		},
@@ -81,23 +74,4 @@ awful.rules.rules = {
 			screen = twoScreens and 2 or 1,
 		},
 	},
-
-	-- Add titlebars to normal clients and dialogs
-	{ rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = true } },
-	{
-		rule_any = {
-			class = { "awakened-poe-trade", "poe-overlay" },
-		},
-		properties = {
-			y = 0,
-			screen = 1,
-			height = 1080,
-			width = 1200,
-		},
-	},
-	-- Set Firefox to always map on the tag named "2" on screen 1.
-	-- { rule = { class = "Firefox" },
-	--   properties = { screen = 1, tag = "2" } },
 }
--- }}}
---

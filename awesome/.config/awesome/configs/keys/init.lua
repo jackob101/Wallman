@@ -24,9 +24,9 @@ local function refresh_keybinds()
 			})
 			root.keys(keybinds.globalkeys)
 		end
-  else
-    root.keys(keybinds.globalkeys)
-    configured = true
+	else
+		root.keys(keybinds.globalkeys)
+		configured = true
 	end
 
 	awesome.emit_signal("macros::update", are_macros_on)
