@@ -1,10 +1,11 @@
 ----------------------------------------
 -- Initialize basic configs
 ----------------------------------------
+require("configs.layouts")
+require("configs.titlebar")
 require("configs.rules")
 require("configs.tags")
 require("configs.screens")
-require("configs.layouts")
 require("configs.client")
 
 ----------------------------------------

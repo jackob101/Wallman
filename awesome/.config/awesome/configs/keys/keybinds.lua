@@ -144,6 +144,11 @@ keys.globalkeys = gears.table.join(
 		{ description = "restore minimized", group = "client", }
 	),
 
+	-- awful.key(
+	-- 	{ modkey },
+	-- 	""
+	-- )
+
 	-- ██╗      █████╗ ██╗   ██╗███╗   ██╗ ██████╗██╗  ██╗███████╗██████╗ 
 	-- ██║     ██╔══██╗██║   ██║████╗  ██║██╔════╝██║  ██║██╔════╝██╔══██╗
 	-- ██║     ███████║██║   ██║██╔██╗ ██║██║     ███████║█████╗  ██████╔╝
@@ -249,7 +254,9 @@ keys.globalkeys = gears.table.join(
 	awful.key(
 		{ modkey },
 		"space",
-		function() awful.layout.inc(1) end,
+		function() 
+			gears.debug.dump(awful.layout)
+			awful.layout.inc(1) end,
 		{ description = "select next", group = "layout", }
 	),
 
@@ -471,13 +478,14 @@ keys.clientkeys = gears.table.join(
 			local next_screen = screen[next_screen_index]
 			local next_screen_clients = next_screen.selected_tag:clients()
 
+			for _,c in ipairs(next_screen_clients) do
+				c:move_to_screen(focused_screen)
+			end
+
 			for _,c in ipairs(focused_screen_clients) do
 				c:move_to_screen(next_screen)
 			end
 
-			for _,c in ipairs(next_screen_clients) do
-				c:move_to_screen(focused_screen)
-			end
 		end,
 		{description = "Switch currently focused clients between screens", group = "client"}
 	),

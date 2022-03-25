@@ -85,6 +85,7 @@ awful.screen.connect_for_each_screen(function(s)
 
 	local right_widget = wibox.widget({
 		layout = wibox.layout.fixed.horizontal,
+		add_with_margin(require("widgets.layout")(s)),
 		add_with_margin(volume_widget),
 		add_with_margin(require("widgets.time-date")(s)),
 		add_with_margin(require("widgets.central_panel_toggle")()),

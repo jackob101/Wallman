@@ -126,6 +126,9 @@ theme.menu_width = dpi(100)
 -- beautiful.variable in your rc.lua
 --theme.bg_widget = "#cc0000"
 
+theme.titlebar_bg_normal = theme.bg_overlay
+theme.titlebar_bg = theme.bg_overlay
+theme.titlebar_bg_focus = theme.bg_focus
 -- Define the image to load
 theme.titlebar_close_button_normal = themes_path .. "default/titlebar/close_normal.png"
 theme.titlebar_close_button_focus = themes_path .. "default/titlebar/close_focus.png"
