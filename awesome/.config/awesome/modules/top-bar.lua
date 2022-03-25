@@ -1,11 +1,48 @@
 local awful = require("awful")
 local wibox = require("wibox")
-local tagList = require("modules.bar.taglist")
-local taskList = require("modules.bar.tasklist")
+local tagList = require("widgets.taglist")
+local taskList = require("widgets.tasklist")
 local beautiful = require("beautiful")
-local macros_widget = require("modules.bar.macros-status")
-local bar_utils = require("modules.bar.bar-utils")
 local dpi = beautiful.xresources.apply_dpi
+local gears = require("gears")
+
+local function create_spacing_widget()
+	local function create_ball()
+		return wibox.widget({
+			widget = wibox.container.background,
+			shape = gears.shape.circle,
+			forced_width = dpi(4),
+			forced_height = dpi(4),
+			bg = beautiful.fg_normal,
+		})
+	end
+
+	return wibox.widget({
+		{
+			create_ball(),
+			create_ball(),
+			create_ball(),
+			layout = wibox.layout.align.vertical,
+		},
+		widget = wibox.container.margin,
+		top = 5,
+		bottom = 5,
+	})
+end
+
+local function add_with_margin(w, t, r, b, l)
+	local default_vertical_margin = dpi(9)
+	local default_right_margin = dpi(10)
+
+	return wibox.widget({
+		w,
+		widget = wibox.container.margin,
+		top = t or default_vertical_margin,
+		right = r or default_right_margin,
+		bottom = b or default_vertical_margin,
+		left = l or 0,
+	})
+end
 
 awful.screen.connect_for_each_screen(function(s)
 	-- Create a taglist widget
@@ -25,13 +62,13 @@ awful.screen.connect_for_each_screen(function(s)
 	-- Add spacing only after tags and divider widget
 	local left_widget = wibox.widget({
 		layout = wibox.layout.fixed.horizontal,
-		require("modules.bar.launcher").create(),
+		require("widgets.launcher").create(),
 		s.mytaglist,
 		{
 			widget = wibox.container.background,
 			forced_width = dpi(5),
 		},
-		bar_utils.create_spacing_widget(),
+		create_spacing_widget(),
 		{
 			widget = wibox.container.background,
 			forced_width = dpi(5),
@@ -44,22 +81,13 @@ awful.screen.connect_for_each_screen(function(s)
 	-- 	widget = wibox.widget.systray,
 	-- 	visible = true,
 	-- })
+	local volume_widget = require("widgets.volume")
 
 	local right_widget = wibox.widget({
-		{
-			layout = wibox.layout.fixed.horizontal,
-			spacing = dpi(10),
-			bar_utils.add_with_space(macros_widget),
-			-- s.systray,
-			require("widgets.volume"),
-			require("widgets.clock")(s),
-			require("widgets.calendar")(s),
-			require("widgets.central_panel_toggle")(),
-		},
-		top = 5,
-		bottom = 5,
-		right = dpi(10),
-		widget = wibox.container.margin,
+		layout = wibox.layout.fixed.horizontal,
+		add_with_margin(volume_widget),
+		add_with_margin(require("widgets.time-date")(s)),
+		add_with_margin(require("widgets.central_panel_toggle")()),
 	})
 
 	-- Add widgets to the wibox

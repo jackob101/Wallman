@@ -45,7 +45,7 @@ function M.create()
 
 	widget:connect_signal("button::press", function()
 		awful.spawn(os.getenv("HOME") .. "/.config/rofi/launcher.sh")
-    widget:emit_signal("mouse::leave")
+		widget:emit_signal("mouse::leave")
 	end)
 
 	return widget

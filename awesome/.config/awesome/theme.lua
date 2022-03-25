@@ -39,7 +39,7 @@ theme.accent6 = xrdb.color15
 
 theme.bar_height = dpi(36)
 theme.bar_opacity = "AA"
-theme.bar_font = "Inter medium 11"
+theme.bar_font = "Inter medium 10"
 theme.bar_icon_text_spacing = dpi(5)
 theme.bar_icon_margin = dpi(2)
 

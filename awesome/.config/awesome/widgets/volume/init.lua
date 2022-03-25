@@ -35,7 +35,7 @@ local widget = wibox.widget({
 local tooltip = utils.generate_tooltip(widget, "Click to mute")
 
 local function generate_stylesheet(color)
-	return "#image{fill: " .. color .. ";}"
+	return "#image{fill: " .. beautiful.fg_normal .. ";}"
 end
 
 -- Main function to update widget
@@ -45,15 +45,15 @@ local function update()
 			if volume >= 75 then
 				icon_widget.image = icons.volume_high
 				icon_widget.stylesheet = generate_stylesheet(beautiful.accent1)
-				widget.fg = beautiful.accent1
+				widget.fg = beautiful.fg_normal
 			elseif volume < 75 and volume >= 35 then
 				icon_widget.image = icons.volume_medium
 				icon_widget.stylesheet = generate_stylesheet(beautiful.accent2)
-				widget.fg = beautiful.accent2
+				widget.fg = beautiful.fg_normal
 			else
 				icon_widget.image = icons.volume_low
 				icon_widget.stylesheet = generate_stylesheet(beautiful.accent6)
-				widget.fg = beautiful.accent6
+				widget.fg = beautiful.fg_normal
 			end
 		end
 	end
@@ -66,7 +66,7 @@ local function update()
 			icon_widget.image = icons.volume_mute
 			tooltip.text = "Click to unmute"
 			icon_widget.stylesheet = generate_stylesheet(beautiful.accent4)
-			widget.fg = beautiful.accent4
+			widget.fg = beautiful.fg_normal
 			text_widget.text = "Muted"
 		elseif mute == "on" then
 			update_icon(tonumber(newVolume))
@@ -82,8 +82,8 @@ awesome.connect_signal("module::volume::widgets:update", update)
 widget:connect_signal("button::press", function(_, _, _, b)
 	if b == 1 then
 		awesome.emit_signal("module::volume:toggle")
-  elseif b == 3 then
-    awful.spawn("pavucontrol")
+	elseif b == 3 then
+		awful.spawn("pavucontrol")
 	elseif b == 4 then
 		awesome.emit_signal("module::volume:up")
 	elseif b == 5 then

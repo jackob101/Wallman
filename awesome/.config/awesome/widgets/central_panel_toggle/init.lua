@@ -6,7 +6,7 @@ local gears = require("gears")
 local awful = require("awful")
 
 local function create()
-	local stylesheet = "*{fill:" .. beautiful.color14 .. ";}"
+	local stylesheet = "*{fill:" .. beautiful.fg_normal .. ";}"
 
 	local button = wibox.widget({
 		widget = wibox.container.background,

@@ -51,25 +51,25 @@ local function widget_create_callback(self, c, index)
 			onclick = function()
 				c.maximized = not c.maximized
 			end,
-      icon = icons.window_maximize
+			icon = icons.window_maximize,
 		},
 		{
 			name = "Fullscreen",
 			onclick = function()
 				c.fullscreen = not c.fullscreen
 			end,
-      icon = icons.window_fullscreen
+			icon = icons.window_fullscreen,
 		},
 		{
 			name = "Kill client",
 			onclick = function()
 				c:kill()
 			end,
-      icon = icons.window_close
+			icon = icons.window_close,
 		},
 	}
 	c.popup = require("widgets.menu")(menu_items)
-  c.popup.offset = {x = 40}
+	c.popup.offset = { x = 40 }
 end
 
 function M.initTaskList(s)
