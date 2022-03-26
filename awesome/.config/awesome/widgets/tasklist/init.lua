@@ -90,7 +90,7 @@ function M.initTaskList(s)
 						scaling_quility = "good",
 					},
 					widget = wibox.container.margin,
-					margins = dpi(2),
+					margins = dpi(5),
 				},
 				layout = wibox.layout.align.horizontal,
 				expand = "outside",
