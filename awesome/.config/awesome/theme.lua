@@ -38,7 +38,7 @@ theme.accent5 = xrdb.color14
 theme.accent6 = xrdb.color15
 
 theme.bar_height = dpi(36)
-theme.bar_opacity = "AA"
+theme.bar_opacity = "CC"
 theme.bar_font = "Inter medium 10"
 theme.bar_icon_text_spacing = dpi(5)
 theme.bar_icon_margin = dpi(2)
@@ -81,13 +81,13 @@ theme.tasklist_bg_focus = theme.bg_normal
 local taglist_square_size = dpi(0)
 theme.taglist_squares_sel = theme_assets.taglist_squares_sel(taglist_square_size, theme.fg_focus)
 theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_normal)
-theme.taglist_fg_focus = theme.fg_normal
+theme.taglist_fg_focus = theme.bg_normal
 theme.taglist_fg_urgent = theme.bg_normal
 theme.taglist_bg_focus = xrdb.color10
 theme.taglist_bg_urgent = xrdb.color9
 -- theme.taglist_bg_occupied = xrdb.color12
 -- theme.taglist_fg_occupied = xrdb.background
-theme.taglist_font = "inter bold 9"
+theme.taglist_font = "inter bold 12"
 theme.taglist_only_icons = true
 
 theme.notification_icon_size = dpi(50)

@@ -28,6 +28,13 @@ ruled.notification.connect_signal("request::rules", function()
 			bg = beautiful.color10,
 		},
 	})
+	ruled.notification.append_rule({
+		rule = { urgency = "low" },
+		properties = {
+			bg = beautiful.color14,
+			implicit_timeout = 5,
+		},
+	})
 end)
 
 -- Some magic that fixed missing icons
@@ -49,6 +56,37 @@ end)
 
 naughty.connect_signal("request::display", function(n)
 	if not is_dnd_on then
+		local actions_template = wibox.widget({
+			notification = n,
+			base_layout = wibox.widget({
+				spacing = dpi(0),
+				layout = wibox.layout.flex.horizontal,
+			}),
+			widget_template = {
+				{
+					{
+						{
+							{
+								id = "text_role",
+								font = "Inter Regular 10",
+								widget = wibox.widget.textbox,
+							},
+							widget = wibox.container.place,
+						},
+						widget = wibox.container.background,
+					},
+					bg = beautiful.groups_bg,
+					shape = gears.shape.rounded_rect,
+					forced_height = dpi(30),
+					widget = wibox.container.background,
+				},
+				margins = dpi(4),
+				widget = wibox.container.margin,
+			},
+			style = { underline_normal = false, underline_selected = true },
+			widget = naughty.list.actions,
+		})
+
 		local left_part = wibox.widget({
 			{
 				naughty.widget.icon,
@@ -83,6 +121,7 @@ naughty.connect_signal("request::display", function(n)
 					top = 5,
 					widget = wibox.container.margin,
 				},
+				actions_template,
 				expand = "inside",
 				spacing = 5,
 				layout = wibox.layout.align.vertical,

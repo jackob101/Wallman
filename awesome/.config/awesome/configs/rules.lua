@@ -5,32 +5,32 @@ local clientbuttons = require("configs.clientbuttons")
 
 local twoScreens = screen:count() == 2
 
-client.connect_signal("property::floating", function(c)
-	if c.floating then
-		awful.titlebar.show(c)
-	else
-		awful.titlebar.hide(c)
-	end
-end)
+-- client.connect_signal("property::floating", function(c)
+-- 	if c.floating then
+-- 		awful.titlebar.show(c)
+-- 	else
+-- 		awful.titlebar.hide(c)
+-- 	end
+-- end)
 
-client.connect_signal("manage", function(c)
-	if c.floating or c.first_tag.layout.name == "floating" then
-		awful.titlebar.show(c)
-	else
-		awful.titlebar.hide(c)
-	end
-end)
+-- client.connect_signal("manage", function(c)
+-- 	if c.floating or c.first_tag.layout.name == "floating" then
+-- 		awful.titlebar.show(c)
+-- 	else
+-- 		awful.titlebar.hide(c)
+-- 	end
+-- end)
 
-tag.connect_signal("property::layout", function(t)
-	local clients = t:clients()
-	for k, c in pairs(clients) do
-		if c.floating or c.first_tag.layout.name == "floating" then
-			awful.titlebar.show(c)
-		else
-			awful.titlebar.hide(c)
-		end
-	end
-end)
+-- tag.connect_signal("property::layout", function(t)
+-- 	local clients = t:clients()
+-- 	for k, c in pairs(clients) do
+-- 		if c.floating or c.first_tag.layout.name == "floating" then
+-- 			awful.titlebar.show(c)
+-- 		else
+-- 			awful.titlebar.hide(c)
+-- 		end
+-- 	end
+-- end)
 
 awful.rules.rules = {
 	{
@@ -42,7 +42,7 @@ awful.rules.rules = {
 			raise = true,
 			keys = clientkeys,
 			buttons = clientbuttons,
-			titlebars_enabled = true,
+			titlebars_enabled = false,
 			screen = awful.screen.preferred,
 			placement = awful.placement.no_overlap + awful.placement.no_offscreen,
 		},
@@ -70,6 +70,7 @@ awful.rules.rules = {
 				"xtightvncviewer",
 				"awakened-poe-trade",
 				"Pavucontrol",
+				"Thunar",
 			},
 			name = {
 				"Event Tester", -- xev.
@@ -81,6 +82,15 @@ awful.rules.rules = {
 			},
 		},
 		properties = { floating = true, placement = awful.placement.centered },
+	},
+	{
+		rule = {
+			class = "Thunar",
+		},
+		properties = {
+			width = 1000,
+			height = 800,
+		},
 	},
 
 	{
@@ -98,6 +108,15 @@ awful.rules.rules = {
 		},
 		properties = {
 			tag = "9",
+			screen = twoScreens and 2 or 1,
+		},
+	},
+	{
+		rule = {
+			name = "Spotify",
+		},
+		properties = {
+			tag = "8",
 			screen = twoScreens and 2 or 1,
 		},
 	},

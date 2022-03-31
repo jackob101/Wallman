@@ -56,22 +56,41 @@ awful.screen.connect_for_each_screen(function(s)
 		position = "bottom",
 		screen = s,
 		height = beautiful.bar_height,
-		bg = beautiful.bg_overlay_transparent,
+		bg = beautiful.bg_normal .. beautiful.bar_opacity,
 	})
 
 	-- Add spacing only after tags and divider widget
 	local left_widget = wibox.widget({
 		layout = wibox.layout.fixed.horizontal,
 		require("widgets.launcher").create(),
-		s.mytaglist,
 		{
-			widget = wibox.container.background,
-			forced_width = dpi(5),
-		},
-		create_spacing_widget(),
-		{
-			widget = wibox.container.background,
-			forced_width = dpi(5),
+			{
+				{
+					{
+						widget = wibox.container.background,
+						forced_width = dpi(2),
+						bg = beautiful.fg_normal,
+					},
+					widget = wibox.container.margin,
+					left = dpi(5),
+					right = dpi(5),
+				},
+				s.mytaglist,
+				{
+					{
+						widget = wibox.container.background,
+						forced_width = dpi(2),
+						bg = beautiful.fg_normal,
+					},
+					widget = wibox.container.margin,
+					left = dpi(5),
+					right = dpi(5),
+				},
+				layout = wibox.layout.fixed.horizontal,
+			},
+			widget = wibox.container.margin,
+			top = dpi(2),
+			bottom = dpi(2),
 		},
 		s.mytasklist,
 	})
@@ -96,7 +115,6 @@ awful.screen.connect_for_each_screen(function(s)
 		layout = wibox.layout.align.horizontal,
 		expand = "outside",
 		widget = wibox.container.background,
-		bg = beautiful.bg_normal .. beautiful.bar_opacity,
 		{
 			layout = wibox.layout.align.horizontal,
 			expand = "inside",

@@ -63,7 +63,9 @@ local conf = {
 			name = "7",
 		},
 		{
-			name = "8",
+			name = "Spotify",
+			icon_widget = icons.spotify.widget,
+			only_icon = true,
 		},
 		{
 			name = "Telegram",
@@ -84,7 +86,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
 			awful.tag.add(i, {
 				icon_only = false,
 				screen = s,
-				icon_widget = t.icon_widget or icons.circle.widget,
+				icon_widget = t.icon_widget,
 				layout = awful.layout.suit.tile,
 				selected = i == 1,
 				only_icon = t.only_icon,

@@ -50,6 +50,7 @@ return {
 	telegram = prepare_icon("telegram.svg"),
 	discord = prepare_icon("discord.svg"),
 	circle = prepare_icon("circle.svg"),
+	spotify = prepare_icon("spotify.svg"),
 	notification_center_open = dir .. "notification-center-open.svg",
 	notification_center_close = dir .. "notification-center-close.svg",
 }
