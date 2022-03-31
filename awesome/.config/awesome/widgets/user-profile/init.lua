@@ -46,7 +46,6 @@ local uptime_time = wibox.widget({
 	widget = wibox.widget.textbox,
 })
 
-
 awful.spawn.easy_async_with_shell(
 	[[
 	sh -c '
@@ -126,7 +125,7 @@ local user_profile = wibox.widget({
 		widget = wibox.container.margin,
 	},
 	forced_height = dpi(92),
-	bg = beautiful.bg_overlay_transparent,
+	-- bg = beautiful.bg_overlay_transparent,
 	widget = wibox.container.background,
 })
 

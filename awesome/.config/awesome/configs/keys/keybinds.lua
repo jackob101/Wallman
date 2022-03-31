@@ -62,21 +62,21 @@ keys.globalkeys = gears.table.join(
 		function ()
 			awful.screen.focused().central_panel:toggle()
 		end,
-		{ description = "Toggle macros", group = "awesome" }
+		{ description = "Toggle notification panel", group = "awesome" }
 	),
-	awful.key(
-		{ modkey },
-		"x",
-		function()
-			awful.prompt.run({
-					prompt = "Run Lua code: ",
-					textbox = awful.screen.focused().mypromptbox.widget,
-					exe_callback = awful.util.eval,
-					history_path = awful.util.get_cache_dir() .. "/history_eval",
-			})
-		end,
-		{ description = "lua execute prompt", group = "awesome", }
-	),
+	-- awful.key(
+	-- 	{ modkey },
+	-- 	"x",
+	-- 	function()
+	-- 		awful.prompt.run({
+	-- 				prompt = "Run Lua code: ",
+	-- 				textbox = awful.screen.focused().mypromptbox.widget,
+	-- 				exe_callback = awful.util.eval,
+	-- 				history_path = awful.util.get_cache_dir() .. "/history_eval",
+	-- 		})
+	-- 	end,
+	-- 	{ description = "lua execute prompt", group = "awesome", }
+	-- ),
 
 	--  ██████╗██╗     ██╗███████╗███╗   ██╗████████╗
 	-- ██╔════╝██║     ██║██╔════╝████╗  ██║╚══██╔══╝

@@ -116,16 +116,16 @@ calendar:buttons(gears.table.join(
 
 local widget = wibox.widget({
 	{
-    nil,
+		nil,
 		calendar,
 		top = dpi(15),
 		right = dpi(10),
 		left = dpi(10),
 		widget = wibox.container.margin,
-    layout = wibox.layout.align.horizontal,
-    expand = "outside",
+		layout = wibox.layout.align.horizontal,
+		expand = "outside",
 	},
-	bg = beautiful.bg_overlay_transparent,
+	-- bg = beautiful.bg_overlay_transparent,
 	widget = wibox.container.background,
 })
 
