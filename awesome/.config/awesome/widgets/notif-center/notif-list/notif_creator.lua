@@ -161,7 +161,7 @@ local function create(n)
 
 	local notification = wibox.widget({
 		widget = wibox.container.background,
-		bg = beautiful.bg_overlay_transparent,
+		bg = beautiful.bg_transparent,
 		{
 			{
 				layout = wibox.layout.fixed.vertical,
@@ -228,7 +228,7 @@ local function create(n)
 	end)
 
 	notification:connect_signal("mouse::leave", function()
-		notification.bg = beautiful.bg_overlay_transparent
+		notification.bg = beautiful.bg_transparent
 		dismiss.visible = false
 	end)
 

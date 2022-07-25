@@ -68,7 +68,7 @@ local function start(c)
 			if key == "Escape" then
 				self:stop()
 			end
-			-- If screen index is set skip this step. It proviedes easier way to switch between two screens
+			-- If screen index is set skip this step. It provides easier way to switch between two screens
 			if screen_index == nil then
 				local number = tonumber(key)
 				-- Check if number is in range from 1 to screen amount
@@ -83,12 +83,8 @@ local function start(c)
 				local number = tonumber(key)
 				if number and number >= 0 and number <= 9 then
 					tag_index = number
-					self:stop()
-				else
-					-- TODO Implement some error hanndling
-					print("error second")
-					self:stop()
 				end
+				self:stop()
 			end
 		end,
 	})

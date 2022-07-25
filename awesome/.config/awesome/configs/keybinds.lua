@@ -1,12 +1,27 @@
 local awful = require("awful")
 local gears = require("gears")
 local hotkeys_popup = require("awful.hotkeys_popup")
-local modkey = require("configs.keys.mod").modkey
-local volume_widget = require("widgets.volume-widget.volume")
-local input_helpers = require("configs.keys.input_helpers")
+local modkey = require("configs.mod").modkey
 local client_mover = require("modules.client_mover")
 
 require("awful.hotkeys_popup.keys")
+
+local function press_button(button)
+	root.fake_input("key_press", button)
+	root.fake_input("key_release", button)
+end
+
+local function pop_flasks()
+	press_button("2")
+	press_button("3")
+	press_button("4")
+	press_button("5")
+end
+
+local function mouse_button_press(button_id, _, _)
+	root.fake_input("button_press", button_id)
+	root.fake_input("button_release", button_id)
+end
 
 local keys = {}
 
@@ -64,19 +79,6 @@ keys.globalkeys = gears.table.join(
 		end,
 		{ description = "Toggle notification panel", group = "awesome" }
 	),
-	-- awful.key(
-	-- 	{ modkey },
-	-- 	"x",
-	-- 	function()
-	-- 		awful.prompt.run({
-	-- 				prompt = "Run Lua code: ",
-	-- 				textbox = awful.screen.focused().mypromptbox.widget,
-	-- 				exe_callback = awful.util.eval,
-	-- 				history_path = awful.util.get_cache_dir() .. "/history_eval",
-	-- 		})
-	-- 	end,
-	-- 	{ description = "lua execute prompt", group = "awesome", }
-	-- ),
 
 	--  ██████╗██╗     ██╗███████╗███╗   ██╗████████╗
 	-- ██╔════╝██║     ██║██╔════╝████╗  ██║╚══██╔══╝
@@ -145,10 +147,6 @@ keys.globalkeys = gears.table.join(
 		{ description = "restore minimized", group = "client", }
 	),
 
-	-- awful.key(
-	-- 	{ modkey },
-	-- 	""
-	-- )
 
 	-- ██╗      █████╗ ██╗   ██╗███╗   ██╗ ██████╗██╗  ██╗███████╗██████╗ 
 	-- ██║     ██╔══██╗██║   ██║████╗  ██║██╔════╝██║  ██║██╔════╝██╔══██╗
@@ -197,12 +195,16 @@ keys.globalkeys = gears.table.join(
 		{ description = "Spawn emacs", group = "launcher" }
 	),
 	awful.key(
-		{ modkey, "Shift" },
-		"d",
-		function() awesome.emit_signal("dashboard::toggle") end,
-		{ description = "Display dashboard", group = "launcher" }
+			{ modkey, "Ctrl"},
+			"d",
+			function()
+				awesome.emit_signal("dashboard::toggle")
+			end,
+			{
+				description = "Open dashboard",
+				group = "launcher"
+			}
 	),
-
 	-- ██╗      █████╗ ██╗   ██╗ ██████╗ ██╗   ██╗████████╗
 	-- ██║     ██╔══██╗╚██╗ ██╔╝██╔═══██╗██║   ██║╚══██╔══╝
 	-- ██║     ███████║ ╚████╔╝ ██║   ██║██║   ██║   ██║
@@ -256,7 +258,6 @@ keys.globalkeys = gears.table.join(
 		{ modkey },
 		"space",
 		function() 
-			gears.debug.dump(awful.layout)
 			awful.layout.inc(1) end,
 		{ description = "select next", group = "layout", }
 	),
@@ -497,50 +498,6 @@ keys.clientkeys = gears.table.join(
 			client_mover(c)
 		end
 	),
-	-- awful.key(
-	-- 	{ modkey },
-	-- 	"o",
-	-- 	function(c) c:move_to_screen() end,
-	-- 	{ description = "move to screen", group = "client", }
-	-- ),
-	-- awful.key(
-	-- 	{modkey, "Shift"},
-	-- 	"o",
-	-- 	function(c)
-	-- 		local currentIndex = c.screen.index
-	-- 		local nextIndex = ((currentIndex) % (screen.count())) + 1
-	-- 		c:move_to_screen(nextIndex)
-	-- 		local tags = screen[nextIndex].tags
-	-- 		for k, v in pairs(tags) do
-	-- 			local clientsLength = #(v:clients())
-	-- 			if clientsLength == 0 then
-	-- 				c:move_to_tag(screen[nextIndex].tags[k])
-	-- 				v:view_only()
-	-- 				break
-	-- 			end
-	-- 		end
-	-- 	end,
-	-- 	{ description = "Move to free tag on next screen and focus it", group = "client" }
-	-- ),
-	-- awful.key(
-	-- 	{modkey, "Shift", "Ctrl"},
-	-- 	"o",
-	-- 	function(c)
-	-- 		local currentIndex = c.screen.index
-	-- 		local nextIndex = ((currentIndex) % (screen.count())) + 1
-	-- 		c:move_to_screen(nextIndex)
-	-- 		local tags = screen[nextIndex].tags
-	-- 		for k, v in pairs(tags) do
-	-- 			local clientsLength = #(v:clients())
-	-- 			if clientsLength == 0 then
-	-- 				c:move_to_tag(screen[nextIndex].tags[k])
-	-- 				c.urgent = true
-	-- 				break
-	-- 			end
-	-- 		end
-	-- 	end,
-	-- 	{ description = "Move to free tag on next screen without focusing", group = "client" }
-	-- ),
 	awful.key(
 		{ modkey },
 		"t",
@@ -558,48 +515,51 @@ keys.clientkeys = gears.table.join(
 		{ modkey },
 		"m",
 		function(c)
-			c.maximized = not c.maximized
-			c:raise()
+			--c.maximized = not c.maximized
+			--c:raise()
+			c:maximize()
 		end,
 		{ description = "(un)maximize", group = "client", }
 	)
 
 )
-
 keys.macro_keybinds = gears.table.join(
-	awful.key(
-		{},
-		"F1",
-		function ()
-			input_helpers.mouse_button_press(1)
-		end,
-		{ description = "Spam click LMB", group = "Macros" }
-	),
-	awful.key(
-		{"Shift"},
-		"F1",
-		function ()
-			root.fake_input("key_press", "Shift_L")
-			input_helpers.mouse_button_press(1)
-		end,
-		function ()
-			root.fake_input("key_release", "Shift_L")
-		end,
-		{ description = "Spam click Shift + LMB", group = "Macros" }
-	),
-	awful.key(
-		{"Ctrl"},
-		"F1",
-		function ()
-			root.fake_input("key_press", "Control_L")
-			input_helpers.mouse_button_press(1)
-		end,
-		function ()
-			root.fake_input("key_release", "Control_L")
-		end,
-		{ description = "Spam click Control + LMB", group = "Macros" }
-	)
+		awful.key(
+				{},
+				"F1",
+				function ()
+					mouse_button_press(1)
+				end,
+				{ description = "Spam click LMB", group = "Macros" }
+		),
+		awful.key(
+				{"Shift"},
+				"F1",
+				function ()
+					root.fake_input("key_press", "Shift_L")
+					mouse_button_press(1)
+				end,
+				function ()
+					root.fake_input("key_release", "Shift_L")
+				end,
+				{ description = "Spam click Shift + LMB", group = "Macros" }
+		),
+		awful.key(
+				{"Ctrl"},
+				"F1",
+				function ()
+					root.fake_input("key_press", "Control_L")
+					mouse_button_press(1)
+				end,
+				function ()
+					root.fake_input("key_release", "Control_L")
+				end,
+				{ description = "Spam click Control + LMB", group = "Macros" }
+		)
 )
-
 -- Stylua:ignore end
+
+root.keys(keys.globalkeys)
+
+
 return keys 

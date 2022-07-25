@@ -68,3 +68,7 @@
 (package! typescript-mode)
 
 (package! centaur-tabs)
+
+(package! cargo-mode)
+
+(package! flycheck-pos-tip)

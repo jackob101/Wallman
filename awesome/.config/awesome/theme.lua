@@ -15,12 +15,11 @@ awesome.set_preferred_icon_size(128)
 
 local theme = {}
 
+--  Theme font
 theme.font = "inter medium 9"
-theme.transparent = "#FFFFFF00"
 
-theme.groups_bg = xrdb.color2 .. "77"
-theme.useless_gap = dpi(5)
 
+-- General settings
 theme.color8 = xrdb.color8
 theme.color9 = xrdb.color9
 theme.color10 = xrdb.color10
@@ -37,11 +36,8 @@ theme.accent4 = xrdb.color13
 theme.accent5 = xrdb.color14
 theme.accent6 = xrdb.color15
 
-theme.bar_height = dpi(36)
-theme.bar_opacity = "CC"
-theme.bar_font = "Inter medium 10"
-theme.bar_icon_text_spacing = dpi(5)
-theme.bar_icon_margin = dpi(2)
+theme.useless_gap = dpi(5)
+theme.gap_single_client = false
 
 theme.bg_normal = xrdb.background or "#2E3440"
 theme.bg_overlay = xrdb.color1
@@ -57,6 +53,96 @@ theme.fg_normal = xrdb.foreground or "#8DEE9"
 theme.fg_focus = xrdb.foreground or "#ECEFF4"
 theme.fg_urgent = xrdb.color9 or "#D08770"
 theme.fg_minimize = xrdb.foreground or "#D8DEE9"
+
+
+-- Status bar
+theme.bar_height = dpi(32)
+theme.bar_opacity = "FF"
+theme.bar_icon_text_spacing = dpi(5)
+theme.bar_icon_margin = dpi(2)
+
+theme.groups_bg = xrdb.color2 .. "77"
+
+-- Generate taglist squares:
+theme.taglist_squares_sel = theme_assets.taglist_squares_sel(dpi(0), theme.fg_focus)
+theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(dpi(0), theme.fg_normal)
+theme.taglist_fg_focus = theme.fg_normal
+theme.taglist_fg_urgent = theme.fg_normal
+theme.taglist_bg_focus = xrdb.color10
+theme.taglist_bg_urgent = xrdb.color9
+theme.taglist_bg_occupied = theme.bg_overlay_transparent
+-- theme.taglist_bg_occupied = xrdb.color12
+-- theme.taglist_fg_occupied = xrdb.background
+theme.taglist_font = "inter bold 12"
+theme.taglist_only_icons = true
+
+----    Tag
+
+theme.tag = {
+    label_margins = dpi(5),
+    label_forced_width = dpi(25),
+
+    tasks_margins = dpi(6),
+    tasks_spacing = dpi(7),
+    tasks_right_margin = dpi(9),
+
+    underline_height = dpi(3),
+    hover_color = "#FFFFFF15"
+}
+
+theme.titlebar = {
+    control_button_width = dpi(40),
+    control_button_margins = dpi(6),
+    control_button_hover_color = "#FFFFFF22",
+
+    floating_symbol = "✈",
+    floating_font = "inter medium 11",
+
+    icon_padding = dpi(3),
+
+    left_components_spacing = dpi(5),
+
+    close_color = theme.color9,
+    maximize_color = theme.color10,
+    minimize_color = theme.color11,
+}
+
+theme.task = {
+    task_spacing = dpi(5),
+
+    top_margin = dpi(4),
+    bottom_margin = dpi(4),
+    left_margin = dpi(8),
+    right_margin = dpi(8),
+}
+
+theme.dashboard = {
+
+}
+
+theme.tiling_status = {
+    bg = theme.color10,
+    left_margin = dpi(8),
+    right_margin = dpi(8),
+    fg = theme.bg_normal,
+    font = "inter medium 10",
+}
+
+theme.notification = {
+    bg = theme.bg_overlay .. "99",
+    width = dpi(320),
+    box_padding = dpi(10),
+    border_normal = theme.bg_hover,
+    border_urgent = theme.bg_urgent,
+    message_height = dpi(40),
+}
+
+
+-- Bling configs
+theme.flash_focus_start_opacity = 0.7
+theme.flash_focus_step = 0.02
+
+theme.transparent = "#FFFFFF00"
 
 theme.border_width = dpi(1)
 theme.border_normal = xrdb.color6 or "#000000"
@@ -75,26 +161,16 @@ theme.tooltip_font = "Inter 10"
 theme.tooltip_border_width = dpi(1)
 theme.tooltip_border_color = theme.border_normal
 
-theme.tasklist_bg_focus = theme.bg_normal
-
--- Generate taglist squares:
-local taglist_square_size = dpi(0)
-theme.taglist_squares_sel = theme_assets.taglist_squares_sel(taglist_square_size, theme.fg_focus)
-theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_normal)
-theme.taglist_fg_focus = theme.bg_normal
-theme.taglist_fg_urgent = theme.bg_normal
-theme.taglist_bg_focus = xrdb.color10
-theme.taglist_bg_urgent = xrdb.color9
--- theme.taglist_bg_occupied = xrdb.color12
--- theme.taglist_fg_occupied = xrdb.background
-theme.taglist_font = "inter bold 12"
-theme.taglist_only_icons = true
+theme.tasklist_bg_focus = theme.bg_focus
+theme.tasklist_bg_normal = theme.transparent
+theme.tasklist_disable_task_name = false
+theme.tasklist_plain_task_name = true
 
 theme.notification_icon_size = dpi(50)
-theme.notification_max_width = dpi(400)
+--theme.notification_max_width = dpi(400)
 -- theme.notification_height = 150
-theme.notification_spacing = 5
-theme.notification_box_margin = 10
+theme.notification_spacing = dpi(20)
+--theme.notification_box_margin = 10
 theme.notification_title_font = "inter medium 11"
 
 theme.systray_icon_spacing = 5
@@ -107,7 +183,7 @@ theme.dashboard_border_width = dpi(2)
 theme.dashboard_border_color = theme.bg_focus
 theme.dashboard_margin = dpi(20)
 
-theme.central_panel_max_width = dpi(800)
+theme.central_panel_max_width = dpi(400)
 theme.central_panel_max_height = dpi(700)
 
 theme.menu_icon_size = dpi(16)
@@ -126,9 +202,16 @@ theme.menu_width = dpi(100)
 -- beautiful.variable in your rc.lua
 --theme.bg_widget = "#cc0000"
 
-theme.titlebar_bg_normal = theme.bg_overlay
-theme.titlebar_bg = theme.bg_overlay
-theme.titlebar_bg_focus = theme.bg_focus
+theme.titlebar_bg_normal = theme.bg_normal
+theme.titlebar_bg = theme.bg_normal
+theme.titlebar_bg_focus = theme.bg_normal
+theme.titlebar_controls_spacing = dpi(25)
+theme.titlebar_left_edge_padding = dpi(8)
+theme.titlebar_right_edge_padding = dpi(15)
+theme.titlebar_icon_padding = dpi(3)
+theme.titlebar_top_edge_padding = dpi(3)
+theme.titlebar_bottom_edge_padding = dpi(3)
+theme.titlebar_controls_hover_overlay = "#FFFFFF22"
 -- Define the image to load
 theme.titlebar_close_button_normal = themes_path .. "default/titlebar/close_normal.png"
 theme.titlebar_close_button_focus = themes_path .. "default/titlebar/close_focus.png"

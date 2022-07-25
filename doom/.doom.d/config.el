@@ -62,6 +62,7 @@
       +zen-text-scale 1)
 
 (after! flyspell
+  (flycheck-pos-tip-mode t)
   (setq flyspell-lazy-idle-seconds .4))
 
 (use-package! projectile
@@ -125,7 +126,7 @@
 (map! :map company-active-map
       "<return>" nil
       "<tab>" 'company-complete-selection
-      "RET" nil)
+      "RET" 'company-complete-selection)
 
 (map! :map org-mode-map
       "C-9" 'org-previous-visible-heading
@@ -136,7 +137,9 @@
  :desc "Switch to next buffer" "C-S-l" 'centaur-tabs-forward
  :desc "Switch to previous buffer" "C-S-h" 'centaur-tabs-backward
  :desc "Next window" "C-M-h" 'evil-window-left
- :desc "Next window" "C-M-l" 'evil-window-right)
+ :desc "Next window" "C-M-l" 'evil-window-right
+ :desc "Window on bottom" "C-M-j" 'evil-window-bottom
+ :desc "Window on bottom" "C-M-k" 'evil-window-up)
 
 (map! :leader :desc "Ace window" "w TAB" 'ace-window)
 (map! :leader :desc "Indent buffer" "b =" 'er-indent-region-or-buffer
@@ -290,3 +293,9 @@
 
 ;; (after! lsp-mode
 ;;   (add-to-list 'lsp-clients-lua-language-server-args "--preview"))
+
+;; RUST
+
+(setq rustic-format-on-save t)
+(add-hook 'rust-mode-hook
+          (lambda () (prettify-symbols-mode)))

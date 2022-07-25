@@ -25,7 +25,6 @@ function M.show()
 		end
     return true
 	end, "left_ptr")
-  print("After grabber") 
 end
 
 return M
