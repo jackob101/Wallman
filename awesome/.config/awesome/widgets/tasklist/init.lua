@@ -5,7 +5,7 @@ local dpi = require("beautiful").xresources.apply_dpi
 local utils = require("utils")
 local beautiful = require("beautiful")
 local icons = require("icons")
-local config = beautiful.task
+local theme = beautiful.task
 
 
 
@@ -83,7 +83,7 @@ local function create(s)
         screen = s,
         filter = awful.widget.tasklist.filter.currenttags,
         layout = {
-            spacing = config.task_spacing,
+            spacing = theme.task_spacing,
             layout = wibox.layout.fixed.horizontal,
         },
         widget_template = {
@@ -96,10 +96,10 @@ local function create(s)
                         scaling_quality = "good",
                     },
                     widget = wibox.container.margin,
-                    top = config.top_margin,
-                    bottom = config.bottom_margin,
-                    left = config.left_margin,
-                    right = config.right_margin,
+                    top = theme.top_margin,
+                    bottom = theme.bottom_margin,
+                    left = theme.left_margin,
+                    right = theme.right_margin,
                 },
                 layout = wibox.layout.align.horizontal,
                 expand = "outside",

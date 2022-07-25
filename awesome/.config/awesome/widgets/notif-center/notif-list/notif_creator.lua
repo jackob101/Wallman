@@ -6,6 +6,7 @@ local gears = require("gears")
 local awful = require("awful")
 local utils = require("utils")
 local naughty = require("naughty")
+local theme = beautiful.notification_center
 
 local notif_core = require("widgets.notif-center.notif-list")
 
@@ -161,7 +162,7 @@ local function create(n)
 
 	local notification = wibox.widget({
 		widget = wibox.container.background,
-		bg = beautiful.bg_transparent,
+		bg = theme.notification_bg,
 		{
 			{
 				layout = wibox.layout.fixed.vertical,
@@ -223,12 +224,12 @@ local function create(n)
 	utils.cursor_hover(notification)
 
 	notification:connect_signal("mouse::enter", function()
-		notification.bg = beautiful.bg_hover_transparent
+		notification.bg = theme.notification_bg_hover
 		dismiss.visible = true
 	end)
 
 	notification:connect_signal("mouse::leave", function()
-		notification.bg = beautiful.bg_transparent
+		notification.bg = theme.notification_bg
 		dismiss.visible = false
 	end)
 

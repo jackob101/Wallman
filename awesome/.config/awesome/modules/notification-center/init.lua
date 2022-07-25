@@ -3,10 +3,11 @@ local beautiful = require("beautiful")
 local wibox = require("wibox")
 local rubato = require("lib.rubato")
 local calendar = require("modules.notification-center.notification-calendar")
+local theme = beautiful.notification_center
 
 local notification_center_border = wibox.widget({
-    bg = beautiful.border_normal,
-    forced_width = beautiful.notification_center_border_width,
+    bg = theme.border_color,
+    forced_width = theme.border_width,
     widget = wibox.container.background,
 })
 
@@ -17,12 +18,12 @@ screen.connect_signal("request::desktop_decoration",
         visible = false,
         ontop = true,
         type = "dock",
-        bg = beautiful.bg_normal .. beautiful.notification_center_opacity,
-        x = (s.geometry.width * s.index) - beautiful.notification_center_width,
+        bg = theme.bg,
+        x = (s.geometry.width * s.index) - theme.width,
         y = beautiful.bar_height,
         screen = s,
         height = s.geometry.height - beautiful.bar_height,
-        width = beautiful.notification_center_width,
+        width = theme.width,
         opacity = 0,
     })
 

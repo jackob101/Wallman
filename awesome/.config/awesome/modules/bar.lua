@@ -94,7 +94,7 @@ awful.screen.connect_for_each_screen(function(s)
         position = "bottom",
         screen = s,
         height = beautiful.bar_height,
-        bg = beautiful.bg_normal .. beautiful.bar_opacity,
+        bg = beautiful.black .. beautiful.bar_opacity,
     })
 
 

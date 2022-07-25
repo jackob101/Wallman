@@ -18,11 +18,20 @@ local theme = {}
 --  Theme font
 theme.font = "inter medium 9"
 
+theme.green = "#9ece6a"
+theme.red = "#f7768e"
+theme.aqua = "#73daca"
+theme.orange = "#ff9e64"
+theme.blue = "#2ac3de"
+theme.black = "#24283b"
+theme.gray = "#414868"
+theme.light_gray = "#565f89"
+theme.light = "#a9b1d6"
 
 -- General settings
 theme.color8 = xrdb.color8
-theme.color9 = xrdb.color9
-theme.color10 = xrdb.color10
+theme.color9 = "#f7768e"
+theme.color10 = "#9ece6a"
 theme.color11 = xrdb.color11
 theme.color12 = xrdb.color12
 theme.color13 = xrdb.color13
@@ -39,14 +48,15 @@ theme.accent6 = xrdb.color15
 theme.useless_gap = dpi(5)
 theme.gap_single_client = false
 
-theme.bg_normal = xrdb.background or "#2E3440"
-theme.bg_overlay = xrdb.color1
-theme.bg_transparent = theme.bg_normal .. "AA"
-theme.bg_focus = xrdb.color2 or "#535d6c"
+theme.bg_normal = theme.black
+
+theme.bg_overlay = "#414868"
+theme.bg_transparent = theme.black .. "AA"
+theme.bg_focus = theme.gray
 theme.bg_overlay_transparent = theme.bg_overlay .. "EE"
-theme.bg_hover = xrdb.color3
+theme.bg_hover = theme.light_gray
 theme.bg_hover_transparent = theme.bg_hover .. "AA"
-theme.bg_urgent = xrdb.color9 or "#D08770"
+theme.bg_urgent = theme.red
 theme.bg_minimize = xrdb.color8 or "#3B4252"
 
 theme.fg_normal = xrdb.foreground or "#8DEE9"
@@ -68,7 +78,7 @@ theme.taglist_squares_sel = theme_assets.taglist_squares_sel(dpi(0), theme.fg_fo
 theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(dpi(0), theme.fg_normal)
 theme.taglist_fg_focus = theme.fg_normal
 theme.taglist_fg_urgent = theme.fg_normal
-theme.taglist_bg_focus = xrdb.color10
+theme.taglist_bg_focus = theme.color10
 theme.taglist_bg_urgent = xrdb.color9
 theme.taglist_bg_occupied = theme.bg_overlay_transparent
 -- theme.taglist_bg_occupied = xrdb.color12
@@ -78,6 +88,11 @@ theme.taglist_only_icons = true
 
 ----    Tag
 
+theme.exit_screen = {
+    bg = theme.black .. "CC",
+    fg = theme.light,
+    groups_bg = theme.gray
+}
 theme.tag = {
     label_margins = dpi(5),
     label_forced_width = dpi(25),
@@ -124,17 +139,34 @@ theme.tiling_status = {
     bg = theme.color10,
     left_margin = dpi(8),
     right_margin = dpi(8),
-    fg = theme.bg_normal,
+    fg = theme.black,
     font = "inter medium 10",
 }
 
 theme.notification = {
-    bg = theme.bg_overlay .. "99",
+    bg = theme.gray .. "99",
     width = dpi(320),
     box_padding = dpi(10),
-    border_normal = theme.bg_hover,
-    border_urgent = theme.bg_urgent,
+    border_normal = theme.light_gray,
+    border_urgent = theme.red,
     message_height = dpi(40),
+}
+
+theme.tooltip = {
+    bg = theme.gray,
+    margins = dpi(10),
+    font = "Inter 10",
+    border_width = dpi(1),
+    border_color = theme.light_gray
+}
+
+theme.notification_center = {
+    bg = theme.black .. "AA",
+    width = dpi(350),
+    border_width = dpi(3),
+    border_color = theme.gray,
+    notification_bg = theme.gray .. "44",
+    notification_bg_hover = theme.gray .. "AA",
 }
 
 
@@ -155,14 +187,12 @@ theme.hotkeys_border_color = xrdb.color5
 theme.hotkeys_modifiers_fg = xrdb.color11
 theme.hotkeys_label_bg = xrdb.color10
 
-theme.tooltip_bg = xrdb.color1
-theme.tooltip_margins = dpi(10)
-theme.tooltip_font = "Inter 10"
-theme.tooltip_border_width = dpi(1)
-theme.tooltip_border_color = theme.border_normal
+theme.tooltip_font = theme.tooltip.font
+theme.tooltip_border_width = theme.tooltip.border_width
+theme.tooltip_border_color = theme.tooltip.border_color
 
 theme.tasklist_bg_focus = theme.bg_focus
-theme.tasklist_bg_normal = theme.transparent
+theme.tasklist_black = theme.transparent
 theme.tasklist_disable_task_name = false
 theme.tasklist_plain_task_name = true
 
@@ -202,9 +232,9 @@ theme.menu_width = dpi(100)
 -- beautiful.variable in your rc.lua
 --theme.bg_widget = "#cc0000"
 
-theme.titlebar_bg_normal = theme.bg_normal
-theme.titlebar_bg = theme.bg_normal
-theme.titlebar_bg_focus = theme.bg_normal
+theme.titlebar_bg_normal = theme.black
+theme.titlebar_bg = theme.black
+theme.titlebar_bg_focus = theme.black
 theme.titlebar_controls_spacing = dpi(25)
 theme.titlebar_left_edge_padding = dpi(8)
 theme.titlebar_right_edge_padding = dpi(15)

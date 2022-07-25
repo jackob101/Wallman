@@ -4,6 +4,7 @@ local gears = require("gears")
 local beautiful = require("beautiful")
 local notif_center = require("widgets.notif-center")
 local dpi = beautiful.xresources.apply_dpi
+local theme = beautiful.notification_center
 
 local function create(s)
 	s.notif_center = notif_center(s)
@@ -16,7 +17,9 @@ local function create(s)
 		ontop = true,
 		type = "dock",
 		shape = gears.shape.rectangle,
-		bg = beautiful.bg_transparent,
+		bg = theme.bg,
+		border_width = theme.border_width,
+		border_color = theme.border_color,
 		maximum_width = beautiful.central_panel_max_width,
 		maximum_height = beautiful.central_panel_max_height,
 		minimum_height = beautiful.central_panel_max_height,

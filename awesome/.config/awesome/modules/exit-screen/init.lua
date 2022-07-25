@@ -6,6 +6,7 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local clickable_container = require("modules.exit-screen.clickable-container")
 local naughty = require("naughty")
+local theme = beautiful.exit_screen
 
 local greeter_message = wibox.widget {
   markup = 'Choose wisely!',
@@ -53,7 +54,7 @@ local build_power_button = function(name, icon, callback)
           margins = dpi(16),
           widget = wibox.container.margin
         },
-        bg = beautiful.groups_bg,
+        bg = theme.groups_bg,
         widget = wibox.container.background
       },
       shape = gears.shape.rounded_rect,
@@ -121,8 +122,8 @@ local create_exit_screen = function(s)
     type = 'splash',
     visible = false,
     ontop = true,
-    bg = beautiful.bg_normal .. "CC",
-    fg = beautiful.fg_normal,
+    bg = theme.bg,
+    fg = theme.fg,
     height = s.geometry.height,
     width = s.geometry.width,
     x = s.geometry.x,
