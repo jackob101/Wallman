@@ -1,7 +1,6 @@
 local dpi = require("beautiful.xresources").apply_dpi
 local wibox = require("wibox")
 local naughty = require("naughty")
-local gears = require("gears")
 
 local notiflist_scroller = require("widgets.notif-center.notif-list.notiflist_scroller")
 local empty_list = require("widgets.notif-center.notif-list.empty_list_widget")

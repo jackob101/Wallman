@@ -2,54 +2,68 @@ local dir = os.getenv("HOME") .. "/.config/awesome/icons/"
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 
-local function prepare_icon(name)
+--- @class IconsHandler : Initializable
+--- @field icons Icon[]
+IconsHandler = {}
+
+function IconsHandler.init()
+
+
+	--- @field clock Icon
+	IconsHandler.icons = {
+		clock = IconsHandler.addIcon("clock.svg"),
+		power = IconsHandler.addIcon( "power.svg"),
+		restart = IconsHandler.addIcon( "restart.svg"),
+		sleep = IconsHandler.addIcon( "power-sleep.svg"),
+		logout = IconsHandler.addIcon( "logout.svg"),
+		default = IconsHandler.addIcon( "account.png"),
+		lock = IconsHandler.addIcon( "lock.svg"),
+		volume = IconsHandler.addIcon( "volume.svg"),
+		posture = IconsHandler.addIcon( "heart.svg"),
+		logo = IconsHandler.addIcon( "arch.svg"),
+		clock = IconsHandler.addIcon("clock.svg"),
+		keyboard = IconsHandler.addIcon( "keyboard.svg"),
+		macros = IconsHandler.addIcon( "macro.svg"),
+		bell = IconsHandler.addIcon( "bell.svg"),
+		bell_slash = IconsHandler.addIcon( "bell-slash.svg"),
+		calendar = IconsHandler.addIcon("calendar.svg"),
+		volume_high = IconsHandler.addIcon( "volume-high.svg"),
+		volume_medium = IconsHandler.addIcon( "volume-medium.svg"),
+		volume_low = IconsHandler.addIcon( "volume-low.svg"),
+		volume_mute = IconsHandler.addIcon( "volume-mute.svg"),
+		window_minimize = IconsHandler.addIcon("window-minimize.svg"),
+		window_maximize = IconsHandler.addIcon("window-maximize.svg"),
+		window_expand = IconsHandler.addIcon( "expand.svg"),
+		window_fullscreen = IconsHandler.addIcon( "fullscreen.svg"),
+		window_close = IconsHandler.addIcon("close.svg"),
+		list_clear = IconsHandler.addIcon("list-clear.svg"),
+		planet = IconsHandler.addIcon("planet.svg"),
+		terminal = IconsHandler.addIcon("terminal.svg"),
+		code_tags = IconsHandler.addIcon("code-tags.svg"),
+		telegram = IconsHandler.addIcon("telegram.svg"),
+		discord = IconsHandler.addIcon("discord.svg"),
+		circle = IconsHandler.addIcon("circle.svg"),
+		spotify = IconsHandler.addIcon("spotify.svg"),
+		notification_center_open = IconsHandler.addIcon( "notification-center-open.svg"),
+		notification_center_close = IconsHandler.addIcon( "notification-center-close.svg"),
+	}
+
+
+end
+
+--- @return Icon
+function IconsHandler.addIcon(fileName)
 	return {
 		widget = function(color)
-			local icon_color = color or beautiful.fg_normal
+			local icon_color = color or Beautiful.fg_normal
 			local stylesheet = "*{fill: " .. icon_color .. " ;}"
-			return wibox.widget({
-				widget = wibox.widget.imagebox,
-				image = dir .. name,
+			return Wibox.widget({
+				widget = Wibox.widget.imagebox,
+				image = dir .. fileName,
 				stylesheet = stylesheet,
 			})
 		end,
-		raw_icon = dir .. name,
+		path = dir .. fileName,
 	}
 end
 
-return {
-	power = dir .. "power.svg",
-	restart = dir .. "restart.svg",
-	sleep = dir .. "power-sleep.svg",
-	logout = dir .. "logout.svg",
-	default = dir .. "account.png",
-	lock = dir .. "lock.svg",
-	volume = dir .. "volume.svg",
-	posture = dir .. "heart.svg",
-	logo = dir .. "arch.svg",
-	clock = prepare_icon("clock.svg"),
-	keyboard = dir .. "keyboard.svg",
-	macros = dir .. "macro.svg",
-	bell = dir .. "bell.svg",
-	bell_slash = dir .. "bell-slash.svg",
-	calendar = prepare_icon("calendar.svg"),
-	volume_high = dir .. "volume-high.svg",
-	volume_medium = dir .. "volume-medium.svg",
-	volume_low = dir .. "volume-low.svg",
-	volume_mute = dir .. "volume-mute.svg",
-	window_minimize = prepare_icon("window-minimize.svg"),
-	window_maximize = prepare_icon("window-maximize.svg"),
-	window_expand = dir .. "expand.svg",
-	window_fullscreen = dir .. "fullscreen.svg",
-	window_close = prepare_icon("close.svg"),
-	list_clear = prepare_icon("list-clear.svg"),
-	planet = prepare_icon("planet.svg"),
-	terminal = prepare_icon("terminal.svg"),
-	code_tags = prepare_icon("code-tags.svg"),
-	telegram = prepare_icon("telegram.svg"),
-	discord = prepare_icon("discord.svg"),
-	circle = prepare_icon("circle.svg"),
-	spotify = prepare_icon("spotify.svg"),
-	notification_center_open = dir .. "notification-center-open.svg",
-	notification_center_close = dir .. "notification-center-close.svg",
-}

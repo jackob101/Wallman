@@ -13,7 +13,7 @@ client.connect_signal("request::manage", function(c)
             self.x = sc.geometry.x
             self.y = sc.geometry.y
             self.width = 1920
-            self.height = 1080 - beautiful.bar_height
+            self.height = 1080 - Beautiful.bar.barHeight
         end
     end
 

@@ -79,7 +79,7 @@ end
 local function create_dismiss()
 	local dismiss_icon = wibox.widget({
 		widget = wibox.widget.imagebox,
-		image = icons.window_close,
+		image = IconsHandler.icons.window_close.path,
 		forced_height = dpi(10),
 		forced_width = dpi(10),
 		resize = true,

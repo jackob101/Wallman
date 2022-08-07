@@ -4,7 +4,6 @@ local wibox = require("wibox")
 
 local dpi = require("beautiful").xresources.apply_dpi
 
-local icons = require("icons")
 
 local beautiful = require("beautiful")
 
@@ -20,7 +19,7 @@ local empty_notifbox = wibox.widget({
             nil,
             {
                 stylesheet = stylesheet,
-                image = icons.bell,
+                image = IconsHandler.icons.bell.path,
                 resize = true,
                 forced_height = dpi(35),
                 forced_width = dpi(35),

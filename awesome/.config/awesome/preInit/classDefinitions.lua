@@ -1,0 +1,56 @@
+--- @class Gears
+---
+---
+--- @class Wibox
+---
+---
+--- @class Awful
+--- @field screen Screen
+--- @field key fun(): Key[]
+---
+---
+--- @class Naughty
+---
+---
+--- @class Ruled
+---
+---
+--- @class Menubar
+---
+---
+--- @class Notification
+---
+---
+--- @class Client
+---
+---
+--- @class Widget
+---
+---
+--- @class Screen
+---
+---
+--- @class BaseWidget
+--- @field new fun(s: Screen)
+---
+--- @class Dpi
+---
+--- @class MacroUpdatable : BaseWidget
+--- @field update fun(self: MacroUpdatable, isOn:boolean)
+---
+---
+--- @class Icon
+--- @field widget fun(color: string):Widget A field that contains prepared widget
+--- @field path string path to the icon
+---
+
+--- @class KeybindingsInit
+--- @field init fun(keybinds)
+
+
+--- @class Initializable
+--- @field isInitialized boolean
+--- @field init fun()
+
+
+--- @class Key

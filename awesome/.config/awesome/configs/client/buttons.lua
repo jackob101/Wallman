@@ -1,19 +1,14 @@
-local awful = require("awful")
-local gears = require("gears")
-
-local modkey = require("configs.mod").modkey
-
-local clientbuttons = gears.table.join(
-	awful.button({}, 1, function(c)
+local clientbuttons = Gears.table.join(
+	Awful.button({}, 1, function(c)
 		c:emit_signal("request::activate", "mouse_click", { raise = true })
 	end),
-	awful.button({ modkey }, 1, function(c)
+	Awful.button({ ModKey }, 1, function(c)
 		c:emit_signal("request::activate", "mouse_click", { raise = true })
-		awful.mouse.client.move(c)
+		Awful.mouse.client.move(c)
 	end),
-	awful.button({ modkey }, 3, function(c)
+	Awful.button({ ModKey }, 3, function(c)
 		c:emit_signal("request::activate", "mouse_click", { raise = true })
-		awful.mouse.client.resize(c)
+		Awful.mouse.client.resize(c)
 	end)
 )
 

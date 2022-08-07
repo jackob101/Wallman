@@ -5,17 +5,17 @@ local gears = require("gears")
 local awful = require("awful")
 local theme = beautiful.tooltip
 
-local M = {}
+Utils = {}
 
-function M.create_stylesheet(class_name)
+function Utils.create_stylesheet(class_name)
     return "." .. class_name .. "{color: " .. beautiful.fg_normal .. ";}"
 end
 
-function M.create_widget_with_icon(image, class_name, widget)
+function Utils.create_widget_with_icon(image, class_name, widget)
     return wibox.widget({
         {
             {
-                stylesheet = M.create_stylesheet(class_name),
+                stylesheet = Utils.create_stylesheet(class_name),
                 image = image,
                 widget = wibox.widget.imagebox,
             },
@@ -28,7 +28,7 @@ function M.create_widget_with_icon(image, class_name, widget)
     })
 end
 
-function M.draw_box(content, width, height)
+function Utils.draw_box(content, width, height)
     local box = wibox.widget({
         {
 
@@ -55,7 +55,7 @@ function M.draw_box(content, width, height)
     return box
 end
 
-function M.generate_tooltip(target, text)
+function Utils.generate_tooltip(target, text)
     return awful.tooltip({
         objects = { target },
         text = text,
@@ -69,7 +69,7 @@ function M.generate_tooltip(target, text)
     })
 end
 
-function M.cursor_hover(widget)
+function Utils.cursor_hover(widget)
     local old_cursor, old_wibox
     widget:connect_signal("mouse::enter", function()
         local w = mouse.current_wibox
@@ -87,7 +87,7 @@ function M.cursor_hover(widget)
     end)
 end
 
-function M.background_hover(widget)
+function Utils.background_hover(widget)
     widget:connect_signal("mouse::enter", function()
         if widget.bg ~= beautiful.bg_hover then
             widget.backup = widget.bg
@@ -102,13 +102,13 @@ function M.background_hover(widget)
     end)
 end
 
-function M.hover_effect(widget)
-    M.cursor_hover(widget)
-    M.background_hover(widget)
+function Utils.hover_effect(widget)
+    Utils.cursor_hover(widget)
+    Utils.background_hover(widget)
 end
 
 -- Global utils
 function firstToUpper(str)
     return (str:gsub("^%l", string.upper))
 end
-return M
+return Utils

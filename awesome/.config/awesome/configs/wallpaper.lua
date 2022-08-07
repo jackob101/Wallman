@@ -7,7 +7,7 @@ local wallpaper = gears.filesystem.get_random_file_from_dir(wallpaper_folder)
 -- Create a wibox for each screen and add it
 local function set_wallpaper(s)
 	-- Wallpaper
-	awful.wallpaper({
+	Awful.wallpaper({
 		screen = s,
 		widget = {
 			image = wallpaper_folder .. "/" .. wallpaper,

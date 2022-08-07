@@ -6,13 +6,16 @@ local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
 local xrdb = xresources.get_current_theme()
 local dpi = xresources.apply_dpi
-local gears = require("gears")
 
 local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
 
 awesome.set_preferred_icon_size(128)
 
+--- @class Beautiful
+--- @field bar BarTheme
+--- @field tag TagTheme
+--- @field clickableContainer ClickableContainerTheme
 local theme = {}
 
 --  Theme font
@@ -88,11 +91,68 @@ theme.taglist_only_icons = true
 
 ----    Tag
 
+--- @class BarTheme
+--- @field barHeight number Height of the wibar
+--- @field rightPanelMargins number
+--- @field rightPanelChildSpacing number
+--- @field leftPanelMargins number
+theme.bar = {
+    font = theme.font,
+    barHeight = theme.bar_height,
+    rightPanelMargins = (theme.bar_height - (theme.bar_height * 0.5)) / 2,
+    rightPanelChildSpacing = dpi(15),
+    leftPanelMargins = (theme.bar_height - (theme.bar_height * 1)) / 2,
+    barIconTextSpacing = dpi(5),
+    barIconMargin = dpi(2),
+}
+
+--- @class VolumeBarWidgetTheme
+theme.volumeBarWidget = {
+    highFg = theme.fg_normal,
+    mediumFg = theme.fg_normal,
+    lowFg = theme.fg_normal,
+    mutedFg = theme.fg_normal,
+    barIconTextSpacing = theme.bar.barIconTextSpacing,
+    barIconMargin = theme.bar.barIconMargin,
+}
+
+theme.volumePopupWidget = {
+    font = "Ubuntu 12",
+    bg = theme.gray .. "AA",
+    height = Dpi(120),
+    width = Dpi(300),
+    shape = Gears.shape.rect,
+    sliderBarHeight = Dpi(4),
+    sliderBarColor = theme.black .. "AA",
+    sliderBarActiveColor = theme.green,
+    sliderHandleColor = theme.green,
+    sliderHandleWidth = Dpi(20),
+    sliderHandleBorderColor = "#00000012",
+    sliderHandleBorderWidth = dpi(1),
+    leftBorderMargin = Dpi(24),
+    rightBorderMargin = Dpi(24),
+    topBorderMargin = Dpi(24),
+    bottomBorderMargin = Dpi(0),
+    spaceAround = dpi(20),
+    boxBorderWidth = dpi(2),
+    boxBorderColor = theme.light_gray
+}
+
+--- @class ClickableContainerTheme
+theme.clickableContainer = {
+    bg = theme.gray,
+    hoverBg = theme.green,
+    pressBg = theme.green .. "77",
+
+}
+
 theme.exit_screen = {
     bg = theme.black .. "CC",
     fg = theme.light,
     groups_bg = theme.gray
 }
+
+--- @class TagTheme
 theme.tag = {
     label_margins = dpi(5),
     label_forced_width = dpi(25),
@@ -135,21 +195,26 @@ theme.dashboard = {
 
 }
 
-theme.tiling_status = {
+theme.tilingStatus = {
     bg = theme.color10,
-    left_margin = dpi(8),
-    right_margin = dpi(8),
+    leftMargin = dpi(8),
+    rightMargin = dpi(8),
     fg = theme.black,
     font = "inter medium 10",
 }
 
 theme.notification = {
     bg = theme.gray .. "99",
+    position = "top_right",
     width = dpi(320),
-    box_padding = dpi(10),
-    border_normal = theme.light_gray,
-    border_urgent = theme.red,
-    message_height = dpi(40),
+    borderPadding = dpi(10),
+    borderWidth = dpi(2),
+    borderNormal = theme.light_gray,
+    borderUrgent = theme.red,
+    iconRightMargin = dpi(10),
+    messageHeight = dpi(40),
+    titleHeight = dpi(20),
+    titleFont = "inter medium 11",
 }
 
 theme.tooltip = {
@@ -167,6 +232,8 @@ theme.notification_center = {
     border_color = theme.gray,
     notification_bg = theme.gray .. "44",
     notification_bg_hover = theme.gray .. "AA",
+    bottomMargin = Dpi(10),
+    rightMargin = Dpi(10),
 }
 
 
@@ -201,6 +268,7 @@ theme.notification_icon_size = dpi(50)
 -- theme.notification_height = 150
 theme.notification_spacing = dpi(20)
 --theme.notification_box_margin = 10
+
 theme.notification_title_font = "inter medium 11"
 
 theme.systray_icon_spacing = 5
@@ -294,6 +362,7 @@ theme.awesome_icon = theme_assets.awesome_icon(theme.menu_height, theme.bg_focus
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 theme.icon_theme = "gnome"
 
+--- @return Beautiful
 return theme
 
 -- vim: filetype=lua:expandtab:shiftwidth=4:tabstop=8:softtabstop=4:textwidth=80

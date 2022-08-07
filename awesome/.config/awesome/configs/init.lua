@@ -1,9 +1,9 @@
 ----------------------------------------
 -- Initialize basic configs
 ----------------------------------------
-load_all("configs", { "layouts", "titlebar", "tags", "wallpaper", "client", "keybinds_init" })
-----------------------------------------
+load_all("configs", { "layouts", "tags", "wallpaper", "client", "Autostart"})
+----------------------------------"titlebar"------
 
 -- Initialize keybinds
 ----------------------------------------
-require("awful.hotkeys_popup.keys")
+--require("awful.hotkeys_popup.keys")

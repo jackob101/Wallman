@@ -11,7 +11,7 @@ local notif_core = require("widgets.notif-center.notif-list")
 local stylesheet = "*{fill: " .. beautiful.fg_normal .. "; }"
 
 local clear_all_text = wibox.widget({
-	icons.list_clear.widget(),
+	IconsHandler.icons.list_clear.widget(),
 	widget = wibox.container.background,
 	forced_width = dpi(18),
 	forced_height = dpi(18),
