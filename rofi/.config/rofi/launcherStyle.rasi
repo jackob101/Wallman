@@ -1,113 +1,107 @@
+* {
+	background: #24283b;
+	background-focus: #414868AA;
+	background-special: #9ece6a;
+	border: #9ece6aAA;
+	foreground: #444;
+	foreground-muted: #a9b1d6;
+	background-color: transparent;
+    window-padding: 50px;
+	border-radius: 0px;
+	color: @foreground-muted;
+}
+
 configuration {
-	font:							"Noto Sans Bold 10";
+	font:							"Inter semi-bold 11";
     show-icons:                     true;
 	icon-theme: 					"Papirus";
-    display-drun: 					"";
+    display-drun: 					"Application";
+    display-ssh: 					"SSH";
+    display-run: 					"Run";
+    display-window:                 "Client";
     drun-display-format:            "{name}";
     disable-history:                false;
 	sidebar-mode: 					false;
 }
 
-* {
-    background:                     #1e1e2eaa;
-    background-alt:              	#57526800;
-    background-bar:                 #575268;
-    foreground:                     #f2f2f2EE;
-    accent:			            	#ffffff66;
-}
-
 window {
-    transparency:                   "real";
-    background-color:               @background;
-    text-color:                     @foreground;
-	border:							0px;
-	border-color:					@border;
-    border-radius:                  0px;
-	width:							100%;
-	height:							100%;
-}
-
-prompt {
-    enabled: 						true;
-	padding: 						0.30% 1% 0% -0.5%;
-	background-color: 				@background-alt;
-	text-color: 					@foreground;
-	font:							"FantasqueSansMono Nerd Font 12";
-}
-
-entry {
-    background-color:               @background-alt;
-    text-color:                     @foreground;
-    placeholder-color:              @foreground;
-    expand:                         true;
-    horizontal-align:               0;
-    placeholder:                    "Search";
-    padding:                        0.10% 0% 0% 0%;
-    blink:                          true;
+	background-color: @background;
+	text-color: @foreground-muted;
+    border: 5px;
+    border-color: @background-focus;
+	width: 800px;
+    height: 900px;
 }
 
 inputbar {
-	children: 						[ prompt, entry ];
-    background-color:               @background-bar;
-    text-color:                     @foreground;
-    expand:                         false;
-	border:							0.1%;
-    border-radius:                  6px;
-	border-color:					@accent;
-    margin:                         0% 30% 0% 30%;
-    padding:                        1%;
+    padding: @window-padding;
+	spacing: 10px;
+    background-color: @background-focus;
+}
+
+prompt {
+	padding: 10px;
+	background-color: @background-special;
+	border: 1px;
+	border-color: @border;
+	text-color: @foreground;
+}
+entry {
+	padding: 10px;
+	border: 1px;
+	border-color: @border;
+	text-color: @foreground-muted;
+	placeholder-color: @foreground-muted;
+    background-color: @background;
 }
 
 listview {
-    background-color:               @background-alt;
-    columns:                        7;
-    lines:                          4;
-    spacing:                        2%;
-    cycle:                          false;
-    dynamic:                        true;
-    layout:                         vertical;
-}
+	columns: 2;
+	lines: 5;
+	scrollbar: false;
+	cycle: false;
+	dynamic: false;
+	layout: vertical;
+	fixed-columns: true;
+    padding: @window-padding;
 
-mainbox {
-    background-color:               @background-alt;
-	border:							0% 0% 0% 0%;
-    border-radius:                  0% 0% 0% 0%;
-	border-color:					@accent;
-    children:                       [ inputbar, listview ];
-    spacing:                       	8%;
-    padding:                        10% 8.5% 10% 8.5%;
 }
-
 element {
-    background-color:               @background-alt;
-    text-color:                     @foreground;
-    orientation:                    vertical;
-    border-radius:                  0%;
-    padding:                        2.5% 0% 2.5% 0%;
+	padding: 10px;
+	spacing: 10px;
+	border: 1px;
+    orientation: horizontal;
 }
 
-element-icon {
-    background-color: 				@background-alt;
-    text-color:       				inherit;
-    horizontal-align:               0.5;
-    vertical-align:                 0.5;
-    size:                           81px;
-    border:                         0px;
+element-icon{
+    size: 40px;
 }
 
-element-text {
-    background-color: 				@background-alt;
-    text-color:       				inherit;
-    expand:                         true;
-    horizontal-align:               0.5;
-    vertical-align:                 0.5;
-    margin:                         0.5% 0.5% -0.5% 0.5%;
+element-text{
+    vertical-align: 0.5;
 }
 
-element selected {
-    background-color:               @background-bar;
-    text-color:                     @foreground;
-	border:							0% 0% 0% 0%;
-    border-radius:                  12px;
-    border-color:                  	@accent;
+element.selected {
+	background-color: @background-focus;
+	border: 1px;
+	border-color: @border;
+	text-color: @foreground;
+}
+
+mode-switcher {
+	padding: 3px;
+	border: 1px;
+	border-color: @border;
+}
+
+button {
+	expand: false;
+	padding: 8px;
+	text-color: @foreground-muted;
+}
+button.selected.normal {
+	background-color: @background-special;
+	border: 1px;
+	border-color: @border;
+	text-color: @foreground;
 }
