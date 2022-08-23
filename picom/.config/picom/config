@@ -145,7 +145,7 @@ opacity-rule = [ "90:class_g = 'polybar'",
 "100:_NET_WM_STATE@[1]:32a = '_NET_WM_STATE_FULLSCREEN'",
 "100:_NET_WM_STATE@[2]:32a = '_NET_WM_STATE_FULLSCREEN'",
 "100:_NET_WM_STATE@[3]:32a = '_NET_WM_STATE_FULLSCREEN'",
-"100:_NET_WM_STATE@[4]:32a = '_NET_WM_STATE_FULLSCREEN'"
+"100:_NET_WM_STATE@[4]:32a = '_NET_WM_STATE_FULLSCREEN'",
 ];
 
 
@@ -161,7 +161,7 @@ corner-radius = 0
 # Exclude conditions for rounded corners.
 rounded-corners-exclude = [
 "window_type = 'dock'",
-"window_type = 'desktop'"
+"window_type = 'desktop'",
 ];
 
 
@@ -215,7 +215,8 @@ blur-background-exclude = [
 "window_type = 'dropdown_menu'",
 # "window_type = 'popup_menu'",
 "window_type = 'tooltip'",
-"_GTK_FRAME_EXTENTS@:c"
+"_GTK_FRAME_EXTENTS@:c",
+"class_g = 'awesome'",
 ];
 
 #################################

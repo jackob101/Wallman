@@ -52,8 +52,8 @@ window:
   # Blank space added around the window in pixels. This padding is scaled
   # by DPI and the specified value is always added at both opposing sides.
   padding:
-    x: 40 
-    y: 40 
+    x: 10 
+    y: 10 
 
 
   # Spread additional padding evenly around the terminal content.
@@ -109,19 +109,19 @@ window:
 
 font: 
   normal:
-    family: Ubuntu Mono derivative Powerline
+    family: Ubuntu Mono nerd font mono
     style: Regural
 
   bold:
-    family: Ubuntu Mono derivative Powerline
+    family: Ubuntu Mono nerd font mono
     style: Bold
 
   italic:
-    family: Ubuntu Mono derivative Powerline
+    family: Ubuntu Mono nerd font mono
     style: Italic
 
   bold_italic:
-    family: Ubuntu Mono derivative Powerline
+    family: Ubuntu Mono nerd font mono 
     style: Bold Italic
 
   size: 14
