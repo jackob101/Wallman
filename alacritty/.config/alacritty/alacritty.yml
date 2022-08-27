@@ -1,4 +1,4 @@
-# Configuration for Alacritty, the GPU enhanced terminal emulator.
+# Configuration for Alacritty, the GPU enhanced terminal emulator.ala
 
 # Import additional configuration files
 #
@@ -29,7 +29,7 @@ env:
   #TERM: alacritty
 
 window:
-  opacity: 0.9
+  opacity: 0.9 
   # Window dimensions (changes require restart)
   #
   # Number of lines/columns (not pixels) in the terminal. The number of columns
@@ -109,22 +109,22 @@ window:
 
 font: 
   normal:
-    family: Ubuntu Mono nerd font mono
-    style: Regural
+    family: NotoMono Nerd Font Mono
+    style: Regular 
 
   bold:
-    family: Ubuntu Mono nerd font mono
+    family: NotoMono Nerd Font Mono
     style: Bold
 
   italic:
-    family: Ubuntu Mono nerd font mono
+    family: NotoMono Nerd Font Mono
     style: Italic
 
   bold_italic:
-    family: Ubuntu Mono nerd font mono 
+    family: NotoMono Nerd Font Mono 
     style: Bold Italic
 
-  size: 14
+  size: 11
 
 # Colors (Tomorrow Night)
 colors:

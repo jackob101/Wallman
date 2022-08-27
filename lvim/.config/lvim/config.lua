@@ -1,4 +1,3 @@
-vim.api.nvim_set_option("clipboard", "unnamed")
 --[[
 lvim is the global options object
 
@@ -9,26 +8,10 @@ an executable
 ]]
 -- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
 
-vim.g.tokyonight_style = "storm"
-lvim.builtin.cmp.window.completion.winhighlight = "Normal:Pmenu,FloatBorder:Normal,CursorLine:Visual,Search:None"
-lvim.builtin.cmp.window.documentation.winhighlight = "Normal:Pmenu,FloatBorder:Normal,CursorLine:Visual,Search:None"
-lvim.builtin.cmp.window.documentation.side_padding = 10
-lvim.builtin.alpha.active = true
-lvim.builtin.alpha.mode = "dashboard"
-lvim.builtin.notify.active = true
-lvim.builtin.terminal.active = true
-lvim.builtin.nvimtree.setup.view.side = "left"
-lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
-lvim.builtin.cmp.window.completion.border = "none"
-lvim.builtin.cmp.window.documentation.border = "none"
-lvim.builtin.cmp.window.completion.col_offset = -3
-
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save = true
-lvim.colorscheme = "tokyonight"
-
-
+lvim.colorscheme = "onedarker"
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
@@ -73,8 +56,12 @@ lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 
 -- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
-
-
+lvim.builtin.alpha.active = true
+lvim.builtin.alpha.mode = "dashboard"
+lvim.builtin.notify.active = true
+lvim.builtin.terminal.active = true
+lvim.builtin.nvimtree.setup.view.side = "left"
+lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
@@ -171,15 +158,13 @@ lvim.builtin.treesitter.highlight.enabled = true
 -- }
 
 -- Additional Plugins
-lvim.plugins = {
-  { "folke/tokyonight.nvim" },
-  {
-    "folke/trouble.nvim",
-    cmd = "TroubleToggle",
-  },
-  { "simrat39/rust-tools.nvim" }
-}
-
+-- lvim.plugins = {
+--     {"folke/tokyonight.nvim"},
+--     {
+--       "folke/trouble.nvim",
+--       cmd = "TroubleToggle",
+--     },
+-- }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- vim.api.nvim_create_autocmd("BufEnter", {
@@ -194,13 +179,3 @@ lvim.plugins = {
 --     require("nvim-treesitter.highlight").attach(0, "bash")
 --   end,
 -- })
-
-lvim.keys.normal_mode["<C-t>"] = "<cmd> ToggleTerm size=15 direction=horizontal<cr>"
-
-lvim.builtin.which_key.mappings["t"] = {
-  name = "Toggle",
-  e = {
-    "<cmd>NvimTreeToggle<cr>",
-    "Toggle file explorer",
-  },
-}

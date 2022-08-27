@@ -1,6 +1,6 @@
 #! /bin/zsh
 
-alias vim="$HOME/.local/bin/lvim"
+alias vim="nvim"
 alias walls="$HOME/Wallpapers"
 
 # Changing ls to exa
