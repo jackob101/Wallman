@@ -1,9 +1,9 @@
 return {
-  statusline = {
-    separator_style = "round",
-  },
-  tabufline = {
-    enabled = true,
-    lazyload = false,
-  },
+	statusline = {
+		separator_style = "round",
+	},
+	tabufline = {
+		enabled = false,
+		lazyload = false,
+	},
 }

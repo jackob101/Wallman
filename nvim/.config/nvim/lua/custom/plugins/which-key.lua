@@ -12,6 +12,12 @@ return {
 			p = {
 				name = "Project",
 			},
+			s = {
+				name = "Search/Jump",
+			},
+			m = {
+				name = "Markdown",
+			},
 		}, { prefix = "<leader>" }) --insert any whichkey opts here
 	end,
 }
