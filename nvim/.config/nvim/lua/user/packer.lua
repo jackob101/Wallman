@@ -23,16 +23,9 @@ packer.init({
 return packer.startup(function(use)
 	use("wbthomason/packer.nvim")
 
-	for _, val in ipairs(require("user.plugins")) do
+	for _, val in ipairs(require("user.config")) do
 		use(val)
 	end
-
-	-- My plugins here
-	-- use 'foo1/bar1.nvim'
-	-- use 'foo2/bar2.nvim'
-
-	-- Automatically set up your configuration after cloning packer.nvim
-	-- Put this at the end after all plugins
 	if packer_bootstrap then
 		require("packer").sync()
 	end
