@@ -1,7 +1,11 @@
 -- Just an example, supposed to be placed in /lua/custom/
 
-local M = {}
+--
+vim.g.coq_settings = {
+	auto_start = true,
+}
 
+local M = {}
 -- make sure you maintain the structure of `core/default_config.lua` here,
 -- example of changing theme:
 
@@ -15,6 +19,9 @@ local alpha_config = require("custom.plugins.alpha")
 local markdown_preview_config = require("custom.plugins.markdown_preview")
 local bufferline_config = require("custom.plugins.bufferline")
 local vim_illuminate_config = require("custom.plugins.vim_illuminate")
+local nvim_tree_config = require("custom.plugins.nvim_tree")
+local coq_nvim_config = require("custom.plugins.coq_nvim")
+local autopairs_config = require("custom.plugins.nvim_autopairs")
 local null_ls_config = {
 	after = "nvim-lspconfig",
 	config = function()
@@ -26,7 +33,7 @@ M.ui = {
 	theme = "tokyonight",
 	hl_override = {
 		CursorLine = {
-			bg = "#40486a",
+			bg = "#30313B",
 		},
 		NvimTreeWinSeparator = {
 			fg = "#32333e",
@@ -52,9 +59,11 @@ M.plugins = {
 		},
 		["NvChad/ui"] = ui_config,
 		["goolord/alpha-nvim"] = alpha_config,
+		["kyazdani42/nvim-tree.lua"] = nvim_tree_config,
 	},
 
 	user = {
+		["windwp/nvim-autopairs"] = autopairs_config,
 		["goolord/alpha-nvim"] = { disable = false },
 		["folke/which-key.nvim"] = which_key_config,
 		["jose-elias-alvarez/null-ls.nvim"] = null_ls_config,
@@ -66,6 +75,16 @@ M.plugins = {
 		["iamcco/markdown-preview.nvim"] = markdown_preview_config,
 		["akinsho/bufferline.nvim"] = bufferline_config,
 		["RRethy/vim-illuminate"] = vim_illuminate_config,
+		["ms-jpq/coq.artifacts"] = { branch = "artifacts" },
+		["ms-jpq/coq_nvim"] = coq_nvim_config,
+	},
+	remove = {
+		"hrsh7th/nvim-cmp",
+		"saadparwaiz1/cmp_luasnip",
+		"hrsh7th/cmp-nvim-lua",
+		"hrsh7th/cmp-nvim-lsp",
+		"hrsh7th/cmp-buffer",
+		"hrsh7th/cmp-path",
 	},
 }
 

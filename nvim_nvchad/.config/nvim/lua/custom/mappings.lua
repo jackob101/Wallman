@@ -15,6 +15,7 @@ M.lsp = {
 		["<leader>lgi"] = { "<cmd> lua vim.lsp.buf.implementation()<cr>", "Go to implementation" },
 		["<leader>lgt"] = { "<cmd> lua vim.lsp.buf.type_definition()<cr>", "Go to type definition" },
 		["<leader>lgr"] = { "<cmd>Telescope lsp_references<cr>", "Show references" },
+		["<leader>lf"] = { "<cmd>lua vim.lsp.diagnostic.open_float()<cr>", "Show diagnostics in floating window" },
 	},
 }
 
