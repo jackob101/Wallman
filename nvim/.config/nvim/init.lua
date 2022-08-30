@@ -1,4 +1,4 @@
-require("user.options")
-require("user.keymaps")
-require("user.packer")
-require("user.colorscheme")
+require("options")
+require("keymaps")
+require("packer_setup")
+require("colorscheme")

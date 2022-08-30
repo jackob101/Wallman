@@ -1,6 +1,5 @@
 return {
-
-	after = "mason-lspconfig.nvim",
+	after = { "mason-lspconfig.nvim", "which-key.nvim" },
 	config = function()
 		require("lspconfig").sumneko_lua.setup({
 			settings = {
@@ -23,9 +22,10 @@ return {
 					},
 				},
 			},
-			on_attach = function(client)
+			on_attach = function(client, bufnr)
 				client.resolved_capabilities.document_formatting = false
 				client.resolved_capabilities.document_range_formatting = false
+				_LSP_ATTACH(client, bufnr)
 			end,
 		})
 	end,
