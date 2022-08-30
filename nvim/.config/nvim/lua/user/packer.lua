@@ -23,9 +23,18 @@ packer.init({
 return packer.startup(function(use)
 	use("wbthomason/packer.nvim")
 
-	for _, val in ipairs(require("user.config")) do
-		use(val)
+	for name, val in pairs(require("user.config")) do
+		local plugin = {
+			name,
+		}
+
+		for k, v in pairs(val) do
+      plugin[k] = v
+		end
+
+		use(plugin)
 	end
+
 	if packer_bootstrap then
 		require("packer").sync()
 	end

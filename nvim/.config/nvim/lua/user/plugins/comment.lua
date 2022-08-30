@@ -1,5 +1,5 @@
 return {
 	config = function()
-		require("nvim-autopairs").setup({})
+		require("Comment").setup()
 	end,
 }
