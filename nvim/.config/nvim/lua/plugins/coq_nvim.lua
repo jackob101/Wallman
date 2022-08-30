@@ -5,7 +5,7 @@ return {
 		vim.g.coq_settings = {
 			auto_start = true,
 			keymap = {
-				jump_to_mark = "",
+				jump_to_mark = "<c-l>",
 			},
 		}
 		require("coq")

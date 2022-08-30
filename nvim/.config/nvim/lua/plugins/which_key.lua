@@ -47,6 +47,11 @@ return {
 				name = "GIT",
 				g = { "<cmd>lua _LAZYGIT_TOGGLE()<cr>", "Open Lazy Git" },
 			},
+
+			["<leader>p"] = {
+				name = "Project",
+				l = { "<cmd>Telescope project<cr>", "Show project list" },
+			},
 		})
 
 		wk.register({
