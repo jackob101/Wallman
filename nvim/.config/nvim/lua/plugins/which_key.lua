@@ -14,16 +14,9 @@ return {
 				name = "File",
 				f = { "<cmd>Telescope find_files<cr>", "Find File" },
 			},
-			["<leader>s"] = {
-				name = "Search/Jump",
-				f = {
-					"<cmd>lua require'hop'.hint_char2({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false })<cr>",
-					"HOP after cursor",
-				},
-				F = {
-					"<cmd>lua require'hop'.hint_char2({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false })<cr>",
-					"HOP before cursor",
-				},
+			["<leader>h"] = {
+				"<cmd>lua require'hop'.hint_char2({ current_line_only = false })<cr>",
+				"HOP",
 			},
 			["<leader>l"] = {
 				name = "LSP",
@@ -40,6 +33,10 @@ return {
 				cr = {
 					"<cmd>BufferLineCloseRight<cr>",
 					"Close buffers to the right",
+				},
+				x = {
+					"<cmd> bdelete %<cr>",
+					"Close current buffer",
 				},
 			},
 
@@ -69,10 +66,10 @@ return {
 					name = "LSP",
 					g = {
 						name = "Goto",
-						gD = { "<cmd>lua vim.lsp.buf.declaration(bufopt)<cr>", "Go to declaration" },
-						gd = { " <cmd>lua vim.lsp.buf.definition(bufopt)<cr>", "Go to definition" },
-						gi = { " <cmd>lua vim.lsp.buf.implementation(bufopt)<cr>", "Go to implementation" },
-						gr = { " <cmd>lua vim.lsp.buf.references(bufopt)<cr>", "Go to references" },
+						D = { "<cmd>lua vim.lsp.buf.declaration(bufopt)<cr>", "Go to declaration" },
+						d = { " <cmd>lua vim.lsp.buf.definition(bufopt)<cr>", "Go to definition" },
+						i = { " <cmd>lua vim.lsp.buf.implementation(bufopt)<cr>", "Go to implementation" },
+						r = { " <cmd>Telescope lsp_references<cr>", "Go to references" },
 					},
 					h = { " <cmd>lua vim.lsp.buf.hover(bufopt)<cr>", "Show hover" },
 					d = { "<cmd>lua  vim.lsp.buf.type_definition(bufopt)<cr>", "Type definition" },

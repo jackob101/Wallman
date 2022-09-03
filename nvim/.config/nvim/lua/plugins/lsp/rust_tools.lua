@@ -17,9 +17,10 @@ return {
 			server = {
 				-- on_attach is a callback called when the language server attachs to the buffer
 				-- on_attach = on_attach,
-				on_attach = function(client)
+				on_attach = function(client, bufnr)
 					client.resolved_capabilities.document_formatting = false
 					client.resolved_capabilities.document_range_formatting = false
+					_LSP_ATTACH(client, bufnr)
 				end,
 				settings = {
 					-- to enable rust-analyzer settings visit:

@@ -8,6 +8,14 @@ return {
 			diagnostics = {
 				enable = true,
 			},
+			view = {
+				hide_root_folder = true,
+			},
+			renderer = {
+				indent_markers = {
+					enable = true,
+				},
+			},
 		})
 	end,
 }

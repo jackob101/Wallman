@@ -5,7 +5,6 @@ local telescope_media_config = require("plugins.telescope_media")
 local telescope_projects_config = require("plugins.telescope_projects")
 local treesitter_config = require("plugins.treesitter")
 local nvim_tree_config = require("plugins.nvim_tree")
-local coq_nvim_config = require("plugins.coq_nvim")
 local lsp_config = require("plugins.lsp.lsp_config")
 local mason = require("plugins.lsp.mason")
 local mason_lspconfig = require("plugins.lsp.mason_lspconfig")
@@ -18,6 +17,10 @@ local alpha_config = require("plugins.alpha")
 local comment_config = require("plugins.comment")
 local lualine_config = require("plugins.lualine")
 local toggleterm_config = require("plugins.toggleterm")
+local indentline_config = require("plugins.indentline")
+local fidget_config = require("plugins.fidget")
+local cmp_config = require("plugins.cmp")
+local luasnip_config = require("plugins.luasnip")
 
 local plugins = {
 	["folke/tokyonight.nvim"] = {},
@@ -32,8 +35,14 @@ local plugins = {
 	["p00f/nvim-ts-rainbow"] = {},
 	["nvim-treesitter/playground"] = {},
 	["kyazdani42/nvim-tree.lua"] = nvim_tree_config,
-	["ms-jpq/coq.artifacts"] = { branch = "artifacts" },
-	["ms-jpq/coq_nvim"] = coq_nvim_config,
+	["L3MON4D3/LuaSnip"] = luasnip_config,
+	["onsails/lspkind.nvim"] = {},
+	["hrsh7th/cmp-nvim-lsp"] = {},
+	["hrsh7th/cmp-buffer"] = {},
+	["hrsh7th/cmp-path"] = {},
+	["hrsh7th/cmp-cmdline"] = {},
+	["saadparwaiz1/cmp_luasnip"] = {},
+	["hrsh7th/nvim-cmp"] = cmp_config,
 	["williamboman/mason.nvim"] = mason,
 	["williamboman/mason-lspconfig.nvim"] = mason_lspconfig,
 	["neovim/nvim-lspconfig"] = lsp_config,
@@ -46,6 +55,8 @@ local plugins = {
 	["numToStr/Comment.nvim"] = comment_config,
 	["nvim-lualine/lualine.nvim"] = lualine_config,
 	["akinsho/toggleterm.nvim"] = toggleterm_config,
+	["lukas-reineke/indent-blankline.nvim"] = indentline_config,
+	["j-hui/fidget.nvim"] = fidget_config,
 }
 
 return plugins

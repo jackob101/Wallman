@@ -1,7 +1,20 @@
 return {
-	after = { "mason-lspconfig.nvim", "which-key.nvim" },
+	after = { "mason-lspconfig.nvim", "which-key.nvim", "cmp-nvim-lsp" },
 	config = function()
-		require("lspconfig").sumneko_lua.setup({
+		local lspconfig = require("lspconfig")
+		local capabilities = vim.lsp.protocol.make_client_capabilities()
+		capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+
+		local servers = { "sumneko_lua", "rust_analyzer" }
+
+		for _, lsp in ipairs(servers) do
+			lspconfig[lsp].setup({
+				capabilities = capabilities,
+			})
+		end
+
+		lspconfig.sumneko_lua.setup({
+			capabilities = capabilities,
 			settings = {
 				Lua = {
 					runtime = {
