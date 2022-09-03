@@ -23,6 +23,9 @@ return {
 				p = { "<cmd> lua vim.diagnostic.goto_prev()<cr>", "Go to previous error" },
 				n = { "<cmd> lua vim.diagnostic.goto_next()<cr>", "Go to next error" },
 				f = { "<cmd>lua vim.lsp.diagnostic.open_float()<cr>", "Show diagnostics in floating window" },
+				s = { "<cmd>lua vim.lsp.buf.signature_help()<cr>", "Show signature" },
+				D = { "<cmd>Trouble<cr>", "Show diagnostics for all buffers" },
+				d = { "<cmd>Trouble document_diagnostics<cr>", "Show diagnostics for current buffer" },
 			},
 			["<leader>b"] = {
 				name = "Buffers",
@@ -72,7 +75,7 @@ return {
 						r = { " <cmd>Telescope lsp_references<cr>", "Go to references" },
 					},
 					h = { " <cmd>lua vim.lsp.buf.hover(bufopt)<cr>", "Show hover" },
-					d = { "<cmd>lua  vim.lsp.buf.type_definition(bufopt)<cr>", "Type definition" },
+					t = { "<cmd>lua  vim.lsp.buf.type_definition(bufopt)<cr>", "Type definition" },
 					r = { " <cmd>lua vim.lsp.buf.rename(bufopt)<cr>", "Rename" },
 					a = { " <cmd>lua vim.lsp.buf.code_action(bufopt)<cr>", "Code actions" },
 					f = { " <cmd>lua vim.lsp.buf.formatting(bufopt)<cr>", "Format" },

@@ -21,6 +21,8 @@ local indentline_config = require("plugins.indentline")
 local fidget_config = require("plugins.fidget")
 local cmp_config = require("plugins.cmp")
 local luasnip_config = require("plugins.luasnip")
+local signature_help_config = require("plugins.signature_help")
+local trouble_config = require("plugins.trouble")
 
 local plugins = {
 	["folke/tokyonight.nvim"] = {},
@@ -57,6 +59,8 @@ local plugins = {
 	["akinsho/toggleterm.nvim"] = toggleterm_config,
 	["lukas-reineke/indent-blankline.nvim"] = indentline_config,
 	["j-hui/fidget.nvim"] = fidget_config,
+	["ray-x/lsp_signature.nvim"] = signature_help_config,
+	["folke/trouble.nvim"] = trouble_config,
 }
 
 return plugins

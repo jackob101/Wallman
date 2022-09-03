@@ -21,6 +21,7 @@ return {
 					require("cmp.types").cmp.TriggerEvent.TextChanged,
 				},
 				keyword_length = 3,
+				side_padding = 4,
 			},
 			mapping = cmp.mapping.preset.insert({
 				["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
@@ -79,12 +80,6 @@ return {
 						nvim_lua = "[Lua]",
 						latex_symbols = "[Latex]",
 					},
-					-- The function below will be called before any actual modifications from lspkind
-					-- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
-					-- before = function (entry, vim_item)
-					--   ...
-					--   return vim_item
-					-- end
 				}),
 			},
 		})

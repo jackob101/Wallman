@@ -1,5 +1,8 @@
 return {
 	config = function()
+		local capabilities = vim.lsp.protocol.make_client_capabilities()
+		capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+
 		require("rust-tools").setup({
 			tools = { -- rust-tools options
 				autoSetHints = true,
@@ -17,6 +20,7 @@ return {
 			server = {
 				-- on_attach is a callback called when the language server attachs to the buffer
 				-- on_attach = on_attach,
+				capabilities = capabilities,
 				on_attach = function(client, bufnr)
 					client.resolved_capabilities.document_formatting = false
 					client.resolved_capabilities.document_range_formatting = false
