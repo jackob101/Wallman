@@ -15,13 +15,16 @@ return {
 					require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
 				end,
 			},
+			window = {
+				completion = cmp.config.window.bordered(),
+				documentation = cmp.config.window.bordered(),
+			},
 			completion = {
 				autocomplete = {
 					require("cmp.types").cmp.TriggerEvent.InsertEnter,
 					require("cmp.types").cmp.TriggerEvent.TextChanged,
 				},
-				keyword_length = 3,
-				side_padding = 4,
+				keyword_length = 1,
 			},
 			mapping = cmp.mapping.preset.insert({
 				["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
@@ -55,6 +58,7 @@ return {
 			}),
 			experimental = {
 				ghost_text = true,
+				native_menu = false,
 			},
 			sources = cmp.config.sources(
 				{
@@ -72,7 +76,7 @@ return {
 			formatting = {
 				format = lspkind.cmp_format({
 					mode = "symbol_text", -- show only symbol annotations
-					maxwidth = 80, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+					maxwidth = 45, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
 					menu = {
 						buffer = "[Buffer]",
 						nvim_lsp = "[LSP]",
@@ -82,6 +86,7 @@ return {
 					},
 				}),
 			},
+			preselect = cmp.PreselectMode.None,
 		})
 	end,
 }

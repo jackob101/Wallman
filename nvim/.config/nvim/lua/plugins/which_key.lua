@@ -38,7 +38,7 @@ return {
 					"Close buffers to the right",
 				},
 				x = {
-					"<cmd> bdelete %<cr>",
+					"<cmd>Bdelete<cr>",
 					"Close current buffer",
 				},
 			},

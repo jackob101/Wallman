@@ -61,6 +61,7 @@ local plugins = {
 	["j-hui/fidget.nvim"] = fidget_config,
 	["ray-x/lsp_signature.nvim"] = signature_help_config,
 	["folke/trouble.nvim"] = trouble_config,
+	["moll/vim-bbye"] = {},
 }
 
 return plugins
