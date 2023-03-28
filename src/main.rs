@@ -11,7 +11,7 @@ use log::__log_key;
 
 use reqwest::{blocking, Url};
 use simple_log::LogConfigBuilder;
-use wallman_lib::{download, print_help_menu};
+use wallman_lib::{delete, download, print_help_menu};
 
 
 fn main() -> Result<(), String> {
@@ -35,6 +35,12 @@ fn main() -> Result<(), String> {
             match args.get(2) {
                 None => return Err("'download' operation required url parameter".to_string()),
                 Some(url) => download(url),
+            }
+        }
+        "delete" => {
+            match args.get(2) {
+                None => return Err("'delete' operation required ID parameter".to_string()),
+                Some(id) => delete(id.parse::<u32>().expect("Passed id is not numeric")),
             }
         }
         _ => {
