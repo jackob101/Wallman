@@ -28,26 +28,25 @@ pub fn download(url: &str) {
 
     let file_from_url = blocking::get(url).expect("Unexpected error during file download").bytes().unwrap();
 
-    let mut old_files: Vec<u32> = vec![];
+    let mut current_files: Vec<u32> = vec![];
 
     for entry in fs::read_dir(&wallpapers_directory).unwrap() {
         let entry = entry.unwrap();
         let path = entry.path();
         if path.is_file() {
             let file_name = path.file_stem().unwrap_or_else(|| OsStr::new("0"));
-            old_files.push(match file_name.to_str() {
+            current_files.push(match file_name.to_str() {
                 None => 0,
                 Some(val) => val.parse::<u32>().unwrap_or(0)
             })
         }
     };
 
-    old_files.sort();
+    current_files.sort();
 
+    let mut new_file_index = current_files.len() + 1;
 
-    let mut new_file_index = old_files.len() + 1;
-
-    for (index, entry) in old_files.iter().enumerate() {
+    for (index, entry) in current_files.iter().enumerate() {
         if (index as u32) != *entry - 1 {
             new_file_index = index + 1;
             break;
@@ -59,4 +58,12 @@ pub fn download(url: &str) {
 
     let image_from_request = image::load_from_memory(&file_from_url).unwrap();
     image_from_request.save(full_file_path).unwrap();
+}
+
+pub fn print_help_menu(){
+
+    println!("Available operations: ");
+    println!("download [URL]");
+    println!("organize");
+
 }
