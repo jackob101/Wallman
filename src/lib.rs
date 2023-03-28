@@ -1,19 +1,36 @@
+extern crate core;
+
 use std::ffi::OsStr;
-use std::fs;
+use std::{env, fs};
+use std::env::VarError;
+use std::path::{Path, PathBuf};
 use log::info;
 use reqwest::blocking;
 
-pub fn download(url: &str){
+pub fn download(url: &str) {
+    let wallpapers_directory = match env::var("WALLMAN_LOCALIZATION") {
+        Ok(value) => {
+            info!("Using directory from env variable for storage: {}", value);
+            let directory = PathBuf::from(value);
+            if !directory.is_dir() {
+                panic!("Provide path is not an directory")
+            }
 
-    let wallpaper_directory = home::home_dir().unwrap().join("Wallpapers");
+            directory
+        }
+        Err(_) => {
+            info!("Using default directory for storage");
+            home::home_dir().unwrap().join("Wallpapers")
+        }
+    };
 
     info!("Downloading from url: {}", url);
 
-    let image_from_request = blocking::get(url).expect("Bład przy pobieraniu z linku").bytes().unwrap();
+    let file_from_url = blocking::get(url).expect("Unexpected error during file download").bytes().unwrap();
 
     let mut old_files: Vec<u32> = vec![];
 
-    for entry in fs::read_dir(&wallpaper_directory).unwrap() {
+    for entry in fs::read_dir(&wallpapers_directory).unwrap() {
         let entry = entry.unwrap();
         let path = entry.path();
         if path.is_file() {
@@ -38,9 +55,8 @@ pub fn download(url: &str){
     }
 
 
-    let full_file_path = &wallpaper_directory.join(format!("{}.{}", new_file_index, "png"));
+    let full_file_path = &wallpapers_directory.join(format!("{}.{}", new_file_index, "png"));
 
-    let image_from_request = image::load_from_memory(&image_from_request).unwrap();
+    let image_from_request = image::load_from_memory(&file_from_url).unwrap();
     image_from_request.save(full_file_path).unwrap();
-
 }
