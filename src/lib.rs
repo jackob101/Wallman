@@ -1,5 +1,7 @@
 extern crate core;
 
+pub mod env_config;
+
 use std::{env, fs, io};
 use std::ffi::OsStr;
 use std::io::{BufRead, Write};
@@ -7,15 +9,14 @@ use std::path::PathBuf;
 
 use log::{debug, info};
 use reqwest::blocking;
+use crate::env_config::EnvConfig;
 
-pub fn download(url: &str) {
-    let wallpapers_directory = get_wallpaper_directory();
-
+pub fn download(url: &str, config: &EnvConfig) {
     info!("Downloading from url: {}", url);
 
     let file_from_url = blocking::get(url).expect("Unexpected error during file download").bytes().unwrap();
 
-    let current_files = get_ordered_files_from_directory(&wallpapers_directory);
+    let current_files = get_ordered_files_from_directory(&config.storage_directory);
 
     let mut new_file_index = current_files.len() + 1;
 
@@ -26,19 +27,18 @@ pub fn download(url: &str) {
         }
     }
 
-    let full_file_path = &wallpapers_directory.join(format!("{}.{}", new_file_index, "png"));
+    let full_file_path = &config.storage_directory.join(format!("{}.{}", new_file_index, "png"));
 
     let image_from_request = image::load_from_memory(&file_from_url).unwrap();
     image_from_request.save(full_file_path).unwrap();
 }
 
 
-pub fn delete(id_to_delete: u32) {
-    let wallpaper_directory = get_wallpaper_directory();
+pub fn delete(id_to_delete: u32, config: &EnvConfig) {
 
     info!("Trying to delete file with ID: {}", id_to_delete);
 
-    let files_iterator = match fs::read_dir(&wallpaper_directory) {
+    let files_iterator = match fs::read_dir(&config.storage_directory) {
         Ok(iterator) => iterator,
         Err(_) => panic!("Couldn't create iterator over wallpapers directory")
     };
@@ -58,7 +58,7 @@ pub fn delete(id_to_delete: u32) {
                 .expect("Couldn't parse file name into u32");
 
             if current_file_id == id_to_delete {
-                let absolute_file_path = wallpaper_directory.join(file_path);
+                let absolute_file_path = config.storage_directory.join(file_path);
                 println!("Are you sure you want to delete file under path: {}", &absolute_file_path.to_str().expect("Couldn't parse path into String"));
                 loop {
                     print!("Please confirm [Y/N]: ");
@@ -88,10 +88,9 @@ pub fn delete(id_to_delete: u32) {
     println!("Passed ID wasn't found")
 }
 
-pub fn organize() {
-    let wallpaper_directory = get_wallpaper_directory();
+pub fn organize(config: &EnvConfig) {
 
-    let ordered_wallpapers = get_ordered_files_from_directory(&wallpaper_directory);
+    let ordered_wallpapers = get_ordered_files_from_directory(&config.storage_directory);
 
     let mut missing_numbers: Vec<u32> = vec![];
 
@@ -122,8 +121,8 @@ pub fn organize() {
             }
             Some(value) => {
                 println!("{}", value);
-                fs::rename(wallpaper_directory.join(format!("{}.{}", value, "png")),
-                           wallpaper_directory.join(format!("{}.{}", entry, "png")))
+                fs::rename(config.storage_directory.join(format!("{}.{}", value, "png")),
+                           config.storage_directory.join(format!("{}.{}", entry, "png")))
                     .expect("Couldn't rename file");
             }
         }
@@ -131,24 +130,6 @@ pub fn organize() {
 
 }
 
-fn get_wallpaper_directory() -> PathBuf {
-    match env::var("WALLMAN_LOCALIZATION") {
-        Ok(value) => {
-            info!("Using directory from env variable for storage: {}", value);
-            let directory = PathBuf::from(value);
-            if !directory.is_dir() {
-                panic!("Provide path is not an directory")
-            }
-
-            directory
-        }
-        Err(_) => {
-            let home_dir = home::home_dir().unwrap().join("Wallpapers");
-            info!("Using default directory for storage ({})", home_dir.to_str().expect("Couldn't parse default dir to string"));
-            home_dir
-        }
-    }
-}
 
 fn get_ordered_files_from_directory(path: &PathBuf) -> Vec<u32> {
     let mut current_files: Vec<u32> = vec![];
