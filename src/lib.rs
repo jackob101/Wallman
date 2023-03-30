@@ -5,7 +5,7 @@ use std::ffi::OsStr;
 use std::io::{BufRead, Write};
 use std::path::PathBuf;
 
-use log::info;
+use log::{debug, info};
 use reqwest::blocking;
 
 pub fn download(url: &str) {
@@ -62,7 +62,7 @@ pub fn delete(id_to_delete: u32) {
                 println!("Are you sure you want to delete file under path: {}", &absolute_file_path.to_str().expect("Couldn't parse path into String"));
                 loop {
                     print!("Please confirm [Y/N]: ");
-                    io::stdout().flush();
+                    io::stdout().flush().expect("Failed to flush");
                     let mut input = String::new();
                     io::stdin().lock().read_line(&mut input).expect("Unexpected error during reading user input");
                     input = input.trim().to_string();
@@ -114,10 +114,6 @@ pub fn organize() {
 
     for (index, entry) in missing_numbers.iter().enumerate() {
 
-        if ordered_wallpapers.len() as u32 <= *entry {
-            break;
-        }
-
         match ordered_wallpapers.get(ordered_wallpapers.len() - index -1) {
             None => {
                 println!("{:?}", ordered_wallpapers);
@@ -133,7 +129,6 @@ pub fn organize() {
         }
     }
 
-    println!("Finished!");
 }
 
 fn get_wallpaper_directory() -> PathBuf {
@@ -148,8 +143,9 @@ fn get_wallpaper_directory() -> PathBuf {
             directory
         }
         Err(_) => {
-            info!("Using default directory for storage");
-            home::home_dir().unwrap().join("Wallpapers")
+            let home_dir = home::home_dir().unwrap().join("Wallpapers");
+            info!("Using default directory for storage ({})", home_dir.to_str().expect("Couldn't parse default dir to string"));
+            home_dir
         }
     }
 }
