@@ -1,13 +1,15 @@
 extern crate core;
 
-use std::ffi::OsStr;
 use std::{env, fs, io};
 use std::borrow::BorrowMut;
 use std::env::VarError;
+use std::ffi::OsStr;
+use std::fmt::format;
 use std::io::{BufRead, Write};
 use std::path::{Path, PathBuf};
 use std::thread::sleep;
 use std::time::Duration;
+
 use log::info;
 use reqwest::blocking;
 
@@ -18,21 +20,7 @@ pub fn download(url: &str) {
 
     let file_from_url = blocking::get(url).expect("Unexpected error during file download").bytes().unwrap();
 
-    let mut current_files: Vec<u32> = vec![];
-
-    for entry in fs::read_dir(&wallpapers_directory).unwrap() {
-        let entry = entry.unwrap();
-        let path = entry.path();
-        if path.is_file() {
-            let file_name = path.file_stem().unwrap_or_else(|| OsStr::new("0"));
-            current_files.push(match file_name.to_str() {
-                None => 0,
-                Some(val) => val.parse::<u32>().unwrap_or(0)
-            })
-        }
-    };
-
-    current_files.sort();
+    let current_files = get_ordered_files_from_directory(&wallpapers_directory);
 
     let mut new_file_index = current_files.len() + 1;
 
@@ -42,7 +30,6 @@ pub fn download(url: &str) {
             break;
         }
     }
-
 
     let full_file_path = &wallpapers_directory.join(format!("{}.{}", new_file_index, "png"));
 
@@ -106,6 +93,54 @@ pub fn delete(id_to_delete: u32) {
     println!("Passed ID wasn't found")
 }
 
+pub fn organize() {
+    let wallpaper_directory = get_wallpaper_directory();
+
+    let ordered_wallpapers = get_ordered_files_from_directory(&wallpaper_directory);
+
+    let mut missing_numbers: Vec<u32> = vec![];
+
+    let mut last_number = 0;
+
+    for entry in ordered_wallpapers.iter() {
+        if last_number == *entry - 1 {
+            last_number = *entry;
+            continue;
+        }
+
+        let numbers_gap = *entry - last_number;
+
+        for i in 1..numbers_gap {
+            missing_numbers.push(i + last_number);
+        }
+
+        last_number = *entry;
+    }
+
+    for (index, entry) in missing_numbers.iter().enumerate() {
+
+        if ordered_wallpapers.len() as u32 <= *entry {
+            break;
+        }
+
+        match ordered_wallpapers.get(ordered_wallpapers.len() - index -1) {
+            None => {
+                println!("{:?}", ordered_wallpapers);
+                println!("Couldn't get value with index {}", ordered_wallpapers.len() - index -1);
+                break;
+            }
+            Some(value) => {
+                println!("{}", value);
+                fs::rename(wallpaper_directory.join(format!("{}.{}", value, "png")),
+                           wallpaper_directory.join(format!("{}.{}", entry, "png")))
+                    .expect("Couldn't rename file");
+            }
+        }
+    }
+
+    println!("Finished!");
+}
+
 fn get_wallpaper_directory() -> PathBuf {
     match env::var("WALLMAN_LOCALIZATION") {
         Ok(value) => {
@@ -123,6 +158,27 @@ fn get_wallpaper_directory() -> PathBuf {
         }
     }
 }
+
+fn get_ordered_files_from_directory(path: &PathBuf) -> Vec<u32> {
+    let mut current_files: Vec<u32> = vec![];
+
+    for entry in fs::read_dir(&path).unwrap() {
+        let entry = entry.unwrap();
+        let path = entry.path();
+        if path.is_file() {
+            let file_name = path.file_stem().unwrap_or_else(|| OsStr::new("0"));
+            current_files.push(match file_name.to_str() {
+                None => 0,
+                Some(val) => val.parse::<u32>().unwrap_or(0)
+            })
+        }
+    };
+
+    current_files.sort();
+
+    current_files
+}
+
 
 pub fn print_help_menu() {
     println!("Available operations: ");
