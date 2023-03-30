@@ -1,14 +1,9 @@
 extern crate core;
 
 use std::{env, fs, io};
-use std::borrow::BorrowMut;
-use std::env::VarError;
 use std::ffi::OsStr;
-use std::fmt::format;
 use std::io::{BufRead, Write};
-use std::path::{Path, PathBuf};
-use std::thread::sleep;
-use std::time::Duration;
+use std::path::PathBuf;
 
 use log::info;
 use reqwest::blocking;
@@ -177,12 +172,4 @@ fn get_ordered_files_from_directory(path: &PathBuf) -> Vec<u32> {
     current_files.sort();
 
     current_files
-}
-
-
-pub fn print_help_menu() {
-    println!("Available operations: ");
-    println!("download [URL]");
-    println!("delete [ID]");
-    println!("organize"); // TODO: to implement
 }
