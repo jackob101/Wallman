@@ -12,6 +12,8 @@ home="0.5.3"
 log = "0.4"
 simple-log="1.6.0"
 clap = "4.2.1"
+csv = "1.2.1"
+serde = {version = "1.0.159", features=["derive"]}
 
 [lib]
 name = "wallman_lib"
