@@ -1,6 +1,7 @@
 extern crate core;
 
 pub mod env_config;
+pub mod tag;
 
 use std::{env, fs, io};
 use std::ffi::OsStr;
@@ -8,8 +9,10 @@ use std::io::{BufRead, Write};
 use std::path::PathBuf;
 
 use log::{debug, info};
-use reqwest::blocking;
+use reqwest::{blocking, get};
+use simple_log::file;
 use crate::env_config::EnvConfig;
+use crate::tag::MetaData;
 
 pub fn download(url: &str, config: &EnvConfig) {
     info!("Downloading from url: {}", url);
@@ -35,7 +38,6 @@ pub fn download(url: &str, config: &EnvConfig) {
 
 
 pub fn delete(id_to_delete: u32, config: &EnvConfig) {
-
     info!("Trying to delete file with ID: {}", id_to_delete);
 
     let files_iterator = match fs::read_dir(&config.storage_directory) {
@@ -89,7 +91,6 @@ pub fn delete(id_to_delete: u32, config: &EnvConfig) {
 }
 
 pub fn organize(config: &EnvConfig) {
-
     let ordered_wallpapers = get_ordered_files_from_directory(&config.storage_directory);
 
     let mut missing_numbers: Vec<u32> = vec![];
@@ -112,11 +113,10 @@ pub fn organize(config: &EnvConfig) {
     }
 
     for (index, entry) in missing_numbers.iter().enumerate() {
-
-        match ordered_wallpapers.get(ordered_wallpapers.len() - index -1) {
+        match ordered_wallpapers.get(ordered_wallpapers.len() - index - 1) {
             None => {
                 println!("{:?}", ordered_wallpapers);
-                println!("Couldn't get value with index {}", ordered_wallpapers.len() - index -1);
+                println!("Couldn't get value with index {}", ordered_wallpapers.len() - index - 1);
                 break;
             }
             Some(value) => {
@@ -127,7 +127,51 @@ pub fn organize(config: &EnvConfig) {
             }
         }
     }
+}
 
+pub fn init_storage(config: &EnvConfig){
+    fs::write(config.storage_directory.join("index.csv"), "").expect("Failed to initialize index.csv");
+}
+
+pub fn tag_add(file_name: &String, tags: &String, config: &EnvConfig) {
+    let index_path = config.storage_directory.join("index.csv");
+
+    let mut reader = csv::ReaderBuilder::new()
+        .has_headers(false)
+        .flexible(true)
+        .from_path(&index_path)
+        .expect("Couldn't open index.csv. Check if the file index.csv exists in storage directory. If it doesn't exists run 'tag init' or create it manually");
+
+    let mut files_meta_data = reader.deserialize()
+        .into_iter()
+        .map(|entry| entry.expect("Couldn't parse"))
+        .collect::<Vec<MetaData>>();
+
+    let mut does_file_already_contains_metadata = false;
+
+    for file_metadata in files_meta_data.iter_mut() {
+        if file_metadata.file_name.eq(file_name) {
+            file_metadata.add_tag(tags);
+            does_file_already_contains_metadata = true;
+            break;
+        }
+    }
+
+    if !does_file_already_contains_metadata {
+        files_meta_data.push(MetaData::new(file_name.to_string(), MetaData::parse_tags(tags.to_owned())));
+    }
+
+    let mut writer = csv::WriterBuilder::new()
+        .flexible(true)
+        .has_headers(false)
+        .from_path(&index_path)
+        .expect("Failed to create csv writer");
+
+    for file_meta_data in files_meta_data.iter() {
+        writer.serialize(file_meta_data).expect("Couldn't serialize record");
+    }
+
+    writer.flush().expect("Couldn't flush writer");
 }
 
 
