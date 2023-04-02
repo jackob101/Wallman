@@ -1,3 +1,4 @@
+use std::ops::Index;
 use csv::StringRecord;
 use serde::{Deserialize, Serialize};
 
@@ -25,5 +26,18 @@ impl MetaData {
 
     pub fn add_tag(&mut self, new_tag: &String){
         self.tags.push(new_tag.to_owned());
+    }
+
+    pub fn remove_tag(&mut self, tag_name: &String) -> Result<(), String> {
+
+        let old_size = self.tags.len();
+
+        self.tags.retain(|entry| !entry.eq(tag_name));
+
+        if old_size == self.tags.len() {
+            return Err(format!("Tag {} doesn't exists for file {}", tag_name, self.file_name));
+        }
+
+        Ok(())
     }
 }
