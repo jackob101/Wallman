@@ -2,19 +2,22 @@ extern crate core;
 
 pub mod env_config;
 pub mod tag;
+pub mod simple_file;
 
 use std::{env, fs, io};
 use std::ffi::OsStr;
 use std::io::{BufRead, Write};
 use std::path::PathBuf;
+use image::ImageFormat;
 
 use log::{debug, info};
-use reqwest::{blocking, get};
-use simple_log::file;
+use reqwest::{blocking};
+use serde::de::IntoDeserializer;
 use crate::env_config::EnvConfig;
+use crate::simple_file::SimpleFile;
 use crate::tag::MetaData;
 
-pub fn download(url: &str, config: &EnvConfig) -> String {
+pub fn download(url: &str, config: &EnvConfig) -> SimpleFile {
     info!("Downloading from url: {}", url);
 
     let file_from_url = blocking::get(url).expect("Unexpected error during file download").bytes().unwrap();
@@ -24,18 +27,24 @@ pub fn download(url: &str, config: &EnvConfig) -> String {
     let mut new_file_index = current_files.len() + 1;
 
     for (index, entry) in current_files.iter().enumerate() {
-        if (index as u32) != *entry - 1 {
+        if (index as u32) != entry.index - 1 {
             new_file_index = index + 1;
             break;
         }
     }
 
-    let full_file_path = &config.storage_directory.join(format!("{}.{}", new_file_index, "png"));
+    let image_format = image::guess_format(&file_from_url).expect("Couldn't determine default file extension");
 
-    let image_from_request = image::load_from_memory(&file_from_url).unwrap();
-    image_from_request.save(full_file_path).unwrap();
+    let image_file = SimpleFile::new(new_file_index as u32, image_format);
 
-    format!("{}.{}", new_file_index, "png")
+    let absolute_file_path = &config.storage_directory.join(image_file.to_path());
+
+    image::load_from_memory(&file_from_url)
+        .unwrap()
+        .save(absolute_file_path)
+        .unwrap();
+
+    image_file
 }
 
 
@@ -100,18 +109,18 @@ pub fn organize(config: &EnvConfig) {
     let mut last_number = 0;
 
     for entry in ordered_wallpapers.iter() {
-        if last_number == *entry - 1 {
-            last_number = *entry;
+        if last_number == entry.index - 1 {
+            last_number = entry.index;
             continue;
         }
 
-        let numbers_gap = *entry - last_number;
+        let numbers_gap = entry.index - last_number;
 
         for i in 1..numbers_gap {
             missing_numbers.push(i + last_number);
         }
 
-        last_number = *entry;
+        last_number = entry.index;
     }
 
     for (index, entry) in missing_numbers.iter().enumerate() {
@@ -122,9 +131,8 @@ pub fn organize(config: &EnvConfig) {
                 break;
             }
             Some(value) => {
-                println!("{}", value);
-                fs::rename(config.storage_directory.join(format!("{}.{}", value, "png")),
-                           config.storage_directory.join(format!("{}.{}", entry, "png")))
+                fs::rename(config.storage_directory.join(value.to_path()),
+                           config.storage_directory.join(SimpleFile::new(*entry, value.format).to_path()))
                     .expect("Couldn't rename file");
             }
         }
@@ -137,7 +145,7 @@ pub fn init_storage(config: &EnvConfig) {
 
 //TODO: Add option to pass multiple tags in one execution
 //TODO: Add option to prevent duplication of tags for one image
-pub fn tag_add(file_name: &String, tags: &String, config: &EnvConfig) {
+pub fn tag_add(file_name: u32, tags: &String, config: &EnvConfig) {
     let index_path = config.storage_directory.join("index.csv");
 
     let mut files_meta_data = load_index(&index_path);
@@ -145,7 +153,7 @@ pub fn tag_add(file_name: &String, tags: &String, config: &EnvConfig) {
     let mut does_file_already_contains_metadata = false;
 
     for file_metadata in files_meta_data.iter_mut() {
-        if file_metadata.file_name.eq(file_name) {
+        if file_metadata.index.eq(&file_name) {
             file_metadata.add_tag(tags);
             does_file_already_contains_metadata = true;
             break;
@@ -153,7 +161,7 @@ pub fn tag_add(file_name: &String, tags: &String, config: &EnvConfig) {
     }
 
     if !does_file_already_contains_metadata {
-        files_meta_data.push(MetaData::new(file_name.to_string(), MetaData::parse_tags(tags.to_owned())));
+        files_meta_data.push(MetaData::new(file_name, MetaData::parse_tags(tags.to_owned())));
     }
 
     let mut writer = csv::WriterBuilder::new()
@@ -170,7 +178,7 @@ pub fn tag_add(file_name: &String, tags: &String, config: &EnvConfig) {
 }
 
 
-pub fn tag_remove(file_name: &String, tag: &String, config: &EnvConfig) {
+pub fn tag_remove(file_name: u32, tag: &String, config: &EnvConfig) {
     debug!("{} - {}", file_name, tag);
     let index_path = config.storage_directory.join("index.csv");
 
@@ -178,7 +186,7 @@ pub fn tag_remove(file_name: &String, tag: &String, config: &EnvConfig) {
     debug!("{:?}", metadata);
 
     for file_metadata in metadata.iter_mut() {
-        if !file_metadata.file_name.eq(file_name) {
+        if !file_metadata.index.eq(&file_name) {
             continue;
         }
 
@@ -226,8 +234,8 @@ fn load_index(index_path: &PathBuf) -> Vec<MetaData> {
 }
 
 
-fn get_ordered_files_from_directory(path: &PathBuf) -> Vec<u32> {
-    let mut current_files: Vec<u32> = vec![];
+fn get_ordered_files_from_directory(path: &PathBuf) -> Vec<SimpleFile> {
+    let mut current_files: Vec<SimpleFile> = vec![];
 
     for entry in fs::read_dir(&path).unwrap() {
         let entry = entry.unwrap();
@@ -240,13 +248,17 @@ fn get_ordered_files_from_directory(path: &PathBuf) -> Vec<u32> {
             }
 
             current_files.push(match file_name.to_str() {
-                None => 0,
-                Some(val) => val.parse::<u32>().unwrap_or(0)
+                None => continue,
+                Some(val) => {
+                    let index = val.parse::<u32>().unwrap_or(0);
+                    let format = ImageFormat::from_extension(path.extension().expect("Missing format")).expect("");
+                    SimpleFile::new(index, format)
+                }
             })
         }
     };
 
-    current_files.sort();
+    current_files.sort_by(|x, x1| x.index.cmp(&x1.index));
 
     current_files
 }

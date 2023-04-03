@@ -4,16 +4,16 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct MetaData {
-    pub file_name: String,
+    pub index: u32,
     pub tags: Vec<String>,
 }
 
 
 impl MetaData {
 
-    pub fn new(file_name: String, tags: Vec<String>) -> MetaData {
+    pub fn new(index: u32, tags: Vec<String>) -> MetaData {
         MetaData {
-            file_name,
+            index,
             tags,
         }
     }
@@ -35,7 +35,7 @@ impl MetaData {
         self.tags.retain(|entry| !entry.eq(tag_name));
 
         if old_size == self.tags.len() {
-            return Err(format!("Tag {} doesn't exists for file {}", tag_name, self.file_name));
+            return Err(format!("Tag {} doesn't exists for file {}", tag_name, self.index));
         }
 
         Ok(())
