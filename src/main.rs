@@ -1,11 +1,13 @@
 #[macro_use]
 extern crate simple_log;
+extern crate core;
 
 use clap::{arg, ArgMatches, Command, value_parser};
 use simple_log::LogConfigBuilder;
 
 use wallman_lib::{delete, download, init_storage, organize, tag_add, tag_remove};
 use wallman_lib::env_config::EnvConfig;
+use wallman_lib::tag::IndexData;
 
 fn cli() -> Command {
     Command::new("wallman")
@@ -30,23 +32,27 @@ fn cli() -> Command {
             .about("Tag operations")
             .subcommand(Command::new("add")
                 .about("Add tag to file")
-                .arg(arg!(<FILE_NAME> "Name of the file that tag is added to")
+                .arg(arg!(<ID> "ID of the file")
                     .value_parser(value_parser!(u32)))
                 .arg(arg!(<TAGS> "Tags"))
                 .arg_required_else_help(true))
             .subcommand(Command::new("remove")
                 .about("Remove tag from file")
-                .arg(arg!(<FILE_NAME> "Name of the file"))
+                .arg(arg!(<ID> "ID of the file")
+                    .value_parser(value_parser!(u32)))
                 .arg(arg!(<TAG> "Name of the tag to remove"))
                 .arg_required_else_help(true))
         )
         .subcommand(Command::new("init")
             .about("Initialize storage"))
+        .subcommand(Command::new("drop")
+            .about("Test for drop"))
 }
 
 fn main() -> Result<(), String> {
     setup_logger()?;
     let env_config = EnvConfig::init();
+    let mut index_data = IndexData::init(&env_config);
 
     let matches = cli().get_matches();
 
@@ -56,13 +62,14 @@ fn main() -> Result<(), String> {
         Some(("organise", _)) => organize(&env_config),
         Some(("tag", sub_matches)) => {
             match sub_matches.subcommand() {
-                Some(("add", sub_matches)) => handle_tag_add_operation(sub_matches, &env_config),
-                Some(("remove", sub_matches)) => handle_tag_remove_operation(sub_matches, &env_config),
+                Some(("add", sub_matches)) => handle_tag_add_operation(sub_matches, &mut index_data, &env_config)?,
+                Some(("remove", sub_matches)) => handle_tag_remove_operation(sub_matches, &mut index_data)?,
                 None => {}
                 _ => unreachable!()
             }
         }
         Some(("init", _)) => init_storage(&env_config),
+        Some(("drop", _)) => {IndexData::init(&env_config);},
         None => {}
         _ => unreachable!(),
     }
@@ -86,16 +93,16 @@ fn handle_delete_operation(args: &ArgMatches, config: &EnvConfig) {
     delete(*id, config);
 }
 
-fn handle_tag_add_operation(args: &ArgMatches, config: &EnvConfig) {
-    let index = args.get_one::<u32>("FILE_NAME").expect("required");
+fn handle_tag_add_operation(args: &ArgMatches, index_data: &mut IndexData, config: &EnvConfig) -> Result<(), String> {
+    let index = args.get_one::<u32>("ID").expect("required");
     let tags = args.get_one::<String>("TAGS").expect("required");
-    tag_add(*index, tags, config);
+    index_data.add_tag(*index, tags, config)
 }
 
-fn handle_tag_remove_operation(args: &ArgMatches, config: &EnvConfig) {
-    let file_name = args.get_one::<u32>("FILE_NAME").expect("required");
+fn handle_tag_remove_operation(args: &ArgMatches, index_data: &mut IndexData) -> Result<(), String>{
+    let index = args.get_one::<u32>("ID").expect("required");
     let tags = args.get_one::<String>("TAG").expect("required");
-    tag_remove(*file_name, tags, config);
+    index_data.remove_tag(*index, tags)
 }
 
 fn setup_logger() -> Result<(), String> {
