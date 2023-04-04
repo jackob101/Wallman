@@ -30,7 +30,8 @@ fn cli() -> Command {
             .about("Tag operations")
             .subcommand(Command::new("add")
                 .about("Add tag to file")
-                .arg(arg!(<FILE_NAME> "Name of the file that tag is added to"))
+                .arg(arg!(<FILE_NAME> "Name of the file that tag is added to")
+                    .value_parser(value_parser!(u32)))
                 .arg(arg!(<TAGS> "Tags"))
                 .arg_required_else_help(true))
             .subcommand(Command::new("remove")
@@ -75,7 +76,7 @@ fn handle_download_operation(args: &ArgMatches, config: &EnvConfig) {
     let file_name = download(url, config);
 
     if let Some(passed_tags) = args.get_one::<String>("tags"){
-        tag_add(&file_name, passed_tags, config)
+        tag_add(file_name.index, passed_tags, config)
     }
 
 }
@@ -86,15 +87,15 @@ fn handle_delete_operation(args: &ArgMatches, config: &EnvConfig) {
 }
 
 fn handle_tag_add_operation(args: &ArgMatches, config: &EnvConfig) {
-    let file_name = args.get_one::<String>("FILE_NAME").expect("required");
+    let index = args.get_one::<u32>("FILE_NAME").expect("required");
     let tags = args.get_one::<String>("TAGS").expect("required");
-    tag_add(file_name, tags, config);
+    tag_add(*index, tags, config);
 }
 
 fn handle_tag_remove_operation(args: &ArgMatches, config: &EnvConfig) {
-    let file_name = args.get_one::<String>("FILE_NAME").expect("required");
+    let file_name = args.get_one::<u32>("FILE_NAME").expect("required");
     let tags = args.get_one::<String>("TAG").expect("required");
-    tag_remove(file_name, tags, config);
+    tag_remove(*file_name, tags, config);
 }
 
 fn setup_logger() -> Result<(), String> {
