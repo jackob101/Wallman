@@ -8,18 +8,11 @@ pub struct EnvConfig {
 
 impl EnvConfig {
     pub fn init() -> EnvConfig {
-
         let storage_directory = match env::var("WALLMAN_STORAGE_DIRECTORY") {
             Ok(value) => PathBuf::from(value),
-            Err(_) => home::home_dir().unwrap().join("Wallpapers")
+            Err(_) => home::home_dir().unwrap().join("Wallpapers"),
         };
 
-
-        EnvConfig {
-            storage_directory
-        }
+        EnvConfig { storage_directory }
     }
 }
-
-
-
