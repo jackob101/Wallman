@@ -1,12 +1,14 @@
 use crate::env_config::EnvConfig;
 use serde::{Deserialize, Serialize};
 use std::fs::DirEntry;
-use std::path::PathBuf;
+use std::path::{Iter, PathBuf};
 use std::{fs, io};
+use log::Metadata;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct FileMetadata {
     pub index: u32,
+    #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub tags: Vec<String>,
 }
 
@@ -52,7 +54,7 @@ impl FileMetadata {
 
 pub struct StorageMetadata {
     path: PathBuf,
-    metadata: Vec<FileMetadata>,
+    pub metadata: Vec<FileMetadata>,
 }
 
 impl StorageMetadata {
@@ -156,6 +158,7 @@ impl StorageMetadata {
             Err(_) => false,
         }
     }
+
 }
 
 impl Drop for StorageMetadata {
