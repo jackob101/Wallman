@@ -12,7 +12,7 @@ use std::{fs, io};
 
 use crate::env_config::EnvConfig;
 use crate::simple_file::SimpleFile;
-use crate::tag::FileMetadata;
+use crate::tag::{FileMetadata, StorageMetadata};
 use log::{debug, info};
 use reqwest::blocking;
 
@@ -120,7 +120,7 @@ pub fn delete(id_to_delete: u32, config: &EnvConfig) -> Result<bool, String> {
     Err("File not found".to_string())
 }
 
-pub fn organize(config: &EnvConfig) {
+pub fn organize(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {
     let ordered_wallpapers = get_ordered_files_from_directory(&config.storage_directory);
 
     let mut missing_numbers: Vec<u32> = vec![];
@@ -153,6 +153,8 @@ pub fn organize(config: &EnvConfig) {
                 break;
             }
             Some(value) => {
+                storage_metadata.move_index(value.index, *entry);
+
                 fs::rename(
                     config.storage_directory.join(value.to_path()),
                     config
