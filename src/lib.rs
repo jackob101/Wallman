@@ -13,8 +13,9 @@ use std::{fs, io};
 use crate::env_config::EnvConfig;
 use crate::simple_file::SimpleFile;
 use crate::tag::{FileMetadata, StorageMetadata};
-use log::{debug, info};
+use log::{debug, info, Metadata};
 use reqwest::blocking;
+use simple_log::file;
 
 pub fn download(url: &str, config: &EnvConfig) -> SimpleFile {
     info!("Downloading from url: {}", url);
@@ -172,7 +173,29 @@ pub fn init_storage(config: &EnvConfig) {
         .expect("Failed to initialize index.csv");
 }
 
+pub fn fix_storage(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {
+    let stored_files = get_files_from_directory(&config.storage_directory);
+
+    storage_metadata.metadata.retain(|file_metadata| {
+        let does_file_with_id_exists = stored_files
+            .iter()
+            .any(|entry| entry.index == file_metadata.index);
+
+        let does_id_have_tags = !file_metadata.tags.is_empty();
+
+        does_file_with_id_exists && does_id_have_tags
+    });
+}
+
 fn get_ordered_files_from_directory(path: &PathBuf) -> Vec<SimpleFile> {
+    let mut current_files: Vec<SimpleFile> = get_files_from_directory(path);
+
+    current_files.sort_by(|x, x1| x.index.cmp(&x1.index));
+
+    current_files
+}
+
+fn get_files_from_directory(path: &PathBuf) -> Vec<SimpleFile> {
     let mut current_files: Vec<SimpleFile> = vec![];
 
     for entry in fs::read_dir(&path).unwrap() {
@@ -197,8 +220,6 @@ fn get_ordered_files_from_directory(path: &PathBuf) -> Vec<SimpleFile> {
             })
         }
     }
-
-    current_files.sort_by(|x, x1| x.index.cmp(&x1.index));
 
     current_files
 }

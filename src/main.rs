@@ -1,63 +1,24 @@
+mod commands;
+
 #[macro_use]
 extern crate simple_log;
 extern crate core;
 
 use clap::{arg, value_parser, ArgMatches, Command};
+use clap::ValueHint::CommandString;
 use simple_log::LogConfigBuilder;
 
 use wallman_lib::env_config::EnvConfig;
 use wallman_lib::tag::StorageMetadata;
 use wallman_lib::{delete, download, init_storage, organize};
 
-fn cli() -> Command {
-    Command::new("wallman")
-        .about("Wallpapers manager")
-        .arg_required_else_help(true)
-        .subcommand(
-            Command::new("download")
-                .about("Download image from URL")
-                .arg(arg!(<URL> "URL to image"))
-                .arg(arg!(--tags <TAGS>).short('t').num_args(1))
-                .arg_required_else_help(true),
-        )
-        .subcommand(
-            Command::new("delete")
-                .about("Remove image with passed ID")
-                .arg(
-                    arg!(<ID> "Image ID. Images are stored like <ID>.<image format>")
-                        .value_parser(value_parser!(u32)),
-                )
-                .arg_required_else_help(true),
-        )
-        .subcommand(Command::new("organise").about("Organise image storage"))
-        .subcommand(
-            Command::new("tag")
-                .about("Tag operations")
-                .subcommand(
-                    Command::new("add")
-                        .about("Add tag to file")
-                        .arg(arg!(<ID> "ID of the file").value_parser(value_parser!(u32)))
-                        .arg(arg!(<TAGS> "Tags"))
-                        .arg_required_else_help(true),
-                )
-                .subcommand(
-                    Command::new("remove")
-                        .about("Remove tag from file")
-                        .arg(arg!(<ID> "ID of the file").value_parser(value_parser!(u32)))
-                        .arg(arg!(<TAG> "Name of the tag to remove"))
-                        .arg_required_else_help(true),
-                ),
-        )
-        .subcommand(Command::new("init").about("Initialize storage"))
-        .subcommand(Command::new("drop").about("Test for drop"))
-}
 
 fn main() -> Result<(), String> {
     setup_logger()?;
     let env_config = EnvConfig::init();
     let mut storage_metadata = StorageMetadata::init(&env_config);
 
-    let matches = cli().get_matches();
+    let matches = commands::generate_commands().get_matches();
 
     match matches.subcommand() {
         Some(("download", sub_matches)) => {
@@ -77,7 +38,16 @@ fn main() -> Result<(), String> {
             None => {}
             _ => unreachable!(),
         },
-        Some(("init", _)) => init_storage(&env_config),
+        Some(("index", sub_matches)) => {
+            match sub_matches.subcommand() {
+                Some(("init", _)) => init_storage(&env_config),
+                Some(("fix", _)) => wallman_lib::fix_storage(&env_config, &mut storage_metadata),
+                None => {}
+                _ => unreachable!()
+            }
+
+            init_storage(&env_config)
+        },
         Some(("drop", _)) => {
             StorageMetadata::init(&env_config);
         }
