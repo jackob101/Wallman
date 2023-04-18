@@ -66,7 +66,7 @@ fn main() -> Result<(), String> {
         Some(("delete", sub_matches)) => {
             handle_delete_operation(sub_matches, &env_config, &mut storage_metadata)?
         }
-        Some(("organise", _)) => organize(&env_config),
+        Some(("organise", _)) => organize(&env_config, &mut storage_metadata),
         Some(("tag", sub_matches)) => match sub_matches.subcommand() {
             Some(("add", sub_matches)) => {
                 handle_tag_add_operation(sub_matches, &mut storage_metadata, &env_config)?

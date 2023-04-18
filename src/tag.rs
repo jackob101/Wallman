@@ -44,6 +44,10 @@ impl FileMetadata {
 
         Ok(())
     }
+
+    pub fn move_tag(&mut self, to: u32) {
+        self.index = to;
+    }
 }
 
 pub struct StorageMetadata {
@@ -119,9 +123,20 @@ impl StorageMetadata {
     pub fn remove_all_tags_from_file(&mut self, index: u32) {
         self.metadata.retain(|entry| entry.index != index);
     }
-}
 
-impl StorageMetadata {
+    pub fn move_index(&mut self, from: u32, to: u32) -> Result<(), String> {
+        let found_metatadata_about_file =
+            self.metadata.iter_mut().find(|entry| entry.index == from);
+
+        match found_metatadata_about_file {
+            None => Err("Index not found".to_string()),
+            Some(value) => {
+                value.move_tag(to);
+                Ok(())
+            }
+        }
+    }
+
     fn name_with_id_predicate(index: u32, entry: io::Result<DirEntry>) -> bool {
         match entry {
             Ok(dir_entry) => {
