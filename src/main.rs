@@ -64,7 +64,9 @@ fn match_image_command(
             Some(("delete", sub_matches)) => {
                 handle_tag_remove_operation(sub_matches, storage_metadata)
             }
-            Some(("clear", sub_matches)) => Ok(()),
+            Some(("clear", sub_matches)) => {
+                handle_tag_clear_operation(sub_matches, storage_metadata)
+            },
             None => Err("None matched".to_string()),
             _ => unreachable!(),
         },
@@ -123,6 +125,14 @@ fn handle_tag_remove_operation(
     let tags = args.get_many::<String>("TAGS").expect("required");
     let tags = tags.map(|tag| tag.to_string()).collect::<Vec<String>>();
     index_data.remove_tag_from_file(*index, tags)
+}
+
+fn handle_tag_clear_operation(
+    args: &ArgMatches,
+    storage_metadata: &mut StorageMetadata
+) -> Result<(), String>{
+    let id = args.get_one::<u32>("ID").expect("Missing argument");
+    storage_metadata.remove_all_tags_from_file(*id)
 }
 
 fn setup_logger() -> Result<(), String> {
