@@ -4,14 +4,13 @@ mod commands;
 extern crate simple_log;
 extern crate core;
 
-use clap::{arg, value_parser, ArgMatches, Command};
 use clap::ValueHint::CommandString;
+use clap::{arg, value_parser, ArgMatches, Command};
 use simple_log::LogConfigBuilder;
 
 use wallman_lib::env_config::EnvConfig;
 use wallman_lib::tag::StorageMetadata;
 use wallman_lib::{delete, download, init_storage, organize};
-
 
 fn main() -> Result<(), String> {
     setup_logger()?;
@@ -21,33 +20,30 @@ fn main() -> Result<(), String> {
     let matches = commands::generate_commands().get_matches();
 
     match matches.subcommand() {
-        Some(("download", sub_matches)) => {
-            handle_download_operation(sub_matches, &env_config, &mut storage_metadata)?
-        }
-        Some(("delete", sub_matches)) => {
-            handle_delete_operation(sub_matches, &env_config, &mut storage_metadata)?
+        Some(("image", sub_matchers)) => {
+            match_image_command(sub_matchers, &env_config, &mut storage_metadata)?
         }
         Some(("organise", _)) => organize(&env_config, &mut storage_metadata),
-        Some(("tag", sub_matches)) => match sub_matches.subcommand() {
-            Some(("add", sub_matches)) => {
-                handle_tag_add_operation(sub_matches, &mut storage_metadata, &env_config)?
-            }
-            Some(("remove", sub_matches)) => {
-                handle_tag_remove_operation(sub_matches, &mut storage_metadata)?
-            }
-            None => {}
-            _ => unreachable!(),
-        },
+        // Some(("tag", sub_matches)) => match sub_matches.subcommand() {
+        //     Some(("add", sub_matches)) => {
+        //         handle_tag_add_operation(sub_matches, &mut storage_metadata, &env_config)?
+        //     }
+        //     Some(("remove", sub_matches)) => {
+        //         handle_tag_remove_operation(sub_matches, &mut storage_metadata)?
+        //     }
+        //     None => {}
+        //     _ => unreachable!(),
+        // },
         Some(("index", sub_matches)) => {
             match sub_matches.subcommand() {
                 Some(("init", _)) => init_storage(&env_config),
                 Some(("fix", _)) => wallman_lib::fix_storage(&env_config, &mut storage_metadata),
                 None => {}
-                _ => unreachable!()
+                _ => unreachable!(),
             }
 
             init_storage(&env_config)
-        },
+        }
         Some(("drop", _)) => {
             StorageMetadata::init(&env_config);
         }
@@ -56,6 +52,34 @@ fn main() -> Result<(), String> {
     }
 
     Ok(())
+}
+
+fn match_image_command(
+    sub_matchers: &ArgMatches,
+    config: &EnvConfig,
+    storage_metadata: &mut StorageMetadata,
+) -> Result<(), String> {
+    match sub_matchers.subcommand() {
+        Some(("download", sub_matches)) => {
+            handle_download_operation(sub_matches, &config, storage_metadata)
+        }
+        Some(("delete", sub_matches)) => {
+            handle_delete_operation(sub_matches, &config, storage_metadata)
+        }
+        Some(("tag", sub_matches)) => match sub_matches.subcommand() {
+            Some(("add", sub_matches)) => {
+                handle_tag_add_operation(sub_matches, storage_metadata, &config)
+            }
+            Some(("delete", sub_matches)) => {
+                handle_tag_remove_operation(sub_matches, storage_metadata)
+            }
+            Some(("clear", sub_matches)) => Ok(()),
+            None => Err("None matched".to_string()),
+            _ => unreachable!(),
+        },
+        None => Err("None matched".to_string()),
+        _ => Ok(()),
+    }
 }
 
 fn handle_download_operation(
@@ -95,7 +119,7 @@ fn handle_tag_add_operation(
     config: &EnvConfig,
 ) -> Result<(), String> {
     let index = args.get_one::<u32>("ID").expect("required");
-    let tags = args.get_one::<String>("TAGS").expect("required");
+    let tags = args.get_one::<String>("TAG").expect("required");
     index_data.add_tag_to_file(*index, tags, config)
 }
 
