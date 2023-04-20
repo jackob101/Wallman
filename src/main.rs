@@ -4,6 +4,7 @@ mod commands;
 extern crate simple_log;
 extern crate core;
 
+use clap::parser::ValuesRef;
 use clap::ValueHint::CommandString;
 use clap::{arg, value_parser, ArgMatches, Command};
 use simple_log::LogConfigBuilder;
@@ -24,16 +25,6 @@ fn main() -> Result<(), String> {
             match_image_command(sub_matchers, &env_config, &mut storage_metadata)?
         }
         Some(("organise", _)) => organize(&env_config, &mut storage_metadata),
-        // Some(("tag", sub_matches)) => match sub_matches.subcommand() {
-        //     Some(("add", sub_matches)) => {
-        //         handle_tag_add_operation(sub_matches, &mut storage_metadata, &env_config)?
-        //     }
-        //     Some(("remove", sub_matches)) => {
-        //         handle_tag_remove_operation(sub_matches, &mut storage_metadata)?
-        //     }
-        //     None => {}
-        //     _ => unreachable!(),
-        // },
         Some(("index", sub_matches)) => {
             match sub_matches.subcommand() {
                 Some(("init", _)) => init_storage(&env_config),
@@ -91,7 +82,7 @@ fn handle_download_operation(
     let file_name = download(url, config);
 
     if let Some(passed_tags) = args.get_one::<String>("tags") {
-        storage_metadata.add_tag_to_file(file_name.index, passed_tags, config)?;
+        storage_metadata.add_tag_to_file(file_name.index, vec![passed_tags.to_string()], config)?;
     };
 
     Ok(())
@@ -119,7 +110,8 @@ fn handle_tag_add_operation(
     config: &EnvConfig,
 ) -> Result<(), String> {
     let index = args.get_one::<u32>("ID").expect("required");
-    let tags = args.get_one::<String>("TAG").expect("required");
+    let tags = args.get_many::<String>("TAGS").expect("required");
+    let tags = tags.map(|tag| tag.to_string()).collect::<Vec<String>>();
     index_data.add_tag_to_file(*index, tags, config)
 }
 
@@ -128,7 +120,8 @@ fn handle_tag_remove_operation(
     index_data: &mut StorageMetadata,
 ) -> Result<(), String> {
     let index = args.get_one::<u32>("ID").expect("required");
-    let tags = args.get_one::<String>("TAG").expect("required");
+    let tags = args.get_many::<String>("TAGS").expect("required");
+    let tags = tags.map(|tag| tag.to_string()).collect::<Vec<String>>();
     index_data.remove_tag_from_file(*index, tags)
 }
 

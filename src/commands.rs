@@ -69,14 +69,14 @@ fn generate_image() -> Command {
                     Command::new("add")
                         .about("Add tag to image")
                         .arg(arg!(<ID> "File ID").value_parser(value_parser!(u32)))
-                        .arg(arg!(<TAG> "Tag name"))
+                        .arg(arg!(<TAGS> "Tag name").num_args(1..))
                         .arg_required_else_help(true),
                 )
                 .subcommand(
                     Command::new("delete")
                         .about("Remove tag from image")
                         .arg(arg!(<ID> "File ID").value_parser(value_parser!(u32)))
-                        .arg(arg!(<TAG> "Tag name to remove"))
+                        .arg(arg!(<TAGS> "Tag name to remove").num_args(1..))
                         .arg_required_else_help(true),
                 )
                 .subcommand(

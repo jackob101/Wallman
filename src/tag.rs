@@ -1,9 +1,11 @@
 use crate::env_config::EnvConfig;
+use clap::builder::Str;
+use clap::parser::ValuesRef;
+use log::Metadata;
 use serde::{Deserialize, Serialize};
 use std::fs::DirEntry;
 use std::path::{Iter, PathBuf};
 use std::{fs, io};
-use log::Metadata;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct FileMetadata {
@@ -82,7 +84,7 @@ impl StorageMetadata {
     pub fn add_tag_to_file(
         &mut self,
         index: u32,
-        tags: &String,
+        tags: Vec<String>,
         config: &EnvConfig,
     ) -> Result<(), String> {
         let does_file_exists = fs::read_dir(&config.storage_directory)
@@ -100,17 +102,18 @@ impl StorageMetadata {
 
         match metadata_for_index_option {
             None => {
-                self.metadata.push(FileMetadata::new(
-                    index,
-                    FileMetadata::parse_tags(tags.to_owned()),
-                ));
+                self.metadata.push(FileMetadata::new(index, tags));
                 Ok(())
             }
-            Some(metadata) => metadata.add_tag(tags),
+            Some(metadata) => {
+                tags.iter()
+                    .for_each(|new_tag| metadata.add_tag(new_tag).expect("Couldn't add new tag"));
+                Ok(())
+            }
         }
     }
 
-    pub fn remove_tag_from_file(&mut self, index: u32, tags: &String) -> Result<(), String> {
+    pub fn remove_tag_from_file(&mut self, index: u32, tags: Vec<String>) -> Result<(), String> {
         let metadata_for_index_option = self
             .metadata
             .iter_mut()
@@ -118,7 +121,12 @@ impl StorageMetadata {
 
         match metadata_for_index_option {
             None => Err("File with specified ID doesn't exists".to_string()),
-            Some(metadata) => metadata.remove_tag(tags),
+            Some(metadata) => {
+                for tag in tags {
+                    metadata.remove_tag(&tag)?
+                }
+                Ok(())
+            }
         }
     }
 
@@ -158,7 +166,6 @@ impl StorageMetadata {
             Err(_) => false,
         }
     }
-
 }
 
 impl Drop for StorageMetadata {
