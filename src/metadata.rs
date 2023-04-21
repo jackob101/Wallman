@@ -176,11 +176,9 @@ impl StorageMetadata {
             Err(_) => false,
         }
     }
-}
 
-impl Drop for StorageMetadata {
-    fn drop(&mut self) {
-        println!("Writing index.csv!");
+    pub fn persist(&self){
+        println!("persisting index.csv");
 
         let mut writer = csv::WriterBuilder::new()
             .flexible(true)
@@ -200,3 +198,4 @@ impl Drop for StorageMetadata {
         writer.flush().expect("Couldn't flush writer");
     }
 }
+

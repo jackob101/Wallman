@@ -2,7 +2,7 @@ extern crate core;
 
 pub mod env_config;
 pub mod simple_file;
-pub mod tag;
+pub mod metadata;
 
 use image::ImageFormat;
 use std::ffi::OsStr;
@@ -12,7 +12,7 @@ use std::{fs, io};
 
 use crate::env_config::EnvConfig;
 use crate::simple_file::SimpleFile;
-use crate::tag::{FileMetadata, StorageMetadata};
+use crate::metadata::{FileMetadata, StorageMetadata};
 use log::{debug, info, Metadata};
 use reqwest::blocking;
 use simple_log::file;

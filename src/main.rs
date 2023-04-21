@@ -10,7 +10,7 @@ use clap::{arg, value_parser, ArgMatches, Command};
 use simple_log::LogConfigBuilder;
 
 use wallman_lib::env_config::EnvConfig;
-use wallman_lib::tag::StorageMetadata;
+use wallman_lib::metadata::StorageMetadata;
 use wallman_lib::{delete, download, init_storage, organize};
 
 fn main() -> Result<(), String> {
@@ -35,12 +35,11 @@ fn main() -> Result<(), String> {
 
             init_storage(&env_config)
         }
-        Some(("drop", _)) => {
-            StorageMetadata::init(&env_config);
-        }
         None => {}
         _ => unreachable!(),
     }
+
+    storage_metadata.persist();
 
     Ok(())
 }
@@ -52,14 +51,14 @@ fn match_image_command(
 ) -> Result<(), String> {
     match sub_matchers.subcommand() {
         Some(("download", sub_matches)) => {
-            handle_download_operation(sub_matches, &config, storage_metadata)
+            handle_download_operation(sub_matches, config, storage_metadata)
         }
         Some(("delete", sub_matches)) => {
-            handle_delete_operation(sub_matches, &config, storage_metadata)
+            handle_delete_operation(sub_matches, config, storage_metadata)
         }
         Some(("tag", sub_matches)) => match sub_matches.subcommand() {
             Some(("add", sub_matches)) => {
-                handle_tag_add_operation(sub_matches, storage_metadata, &config)
+                handle_tag_add_operation(sub_matches, storage_metadata, config)
             }
             Some(("delete", sub_matches)) => {
                 handle_tag_remove_operation(sub_matches, storage_metadata)
