@@ -4,9 +4,7 @@ mod commands;
 extern crate simple_log;
 extern crate core;
 
-use clap::parser::ValuesRef;
-use clap::ValueHint::CommandString;
-use clap::{arg, value_parser, ArgMatches, Command};
+use clap::{ArgMatches};
 use simple_log::LogConfigBuilder;
 
 use wallman_lib::env_config::EnvConfig;
@@ -16,7 +14,7 @@ use wallman_lib::{delete, download, init_storage, organize};
 fn main() -> Result<(), String> {
     setup_logger()?;
     let env_config = EnvConfig::init();
-    let mut storage_metadata = StorageMetadata::init(&env_config);
+    let mut storage_metadata = StorageMetadata::new(&env_config);
 
     let matches = commands::generate_commands().get_matches();
 
@@ -83,7 +81,7 @@ fn handle_download_operation(
     let file_name = download(url, config);
 
     if let Some(passed_tags) = args.get_one::<String>("tags") {
-        storage_metadata.add_tag_to_file(file_name.index, vec![passed_tags.to_string()], config)?;
+        storage_metadata.add_tag_to_id(file_name.index, vec![passed_tags.to_string()], config)?;
     };
 
     Ok(())
@@ -99,7 +97,7 @@ fn handle_delete_operation(
     let have_file_been_deleted = delete(*id, config)?;
 
     if have_file_been_deleted {
-        index_data.remove_all_tags_from_file(*id);
+        index_data.remove_all_tags_from_id(*id);
     };
 
     Ok(())
@@ -113,7 +111,7 @@ fn handle_tag_add_operation(
     let index = args.get_one::<u32>("ID").expect("required");
     let tags = args.get_many::<String>("TAGS").expect("required");
     let tags = tags.map(|tag| tag.to_string()).collect::<Vec<String>>();
-    index_data.add_tag_to_file(*index, tags, config)
+    index_data.add_tag_to_id(*index, tags, config)
 }
 
 fn handle_tag_remove_operation(
@@ -123,7 +121,7 @@ fn handle_tag_remove_operation(
     let index = args.get_one::<u32>("ID").expect("required");
     let tags = args.get_many::<String>("TAGS").expect("required");
     let tags = tags.map(|tag| tag.to_string()).collect::<Vec<String>>();
-    index_data.remove_tag_from_file(*index, tags)
+    index_data.remove_tag_from_id(*index, tags)
 }
 
 fn handle_tag_clear_operation(
@@ -131,7 +129,7 @@ fn handle_tag_clear_operation(
     storage_metadata: &mut StorageMetadata
 ) -> Result<(), String>{
     let id = args.get_one::<u32>("ID").expect("Missing argument");
-    storage_metadata.remove_all_tags_from_file(*id)
+    storage_metadata.remove_all_tags_from_id(*id)
 }
 
 fn setup_logger() -> Result<(), String> {

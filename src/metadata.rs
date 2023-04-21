@@ -19,12 +19,6 @@ impl FileMetadata {
         FileMetadata { index, tags }
     }
 
-    pub fn parse_tags(tags: String) -> Vec<String> {
-        tags.split(';')
-            .map(|s| s.to_owned())
-            .collect::<Vec<String>>()
-    }
-
     pub fn add_tag(&mut self, new_tag: &String) -> Result<(), String> {
         if self.tags.contains(new_tag) {
             return Err("Tag is already assigned for specified ID".to_string());
@@ -34,22 +28,20 @@ impl FileMetadata {
     }
 
     pub fn remove_tag(&mut self, tag_name: &String) -> Result<(), String> {
-        let old_size = self.tags.len();
 
-        self.tags.retain(|entry| !entry.eq(tag_name));
+        let position_option = self.tags.iter()
+            .position(|entry| entry.eq(tag_name));
 
-        if old_size == self.tags.len() {
-            println!("Same size of tags");
-            return Err(format!(
-                "Tag {} doesn't exists for file {}",
-                tag_name, self.index
-            ));
+        match position_option {
+            None => Err(format!("Tag {} is not assigned to ID {}", tag_name, self.index)),
+            Some(value) => {
+                self.tags.remove(value);
+                Ok(())
+            }
         }
-
-        Ok(())
     }
 
-    pub fn move_tag(&mut self, to: u32) {
+    pub fn move_id(&mut self, to: u32) {
         self.index = to;
     }
 }
@@ -60,7 +52,7 @@ pub struct StorageMetadata {
 }
 
 impl StorageMetadata {
-    pub fn init(config: &EnvConfig) -> StorageMetadata {
+    pub fn new(config: &EnvConfig) -> StorageMetadata {
         let path_to_index_file = config.storage_directory.join("index.csv");
 
         let mut reader = csv::ReaderBuilder::new()
@@ -81,15 +73,15 @@ impl StorageMetadata {
         }
     }
 
-    pub fn add_tag_to_file(
+    pub fn add_tag_to_id(
         &mut self,
-        index: u32,
+        id: u32,
         tags: Vec<String>,
         config: &EnvConfig,
     ) -> Result<(), String> {
         let does_file_exists = fs::read_dir(&config.storage_directory)
             .expect("Couldn't read storage directory")
-            .any(|entry| StorageMetadata::name_with_id_predicate(index, entry));
+            .any(|entry| StorageMetadata::name_with_id_predicate(id, entry));
 
         if !does_file_exists {
             return Err("Can't add tags to file that doesn't exists!".to_string());
@@ -98,11 +90,11 @@ impl StorageMetadata {
         let metadata_for_index_option = self
             .metadata
             .iter_mut()
-            .find(|entry| entry.index.eq(&index));
+            .find(|entry| entry.index.eq(&id));
 
         match metadata_for_index_option {
             None => {
-                self.metadata.push(FileMetadata::new(index, tags));
+                self.metadata.push(FileMetadata::new(id, tags));
                 Ok(())
             }
             Some(metadata) => {
@@ -113,11 +105,11 @@ impl StorageMetadata {
         }
     }
 
-    pub fn remove_tag_from_file(&mut self, index: u32, tags: Vec<String>) -> Result<(), String> {
+    pub fn remove_tag_from_id(&mut self, id: u32, tags: Vec<String>) -> Result<(), String> {
         let metadata_for_index_option = self
             .metadata
             .iter_mut()
-            .find(|entry| entry.index.eq(&index));
+            .find(|entry| entry.index.eq(&id));
 
         match metadata_for_index_option {
             None => Err("File with specified ID doesn't exists".to_string()),
@@ -130,13 +122,13 @@ impl StorageMetadata {
         }
     }
 
-    pub fn remove_all_tags_from_file(&mut self, index: u32) -> Result<(), String>{
+    pub fn remove_all_tags_from_id(&mut self, id: u32) -> Result<(), String>{
 
         let index_in_vector = self.metadata.iter()
-            .position(|entry| entry.index == index);
+            .position(|entry| entry.index == id);
 
         match index_in_vector{
-            None => Err(format!("ID: {} not found in index.csv", index)),
+            None => Err(format!("ID: {} not found in index.csv", id)),
             Some(value) => {
                 self.metadata.remove(value);
                 Ok(())
@@ -151,29 +143,9 @@ impl StorageMetadata {
         match found_metadata_about_file {
             None => Err("Index not found".to_string()),
             Some(value) => {
-                value.move_tag(to);
+                value.move_id(to);
                 Ok(())
             }
-        }
-    }
-
-    fn name_with_id_predicate(index: u32, entry: io::Result<DirEntry>) -> bool {
-        match entry {
-            Ok(dir_entry) => {
-                let file_id = dir_entry
-                    .path()
-                    .file_stem()
-                    .expect("Missing file stem")
-                    .to_str()
-                    .expect("Couldn't parse file name into &str")
-                    .parse::<u32>();
-
-                match file_id {
-                    Ok(value) => value == index,
-                    Err(_) => false,
-                }
-            }
-            Err(_) => false,
         }
     }
 
@@ -196,6 +168,26 @@ impl StorageMetadata {
         }
 
         writer.flush().expect("Couldn't flush writer");
+    }
+
+    fn name_with_id_predicate(index: u32, entry: io::Result<DirEntry>) -> bool {
+        match entry {
+            Ok(dir_entry) => {
+                let file_id = dir_entry
+                    .path()
+                    .file_stem()
+                    .expect("Missing file stem")
+                    .to_str()
+                    .expect("Couldn't parse file name into &str")
+                    .parse::<u32>();
+
+                match file_id {
+                    Ok(value) => value == index,
+                    Err(_) => false,
+                }
+            }
+            Err(_) => false,
+        }
     }
 }
 
