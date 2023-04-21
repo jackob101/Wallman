@@ -6,7 +6,6 @@ pub fn generate_commands() -> Command {
         .arg_required_else_help(true)
         .subcommand(generate_image())
         .subcommand(generate_organise())
-        // .subcommand(generate_tag())
         .subcommand(generate_index())
 }
 
@@ -17,25 +16,6 @@ fn generate_index() -> Command {
         .subcommand(
             Command::new("fix")
                 .about("Try to fix index.csv. ( Remove ID's that leads to missing files )"),
-        )
-}
-
-fn generate_tag() -> Command {
-    Command::new("tag")
-        .about("Tag operations")
-        .subcommand(
-            Command::new("add")
-                .about("Add tag to file")
-                .arg(arg!(<ID> "ID of the file").value_parser(value_parser!(u32)))
-                .arg(arg!(<TAGS> "Tags"))
-                .arg_required_else_help(true),
-        )
-        .subcommand(
-            Command::new("remove")
-                .about("Remove tag from file")
-                .arg(arg!(<ID> "ID of the file").value_parser(value_parser!(u32)))
-                .arg(arg!(<TAG> "Name of the tag to remove"))
-                .arg_required_else_help(true),
         )
 }
 
