@@ -143,7 +143,7 @@ fn handle_query_operation(
         .map(|entry| entry.map(|tag| tag.to_string()).collect())
         .unwrap_or_default();
 
-    storage_metadata.query(tags).iter().for_each(|entry| println!("ID: {}", entry.index));
+    storage_metadata.query(tags).iter().for_each(|entry| println!("ID: {}", entry.id));
 }
 
 fn setup_logger() -> Result<(), String> {

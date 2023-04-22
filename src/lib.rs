@@ -12,10 +12,10 @@ use std::{fs, io};
 
 use crate::env_config::EnvConfig;
 use crate::simple_file::SimpleFile;
-use crate::metadata::{FileMetadata, StorageMetadata};
-use log::{debug, info, Metadata};
+use crate::metadata::{StorageMetadata};
+use log::{info};
 use reqwest::blocking;
-use simple_log::file;
+
 
 pub fn download(url: &str, config: &EnvConfig) -> SimpleFile {
     info!("Downloading from url: {}", url);
@@ -169,8 +169,8 @@ pub fn organize(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {
 }
 
 pub fn init_storage(config: &EnvConfig) {
-    fs::write(config.storage_directory.join("index.csv"), "")
-        .expect("Failed to initialize index.csv");
+    fs::write(config.storage_directory.join("index.json"), "")
+        .expect("Failed to initialize index.json");
 }
 
 pub fn fix_storage(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {
@@ -179,7 +179,7 @@ pub fn fix_storage(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {
     storage_metadata.metadata.retain(|file_metadata| {
         let does_file_with_id_exists = stored_files
             .iter()
-            .any(|entry| entry.index == file_metadata.index);
+            .any(|entry| entry.index == file_metadata.id);
 
         let does_id_have_tags = !file_metadata.tags.is_empty();
 

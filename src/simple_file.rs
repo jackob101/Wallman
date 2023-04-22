@@ -1,5 +1,5 @@
 use image::ImageFormat;
-use std::fmt::{Debug, Formatter};
+use std::fmt::{Debug};
 use std::path::PathBuf;
 
 #[derive(Debug)]

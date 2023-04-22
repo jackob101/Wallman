@@ -1,4 +1,4 @@
-use clap::{arg, command, value_parser, Command};
+use clap::{arg, value_parser, Command};
 
 pub fn generate_commands() -> Command {
     Command::new("wallman")
