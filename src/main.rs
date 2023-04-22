@@ -33,6 +33,9 @@ fn main() -> Result<(), String> {
 
             init_storage(&env_config)
         }
+        Some(("query", sub_matches)) => {
+            handle_query_operation(sub_matches, &storage_metadata);
+        }
         None => {}
         _ => unreachable!(),
     }
@@ -130,6 +133,17 @@ fn handle_tag_clear_operation(
 ) -> Result<(), String>{
     let id = args.get_one::<u32>("ID").expect("Missing argument");
     storage_metadata.remove_all_tags_from_id(*id)
+}
+
+fn handle_query_operation(
+    args: &ArgMatches,
+    storage_metadata: &StorageMetadata
+){
+    let tags: Vec<String> = args.get_many::<String>("TAGS")
+        .map(|entry| entry.map(|tag| tag.to_string()).collect())
+        .unwrap_or_default();
+
+    storage_metadata.query(tags).iter().for_each(|entry| println!("ID: {}", entry.index));
 }
 
 fn setup_logger() -> Result<(), String> {

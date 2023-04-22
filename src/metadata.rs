@@ -28,17 +28,27 @@ impl FileMetadata {
     }
 
     pub fn remove_tag(&mut self, tag_name: &String) -> Result<(), String> {
-
-        let position_option = self.tags.iter()
-            .position(|entry| entry.eq(tag_name));
+        let position_option = self.tags.iter().position(|entry| entry.eq(tag_name));
 
         match position_option {
-            None => Err(format!("Tag {} is not assigned to ID {}", tag_name, self.index)),
+            None => Err(format!(
+                "Tag {} is not assigned to ID {}",
+                tag_name, self.index
+            )),
             Some(value) => {
                 self.tags.remove(value);
                 Ok(())
             }
         }
+    }
+
+    pub fn contains_tags(&self, tags: &Vec<String>) -> bool {
+        for tag in tags {
+            if !self.tags.contains(&tag) {
+                return false;
+            }
+        }
+        true
     }
 
     pub fn move_id(&mut self, to: u32) {
@@ -87,10 +97,7 @@ impl StorageMetadata {
             return Err("Can't add tags to file that doesn't exists!".to_string());
         }
 
-        let metadata_for_index_option = self
-            .metadata
-            .iter_mut()
-            .find(|entry| entry.index.eq(&id));
+        let metadata_for_index_option = self.metadata.iter_mut().find(|entry| entry.index.eq(&id));
 
         match metadata_for_index_option {
             None => {
@@ -106,10 +113,7 @@ impl StorageMetadata {
     }
 
     pub fn remove_tag_from_id(&mut self, id: u32, tags: Vec<String>) -> Result<(), String> {
-        let metadata_for_index_option = self
-            .metadata
-            .iter_mut()
-            .find(|entry| entry.index.eq(&id));
+        let metadata_for_index_option = self.metadata.iter_mut().find(|entry| entry.index.eq(&id));
 
         match metadata_for_index_option {
             None => Err("File with specified ID doesn't exists".to_string()),
@@ -122,12 +126,10 @@ impl StorageMetadata {
         }
     }
 
-    pub fn remove_all_tags_from_id(&mut self, id: u32) -> Result<(), String>{
+    pub fn remove_all_tags_from_id(&mut self, id: u32) -> Result<(), String> {
+        let index_in_vector = self.metadata.iter().position(|entry| entry.index == id);
 
-        let index_in_vector = self.metadata.iter()
-            .position(|entry| entry.index == id);
-
-        match index_in_vector{
+        match index_in_vector {
             None => Err(format!("ID: {} not found in index.csv", id)),
             Some(value) => {
                 self.metadata.remove(value);
@@ -137,8 +139,7 @@ impl StorageMetadata {
     }
 
     pub fn move_index(&mut self, from: u32, to: u32) -> Result<(), String> {
-        let found_metadata_about_file =
-            self.metadata.iter_mut().find(|entry| entry.index == from);
+        let found_metadata_about_file = self.metadata.iter_mut().find(|entry| entry.index == from);
 
         match found_metadata_about_file {
             None => Err("Index not found".to_string()),
@@ -149,7 +150,23 @@ impl StorageMetadata {
         }
     }
 
-    pub fn persist(&self){
+    pub fn query(&self, tags: Vec<String>) -> Vec<&FileMetadata> {
+        if tags.is_empty() {
+            return self.metadata.iter().collect();
+        }
+
+        let mut matching_elements: Vec<&FileMetadata> = vec![];
+
+        for entry in &self.metadata {
+            if entry.contains_tags(&tags) {
+                matching_elements.push(entry);
+            }
+        }
+
+        matching_elements
+    }
+
+    pub fn persist(&self) {
         println!("persisting index.csv");
 
         let mut writer = csv::WriterBuilder::new()
@@ -190,4 +207,3 @@ impl StorageMetadata {
         }
     }
 }
-
