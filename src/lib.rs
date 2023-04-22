@@ -12,10 +12,10 @@ use std::{fs, io};
 
 use crate::env_config::EnvConfig;
 use crate::simple_file::SimpleFile;
-use crate::metadata::{FileMetadata, StorageMetadata};
-use log::{debug, info, Metadata};
+use crate::metadata::{StorageMetadata};
+use log::{info};
 use reqwest::blocking;
-use simple_log::file;
+
 
 pub fn download(url: &str, config: &EnvConfig) -> SimpleFile {
     info!("Downloading from url: {}", url);
