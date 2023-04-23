@@ -73,6 +73,7 @@ fn generate_query() -> Command{
 
     Command::new("query")
         .about("Query data from index.csv")
-        .arg(arg!(<TAGS> "Tags to query for").num_args(0..))
+        .arg(arg!([TAGS] "Tags to query for"))
+        .arg_required_else_help(false)
 
 }
