@@ -9,7 +9,7 @@ use simple_log::LogConfigBuilder;
 
 use wallman_lib::env_config::EnvConfig;
 use wallman_lib::metadata::StorageMetadata;
-use wallman_lib::{delete, download, init_storage, organize, metadata, storage};
+use wallman_lib::{ download, init_storage, organize, metadata, storage};
 
 fn main() -> Result<(), String> {
     setup_logger()?;
@@ -132,7 +132,8 @@ fn handle_tag_clear_operation(
     storage_metadata: &mut StorageMetadata,
 ) -> Result<(), String> {
     let id = args.get_one::<u32>("ID").expect("Missing argument");
-    storage_metadata.remove_all_tags_from_id(&vec![*id])
+    metadata::delete(storage_metadata, &[*id]);
+    Ok(())
 }
 
 fn handle_query_operation(args: &ArgMatches, storage_metadata: &StorageMetadata) {

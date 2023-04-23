@@ -124,20 +124,6 @@ impl StorageMetadata {
         }
     }
 
-    pub fn remove_all_tags_from_id(&mut self, ids: &Vec<u32>) -> Result<(), String> {
-        for id in ids {
-            let index_in_vector = self.metadata.iter().position(|entry| entry.id == *id);
-
-            match index_in_vector {
-                None => return Err(format!("ID: {} not found in {}", id, INDEX)),
-                Some(value) => {
-                    self.metadata.remove(value);
-                }
-            };
-        }
-        Ok(())
-    }
-
     pub fn move_index(&mut self, from: u32, to: u32) -> Result<(), String> {
         let found_metadata_about_file = self.metadata.iter_mut().find(|entry| entry.id == from);
 
