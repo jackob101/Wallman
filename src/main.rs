@@ -9,7 +9,7 @@ use simple_log::LogConfigBuilder;
 
 use wallman_lib::env_config::EnvConfig;
 use wallman_lib::metadata::StorageMetadata;
-use wallman_lib::{delete, download, init_storage, organize};
+use wallman_lib::{delete, download, init_storage, organize, metadata, storage};
 
 fn main() -> Result<(), String> {
     setup_logger()?;
@@ -93,15 +93,15 @@ fn handle_download_operation(
 fn handle_delete_operation(
     args: &ArgMatches,
     config: &EnvConfig,
-    index_data: &mut StorageMetadata,
+    storage_metadata: &mut StorageMetadata,
 ) -> Result<(), String> {
     let ids = args.get_many::<u32>("ID").expect("required");
 
     let ids = ids.copied().collect::<Vec<u32>>();
 
-    let deleted_files = wallman_lib::storage::delete(&ids, config)?;
+    let deleted_files = storage::delete(&ids, config)?;
 
-    index_data.remove_all_tags_from_id(&deleted_files)?;
+    metadata::delete(storage_metadata, &deleted_files);
 
     Ok(())
 }

@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::fs::{DirEntry, File};
 use std::io::{BufReader, Write};
 use std::path::PathBuf;
+use std::process::id;
 use std::{fs, io};
 
 pub const INDEX: &str = "index.json";
@@ -196,4 +197,10 @@ impl StorageMetadata {
             Err(_) => false,
         }
     }
+}
+
+pub fn delete(storage_metadata: &mut StorageMetadata, ids: &[u32]) {
+    storage_metadata
+        .metadata
+        .retain(|entry| !ids.iter().any(|id| entry.id == *id));
 }
