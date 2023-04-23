@@ -4,7 +4,7 @@ mod commands;
 extern crate simple_log;
 extern crate core;
 
-use clap::{ArgMatches};
+use clap::ArgMatches;
 use simple_log::LogConfigBuilder;
 
 use wallman_lib::env_config::EnvConfig;
@@ -66,7 +66,7 @@ fn match_image_command(
             }
             Some(("clear", sub_matches)) => {
                 handle_tag_clear_operation(sub_matches, storage_metadata)
-            },
+            }
             None => Err("None matched".to_string()),
             _ => unreachable!(),
         },
@@ -95,13 +95,13 @@ fn handle_delete_operation(
     config: &EnvConfig,
     index_data: &mut StorageMetadata,
 ) -> Result<(), String> {
-    let id = args.get_one::<u32>("ID").expect("required");
+    let ids = args.get_many::<u32>("ID").expect("required");
 
-    let have_file_been_deleted = delete(*id, config)?;
+    let ids = ids.copied().collect::<Vec<u32>>();
 
-    if have_file_been_deleted {
-        index_data.remove_all_tags_from_id(*id);
-    };
+    let deleted_files = wallman_lib::storage::delete(&ids, config)?;
+
+    index_data.remove_all_tags_from_id(&deleted_files)?;
 
     Ok(())
 }
@@ -129,21 +129,22 @@ fn handle_tag_remove_operation(
 
 fn handle_tag_clear_operation(
     args: &ArgMatches,
-    storage_metadata: &mut StorageMetadata
-) -> Result<(), String>{
+    storage_metadata: &mut StorageMetadata,
+) -> Result<(), String> {
     let id = args.get_one::<u32>("ID").expect("Missing argument");
-    storage_metadata.remove_all_tags_from_id(*id)
+    storage_metadata.remove_all_tags_from_id(&vec![*id])
 }
 
-fn handle_query_operation(
-    args: &ArgMatches,
-    storage_metadata: &StorageMetadata
-){
-    let tags: Vec<String> = args.get_many::<String>("TAGS")
+fn handle_query_operation(args: &ArgMatches, storage_metadata: &StorageMetadata) {
+    let tags: Vec<String> = args
+        .get_many::<String>("TAGS")
         .map(|entry| entry.map(|tag| tag.to_string()).collect())
         .unwrap_or_default();
 
-    storage_metadata.query(tags).iter().for_each(|entry| println!("ID: {}", entry.id));
+    storage_metadata
+        .query(tags)
+        .iter()
+        .for_each(|entry| println!("ID: {}", entry.id));
 }
 
 fn setup_logger() -> Result<(), String> {
