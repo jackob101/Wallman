@@ -1,13 +1,11 @@
 use crate::env_config::EnvConfig;
 
-
-
 use serde::{Deserialize, Serialize};
 use std::fs::{DirEntry, File};
-use std::path::{PathBuf};
-use std::{fs, io};
 use std::io::{BufReader, Write};
-
+use std::path::PathBuf;
+use std::process::id;
+use std::{fs, io};
 
 pub const INDEX: &str = "index.json";
 
@@ -69,13 +67,13 @@ impl StorageMetadata {
     pub fn new(config: &EnvConfig) -> StorageMetadata {
         let path_to_index_file = config.storage_directory.join(INDEX);
 
-        let reader = match File::open(&path_to_index_file){
+        let reader = match File::open(&path_to_index_file) {
             Ok(reader) => reader,
-            Err(_) => todo!()
+            Err(_) => todo!(),
         };
 
-        let metadata = serde_json::from_reader(BufReader::new(reader))
-            .expect("Failed to parse json");
+        let metadata =
+            serde_json::from_reader(BufReader::new(reader)).expect("Failed to parse json");
 
         StorageMetadata {
             path: path_to_index_file,
@@ -126,18 +124,6 @@ impl StorageMetadata {
         }
     }
 
-    pub fn remove_all_tags_from_id(&mut self, id: u32) -> Result<(), String> {
-        let index_in_vector = self.metadata.iter().position(|entry| entry.id == id);
-
-        match index_in_vector {
-            None => Err(format!("ID: {} not found in {}", id, INDEX)),
-            Some(value) => {
-                self.metadata.remove(value);
-                Ok(())
-            }
-        }
-    }
-
     pub fn move_index(&mut self, from: u32, to: u32) -> Result<(), String> {
         let found_metadata_about_file = self.metadata.iter_mut().find(|entry| entry.id == from);
 
@@ -176,7 +162,6 @@ impl StorageMetadata {
             .open(&self.path)
             .expect("Failed to open/create file");
         serde_json::to_writer(&file, &self.metadata).expect("Failed to write");
-
     }
 
     fn name_with_id_predicate(index: u32, entry: io::Result<DirEntry>) -> bool {
@@ -198,4 +183,10 @@ impl StorageMetadata {
             Err(_) => false,
         }
     }
+}
+
+pub fn delete(storage_metadata: &mut StorageMetadata, ids: &[u32]) {
+    storage_metadata
+        .metadata
+        .retain(|entry| !ids.iter().any(|id| entry.id == *id));
 }

@@ -3,6 +3,7 @@ extern crate core;
 pub mod env_config;
 pub mod simple_file;
 pub mod metadata;
+pub mod storage;
 
 use image::ImageFormat;
 use std::ffi::OsStr;
@@ -49,76 +50,6 @@ pub fn download(url: &str, config: &EnvConfig) -> SimpleFile {
         .unwrap();
 
     image_file
-}
-
-pub fn delete(id_to_delete: u32, config: &EnvConfig) -> Result<bool, String> {
-    info!("Trying to delete file with ID: {}", id_to_delete);
-
-    let files_iterator = match fs::read_dir(&config.storage_directory) {
-        Ok(iterator) => iterator,
-        Err(_) => panic!("Couldn't create iterator over wallpapers directory"),
-    };
-
-    for dir_entry in files_iterator {
-        let file_path = dir_entry.unwrap().path();
-
-        if file_path.is_dir() {
-            continue;
-        }
-
-        if let Some(current_file_id) = file_path.file_stem() {
-            let parsed_id = current_file_id
-                .to_str()
-                .expect("Couldn't parse file name into &str")
-                .parse::<u32>();
-
-            let current_file_id = match parsed_id {
-                Ok(value) => value,
-                Err(_) => continue,
-            };
-
-            if current_file_id != id_to_delete {
-                continue;
-            }
-
-            let absolute_file_path = config.storage_directory.join(file_path);
-
-            println!(
-                "Are you sure you want to delete file under path: {}",
-                &absolute_file_path
-                    .to_str()
-                    .expect("Couldn't parse path into String")
-            );
-
-            loop {
-                print!("Please confirm [Y/N]: ");
-                io::stdout().flush().expect("Failed to flush");
-                let mut input = String::new();
-                io::stdin()
-                    .lock()
-                    .read_line(&mut input)
-                    .expect("Unexpected error during reading user input");
-                input = input.trim().to_string();
-
-                if input == "y" || input == "Y" {
-                    println!(
-                        "Removing file: {}",
-                        &absolute_file_path
-                            .to_str()
-                            .expect("Couldn't parse path into String")
-                    );
-                    fs::remove_file(absolute_file_path).expect("Couldn't delete file");
-                    return Ok(true);
-                } else if input == "N" || input == "n" {
-                    println!("Canceling");
-                    return Ok(false);
-                }
-                println!();
-            }
-        }
-    }
-
-    Err("File not found".to_string())
 }
 
 pub fn organize(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {

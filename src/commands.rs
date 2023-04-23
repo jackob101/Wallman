@@ -39,6 +39,7 @@ fn generate_image() -> Command {
                 .about("Remove image with passed ID")
                 .arg(
                     arg!(<ID> "Image ID. Images are stored like <ID>.<image format>")
+                        .num_args(1..)
                         .value_parser(value_parser!(u32)),
                 )
                 .arg_required_else_help(true),
