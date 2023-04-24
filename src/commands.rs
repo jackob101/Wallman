@@ -31,7 +31,7 @@ fn generate_image() -> Command {
             Command::new("download")
                 .about("Download image from URL")
                 .arg(arg!(<URL> "URL to image"))
-                .arg(arg!(--tags <TAGS>).short('t').num_args(1))
+                .arg(arg!(--tags <TAGS>).short('t').num_args(1..))
                 .arg_required_else_help(true),
         )
         .subcommand(
