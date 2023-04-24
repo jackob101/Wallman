@@ -3,13 +3,13 @@ use crate::env_config::EnvConfig;
 use std::fs::DirEntry;
 use std::io::{BufRead, Write};
 
-use std::path::{Path, PathBuf};
-use std::{fs, io};
-use std::ffi::OsStr;
+use crate::simple_file::SimpleFile;
 use image::ImageFormat;
 use log::info;
 use reqwest::blocking;
-use crate::simple_file::SimpleFile;
+use std::ffi::OsStr;
+use std::path::{Path, PathBuf};
+use std::{fs, io};
 
 pub fn delete(ids: &[u32], config: &EnvConfig) -> Result<Vec<u32>, String> {
     let mut removed_ids: Vec<u32> = vec![];
@@ -57,7 +57,6 @@ pub fn delete(ids: &[u32], config: &EnvConfig) -> Result<Vec<u32>, String> {
     Ok(removed_ids)
 }
 
-
 pub fn download(url: &str, config: &EnvConfig) -> SimpleFile {
     info!("Downloading from url: {}", url);
 
@@ -65,7 +64,6 @@ pub fn download(url: &str, config: &EnvConfig) -> SimpleFile {
         .expect("Unexpected error during file download")
         .bytes()
         .unwrap();
-
 
     let image_format =
         image::guess_format(&file_from_url).expect("Couldn't determine default file extension");
@@ -81,7 +79,6 @@ pub fn download(url: &str, config: &EnvConfig) -> SimpleFile {
 
     image_file
 }
-
 
 fn get_file_id(file: &DirEntry) -> Option<u32> {
     let file_path = file.path();
@@ -126,7 +123,6 @@ fn get_confirmation_for_file_deletion_from_user(file_path: &Path) -> bool {
     }
 }
 
-
 fn get_ordered_files_from_directory(path: &PathBuf) -> Vec<SimpleFile> {
     let mut current_files: Vec<SimpleFile> = get_files_from_directory(path);
 
@@ -164,8 +160,7 @@ fn get_files_from_directory(path: &PathBuf) -> Vec<SimpleFile> {
     current_files
 }
 
-fn get_next_id(path: &PathBuf) -> u32{
-
+fn get_next_id(path: &PathBuf) -> u32 {
     let current_files = get_ordered_files_from_directory(path);
 
     let mut new_file_index = current_files.len() + 1;
@@ -175,7 +170,7 @@ fn get_next_id(path: &PathBuf) -> u32{
             new_file_index = index + 1;
             break;
         }
-    };
+    }
 
     new_file_index as u32
 }

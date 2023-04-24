@@ -1,23 +1,19 @@
 extern crate core;
 
 pub mod env_config;
-pub mod simple_file;
 pub mod metadata;
+pub mod simple_file;
 pub mod storage;
 
 use image::ImageFormat;
 use std::ffi::OsStr;
-use std::io::{BufRead, Write};
+
+use std::fs;
 use std::path::PathBuf;
-use std::{fs, io};
 
 use crate::env_config::EnvConfig;
+use crate::metadata::StorageMetadata;
 use crate::simple_file::SimpleFile;
-use crate::metadata::{StorageMetadata};
-use log::{info};
-use reqwest::blocking;
-
-
 
 pub fn organize(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {
     let ordered_wallpapers = get_ordered_files_from_directory(&config.storage_directory);
