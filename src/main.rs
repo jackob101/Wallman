@@ -9,7 +9,7 @@ use simple_log::LogConfigBuilder;
 
 use wallman_lib::env_config::EnvConfig;
 use wallman_lib::metadata::StorageMetadata;
-use wallman_lib::{ download, init_storage, organize, metadata, storage};
+use wallman_lib::{init_storage, metadata, organize, storage};
 
 fn main() -> Result<(), String> {
     setup_logger()?;
@@ -81,11 +81,16 @@ fn handle_download_operation(
     storage_metadata: &mut StorageMetadata,
 ) -> Result<(), String> {
     let url = args.get_one::<String>("URL").expect("required");
-    let file_name = download(url, config);
+    let tags = args
+        .get_many::<String>("tags")
+        .map(|entry| entry.map(|s| s.to_string()).collect::<Vec<_>>())
+        .unwrap_or_default();
 
-    if let Some(passed_tags) = args.get_one::<String>("tags") {
-        storage_metadata.add_tag_to_id(file_name.index, vec![passed_tags.to_string()], config)?;
-    };
+    let file_name = storage::download(url, config);
+
+    if !tags.is_empty() {
+        storage_metadata.add_tag_to_id(file_name.index, tags, config)?;
+    }
 
     Ok(())
 }

@@ -31,7 +31,7 @@ fn generate_image() -> Command {
             Command::new("download")
                 .about("Download image from URL")
                 .arg(arg!(<URL> "URL to image"))
-                .arg(arg!(--tags <TAGS>).short('t').num_args(1))
+                .arg(arg!(--tags <TAGS>).short('t').num_args(1..))
                 .arg_required_else_help(true),
         )
         .subcommand(
@@ -70,11 +70,9 @@ fn generate_image() -> Command {
         )
 }
 
-fn generate_query() -> Command{
-
+fn generate_query() -> Command {
     Command::new("query")
         .about("Query data from index.csv")
         .arg(arg!([TAGS] "Tags to query for"))
         .arg_required_else_help(false)
-
 }

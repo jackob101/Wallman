@@ -1,56 +1,19 @@
 extern crate core;
 
 pub mod env_config;
-pub mod simple_file;
 pub mod metadata;
+pub mod simple_file;
 pub mod storage;
 
 use image::ImageFormat;
 use std::ffi::OsStr;
-use std::io::{BufRead, Write};
+
+use std::fs;
 use std::path::PathBuf;
-use std::{fs, io};
 
 use crate::env_config::EnvConfig;
+use crate::metadata::StorageMetadata;
 use crate::simple_file::SimpleFile;
-use crate::metadata::{StorageMetadata};
-use log::{info};
-use reqwest::blocking;
-
-
-pub fn download(url: &str, config: &EnvConfig) -> SimpleFile {
-    info!("Downloading from url: {}", url);
-
-    let file_from_url = blocking::get(url)
-        .expect("Unexpected error during file download")
-        .bytes()
-        .unwrap();
-
-    let current_files = get_ordered_files_from_directory(&config.storage_directory);
-
-    let mut new_file_index = current_files.len() + 1;
-
-    for (index, entry) in current_files.iter().enumerate() {
-        if (index as u32) != entry.index - 1 {
-            new_file_index = index + 1;
-            break;
-        }
-    }
-
-    let image_format =
-        image::guess_format(&file_from_url).expect("Couldn't determine default file extension");
-
-    let image_file = SimpleFile::new(new_file_index as u32, image_format);
-
-    let absolute_file_path = &config.storage_directory.join(image_file.to_path());
-
-    image::load_from_memory(&file_from_url)
-        .unwrap()
-        .save(absolute_file_path)
-        .unwrap();
-
-    image_file
-}
 
 pub fn organize(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {
     let ordered_wallpapers = get_ordered_files_from_directory(&config.storage_directory);
