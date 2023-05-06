@@ -9,7 +9,7 @@ use simple_log::LogConfigBuilder;
 
 use wallman_lib::env_config::EnvConfig;
 use wallman_lib::metadata::StorageMetadata;
-use wallman_lib::{init_storage, metadata, organize, storage};
+use wallman_lib::{init_storage, metadata, storage};
 
 fn main() -> Result<(), String> {
     setup_logger()?;
@@ -22,7 +22,10 @@ fn main() -> Result<(), String> {
         Some(("image", sub_matchers)) => {
             match_image_command(sub_matchers, &env_config, &mut storage_metadata)?
         }
-        Some(("organise", _)) => organize(&env_config, &mut storage_metadata),
+        Some(("organise", _)) => {
+            let moved_files = storage::organise(&env_config);
+            storage_metadata.move_all(&moved_files);
+        },
         Some(("index", sub_matches)) => {
             match sub_matches.subcommand() {
                 Some(("init", _)) => init_storage(&env_config),

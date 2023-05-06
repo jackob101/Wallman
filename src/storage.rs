@@ -80,6 +80,57 @@ pub fn download(url: &str, config: &EnvConfig) -> SimpleFile {
     image_file
 }
 
+pub fn organise(config: &EnvConfig) -> Vec<(u32, u32)> {
+    let ordered_wallpapers = get_ordered_files_from_directory(&config.storage_directory);
+
+    let mut missing_numbers: Vec<u32> = vec![];
+
+    let mut last_number = 0;
+
+    for entry in ordered_wallpapers.iter() {
+        if last_number == entry.index - 1 {
+            last_number = entry.index;
+            continue;
+        }
+
+        let numbers_gap = entry.index - last_number;
+
+        for i in 1..numbers_gap {
+            missing_numbers.push(i + last_number);
+        }
+
+        last_number = entry.index;
+    }
+
+    let mut moved_files = vec![];
+
+    for (index, entry) in missing_numbers.iter().enumerate() {
+        match ordered_wallpapers.get(ordered_wallpapers.len() - index - 1) {
+            None => {
+                println!("{:?}", ordered_wallpapers);
+                println!(
+                    "Couldn't get value with index {}",
+                    ordered_wallpapers.len() - index - 1
+                );
+                break;
+            }
+            Some(value) => {
+                fs::rename(
+                    config.storage_directory.join(value.to_path()),
+                    config
+                        .storage_directory
+                        .join(SimpleFile::new(*entry, value.format).to_path()),
+                )
+                    .expect("Couldn't rename file");
+
+                moved_files.push((value.index, *entry));
+            }
+        };
+    };
+
+    moved_files
+}
+
 fn get_file_id(file: &DirEntry) -> Option<u32> {
     let file_path = file.path();
 
