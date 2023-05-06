@@ -8,7 +8,7 @@ use clap::ArgMatches;
 use simple_log::LogConfigBuilder;
 
 use wallman_lib::env_config::EnvConfig;
-use wallman_lib::metadata::StorageMetadata;
+use wallman_lib::metadata::{FileMetadata, StorageMetadata};
 use wallman_lib::{init_storage, metadata, storage};
 
 fn main() -> Result<(), String> {
@@ -25,11 +25,11 @@ fn main() -> Result<(), String> {
         Some(("organise", _)) => {
             let moved_files = storage::organise(&env_config);
             storage_metadata.move_all_tags(&moved_files);
-        },
+        }
         Some(("index", sub_matches)) => {
             match sub_matches.subcommand() {
                 Some(("init", _)) => init_storage(&env_config),
-                Some(("fix", _)) => wallman_lib::fix_storage(&env_config, &mut storage_metadata),
+                Some(("fix", _)) => wallman_lib::fix_storage(&env_config, &mut storage_metadata)?,
                 None => {}
                 _ => unreachable!(),
             }
@@ -150,10 +150,12 @@ fn handle_query_operation(args: &ArgMatches, storage_metadata: &StorageMetadata)
         .map(|entry| entry.map(|tag| tag.to_string()).collect())
         .unwrap_or_default();
 
-    storage_metadata
-        .query(tags)
-        .iter()
-        .for_each(|entry| println!("ID: {}", entry.id));
+    match storage_metadata.query(tags) {
+        Ok(value) => {
+            value.iter().for_each(|entry| println!("ID: {}", entry.id));
+        }
+        Err(_) => {todo!()}
+    }
 }
 
 fn setup_logger() -> Result<(), String> {

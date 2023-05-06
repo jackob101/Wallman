@@ -21,10 +21,16 @@ pub fn init_storage(config: &EnvConfig) {
         .expect("Failed to initialize index.json");
 }
 
-pub fn fix_storage(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {
+pub fn fix_storage(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Result<(), String>{
+
+    let metadata = storage_metadata
+        .metadata
+        .as_mut()
+        .ok_or(metadata::INDEX_NOT_INITIALIZED_ERROR)?;
+
     let stored_files = get_files_from_directory(&config.storage_directory);
 
-    storage_metadata.metadata.retain(|file_metadata| {
+    metadata.retain(|file_metadata| {
         let does_file_with_id_exists = stored_files
             .iter()
             .any(|entry| entry.index == file_metadata.id);
@@ -33,6 +39,8 @@ pub fn fix_storage(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {
 
         does_file_with_id_exists && does_id_have_tags
     });
+
+    Ok(())
 }
 
 fn get_ordered_files_from_directory(path: &PathBuf) -> Vec<SimpleFile> {
