@@ -164,7 +164,7 @@ impl StorageMetadata {
         serde_json::to_writer(&file, &self.metadata).expect("Failed to write");
     }
 
-    pub fn move_all(&mut self, moved_files: &[(u32, u32)]) {
+    pub fn move_all_tags(&mut self, moved_files: &[(u32, u32)]) {
         for entry in self.metadata.iter_mut() {
             for moved_file in moved_files.iter() {
                 if moved_file.0 == entry.id {

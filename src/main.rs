@@ -24,7 +24,7 @@ fn main() -> Result<(), String> {
         }
         Some(("organise", _)) => {
             let moved_files = storage::organise(&env_config);
-            storage_metadata.move_all(&moved_files);
+            storage_metadata.move_all_tags(&moved_files);
         },
         Some(("index", sub_matches)) => {
             match sub_matches.subcommand() {
