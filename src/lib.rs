@@ -15,62 +15,23 @@ use crate::env_config::EnvConfig;
 use crate::metadata::StorageMetadata;
 use crate::simple_file::SimpleFile;
 
-pub fn organize(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {
-    let ordered_wallpapers = get_ordered_files_from_directory(&config.storage_directory);
-
-    let mut missing_numbers: Vec<u32> = vec![];
-
-    let mut last_number = 0;
-
-    for entry in ordered_wallpapers.iter() {
-        if last_number == entry.index - 1 {
-            last_number = entry.index;
-            continue;
-        }
-
-        let numbers_gap = entry.index - last_number;
-
-        for i in 1..numbers_gap {
-            missing_numbers.push(i + last_number);
-        }
-
-        last_number = entry.index;
-    }
-
-    for (index, entry) in missing_numbers.iter().enumerate() {
-        match ordered_wallpapers.get(ordered_wallpapers.len() - index - 1) {
-            None => {
-                println!("{:?}", ordered_wallpapers);
-                println!(
-                    "Couldn't get value with index {}",
-                    ordered_wallpapers.len() - index - 1
-                );
-                break;
-            }
-            Some(value) => {
-                storage_metadata.move_index(value.index, *entry);
-
-                fs::rename(
-                    config.storage_directory.join(value.to_path()),
-                    config
-                        .storage_directory
-                        .join(SimpleFile::new(*entry, value.format).to_path()),
-                )
-                .expect("Couldn't rename file");
-            }
-        }
-    }
-}
-
 pub fn init_storage(config: &EnvConfig) {
-    fs::write(config.storage_directory.join("index.json"), "")
+    fs::write(config.storage_directory.join("index.json"), "[]")
         .expect("Failed to initialize index.json");
 }
 
-pub fn fix_storage(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {
+pub fn fix_storage(
+    config: &EnvConfig,
+    storage_metadata: &mut StorageMetadata,
+) -> Result<(), String> {
+    let metadata = storage_metadata
+        .metadata
+        .as_mut()
+        .ok_or(metadata::INDEX_NOT_INITIALIZED_ERROR)?;
+
     let stored_files = get_files_from_directory(&config.storage_directory);
 
-    storage_metadata.metadata.retain(|file_metadata| {
+    metadata.retain(|file_metadata| {
         let does_file_with_id_exists = stored_files
             .iter()
             .any(|entry| entry.index == file_metadata.id);
@@ -79,6 +40,8 @@ pub fn fix_storage(config: &EnvConfig, storage_metadata: &mut StorageMetadata) {
 
         does_file_with_id_exists && does_id_have_tags
     });
+
+    Ok(())
 }
 
 fn get_ordered_files_from_directory(path: &PathBuf) -> Vec<SimpleFile> {
