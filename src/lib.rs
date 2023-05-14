@@ -15,14 +15,15 @@ use crate::env_config::EnvConfig;
 use crate::metadata::StorageMetadata;
 use crate::simple_file::SimpleFile;
 
-
 pub fn init_storage(config: &EnvConfig) {
-    fs::write(config.storage_directory.join("index.json"), "")
+    fs::write(config.storage_directory.join("index.json"), "[]")
         .expect("Failed to initialize index.json");
 }
 
-pub fn fix_storage(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Result<(), String>{
-
+pub fn fix_storage(
+    config: &EnvConfig,
+    storage_metadata: &mut StorageMetadata,
+) -> Result<(), String> {
     let metadata = storage_metadata
         .metadata
         .as_mut()

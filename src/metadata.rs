@@ -2,7 +2,7 @@ use crate::env_config::EnvConfig;
 
 use serde::{Deserialize, Serialize};
 use std::fs::{DirEntry, File};
-use std::io::{BufReader, Write};
+use std::io::BufReader;
 use std::path::PathBuf;
 
 use std::borrow::ToOwned;
@@ -78,12 +78,10 @@ impl StorageMetadata {
                     metadata: Some(metadata),
                 }
             }
-            Err(_) => {
-                return StorageMetadata {
-                    path: path_to_index_file,
-                    metadata: None,
-                }
-            }
+            Err(_) => StorageMetadata {
+                path: path_to_index_file,
+                metadata: None,
+            },
         }
     }
 
@@ -167,6 +165,10 @@ impl StorageMetadata {
     }
 
     pub fn persist(&self) {
+        if self.metadata.is_none() {
+            return;
+        }
+
         println!("persisting {}", INDEX);
 
         let file = fs::OpenOptions::new()
@@ -212,7 +214,7 @@ impl StorageMetadata {
     }
 }
 
-pub fn delete(storage_metadata: &mut StorageMetadata, ids: &[u32]) -> Result<(), String>{
+pub fn delete(storage_metadata: &mut StorageMetadata, ids: &[u32]) -> Result<(), String> {
     let metadata = storage_metadata
         .metadata
         .as_mut()
