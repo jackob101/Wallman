@@ -1,4 +1,5 @@
 use crate::env_config::EnvConfig;
+use crate::metadata::StorageMetadata;
 
 use std::fs::DirEntry;
 use std::io::{BufRead, Write};
@@ -10,6 +11,35 @@ use reqwest::blocking;
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 use std::{fs, io};
+
+pub fn fix_storage(
+    config: &EnvConfig,
+    storage_metadata: &mut StorageMetadata,
+) -> Result<(), String> {
+    let metadata = storage_metadata
+        .metadata
+        .as_mut()
+        .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
+
+    let stored_files = get_files_from_directory(&config.storage_directory);
+
+    metadata.retain(|file_metadata| {
+        let does_file_with_id_exists = stored_files
+            .iter()
+            .any(|entry| entry.index == file_metadata.id);
+
+        let does_id_have_tags = !file_metadata.tags.is_empty();
+
+        does_file_with_id_exists && does_id_have_tags
+    });
+
+    Ok(())
+}
+
+pub fn init_storage(config: &EnvConfig) {
+    fs::write(config.storage_directory.join("index.json"), "[]")
+        .expect("Failed to initialize index.json");
+}
 
 pub fn delete(ids: &[u32], config: &EnvConfig) -> Result<Vec<u32>, String> {
     let mut removed_ids: Vec<u32> = vec![];
@@ -121,12 +151,12 @@ pub fn organise(config: &EnvConfig) -> Vec<(u32, u32)> {
                         .storage_directory
                         .join(SimpleFile::new(*entry, value.format).to_path()),
                 )
-                    .expect("Couldn't rename file");
+                .expect("Couldn't rename file");
 
                 moved_files.push((value.index, *entry));
             }
         };
-    };
+    }
 
     moved_files
 }

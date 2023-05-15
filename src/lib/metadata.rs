@@ -1,5 +1,6 @@
 use crate::env_config::EnvConfig;
 
+use log::info;
 use serde::{Deserialize, Serialize};
 use std::fs::{DirEntry, File};
 use std::io::BufReader;
@@ -7,9 +8,6 @@ use std::path::PathBuf;
 
 use std::borrow::ToOwned;
 use std::{fs, io};
-
-pub const INDEX: &str = "index.json";
-pub const INDEX_NOT_INITIALIZED_ERROR: &str = "index.json is not initialized";
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct FileMetadata {
@@ -67,7 +65,7 @@ pub struct StorageMetadata {
 
 impl StorageMetadata {
     pub fn new(config: &EnvConfig) -> StorageMetadata {
-        let path_to_index_file = config.storage_directory.join(INDEX);
+        let path_to_index_file = config.storage_directory.join(crate::INDEX);
 
         match File::open(&path_to_index_file) {
             Ok(reader) => {
@@ -91,7 +89,10 @@ impl StorageMetadata {
         tags: Vec<String>,
         config: &EnvConfig,
     ) -> Result<(), String> {
-        let metadata = self.metadata.as_mut().ok_or(INDEX_NOT_INITIALIZED_ERROR)?;
+        let metadata = self
+            .metadata
+            .as_mut()
+            .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
 
         let does_file_exists = fs::read_dir(&config.storage_directory)
             .expect("Couldn't read storage directory")
@@ -117,7 +118,10 @@ impl StorageMetadata {
     }
 
     pub fn remove_tag_from_id(&mut self, id: u32, tags: Vec<String>) -> Result<(), String> {
-        let metadata = self.metadata.as_mut().ok_or(INDEX_NOT_INITIALIZED_ERROR)?;
+        let metadata = self
+            .metadata
+            .as_mut()
+            .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
 
         let metadata_for_index_option = metadata.iter_mut().find(|entry| entry.id.eq(&id));
 
@@ -133,7 +137,10 @@ impl StorageMetadata {
     }
 
     pub fn move_index(&mut self, from: u32, to: u32) -> Result<(), String> {
-        let metadata = self.metadata.as_mut().ok_or(INDEX_NOT_INITIALIZED_ERROR)?;
+        let metadata = self
+            .metadata
+            .as_mut()
+            .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
 
         let found_metadata_about_file = metadata.iter_mut().find(|entry| entry.id == from);
 
@@ -147,7 +154,10 @@ impl StorageMetadata {
     }
 
     pub fn query(&self, tags: Vec<String>) -> Result<Vec<&FileMetadata>, String> {
-        let metadata = self.metadata.as_ref().ok_or(INDEX_NOT_INITIALIZED_ERROR)?;
+        let metadata = self
+            .metadata
+            .as_ref()
+            .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
 
         if tags.is_empty() {
             return Ok(metadata.iter().collect());
@@ -169,7 +179,7 @@ impl StorageMetadata {
             return;
         }
 
-        println!("persisting {}", INDEX);
+        info!("persisting {}", crate::INDEX);
 
         let file = fs::OpenOptions::new()
             .write(true)
@@ -181,7 +191,10 @@ impl StorageMetadata {
     }
 
     pub fn move_all_tags(&mut self, moved_files: &[(u32, u32)]) -> Result<(), String> {
-        let metadata = self.metadata.as_mut().ok_or(INDEX_NOT_INITIALIZED_ERROR)?;
+        let metadata = self
+            .metadata
+            .as_mut()
+            .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
 
         for entry in metadata.iter_mut() {
             for moved_file in moved_files.iter() {
@@ -218,7 +231,7 @@ pub fn delete(storage_metadata: &mut StorageMetadata, ids: &[u32]) -> Result<(),
     let metadata = storage_metadata
         .metadata
         .as_mut()
-        .ok_or(INDEX_NOT_INITIALIZED_ERROR)?;
+        .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
 
     metadata.retain(|entry| !ids.iter().any(|id| entry.id == *id));
 
