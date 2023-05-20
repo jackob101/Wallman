@@ -18,12 +18,12 @@ pub fn handle(
         }
         Some(("index", sub_matches)) => {
             match sub_matches.subcommand() {
-                Some(("init", _)) => wallman_lib::init_storage(config),
-                Some(("fix", _)) => wallman_lib::fix_storage(config, storage_metadata)?,
+                Some(("init", _)) => wallman_lib::storage::init_storage(config),
+                Some(("fix", _)) => wallman_lib::storage::fix_storage(config, storage_metadata)?,
                 None => {}
                 _ => unreachable!(),
             }
-            wallman_lib::init_storage(config);
+            wallman_lib::storage::init_storage(config);
             Ok(())
         }
         Some(("query", sub_matches)) => handle_query_operation(sub_matches, storage_metadata),
