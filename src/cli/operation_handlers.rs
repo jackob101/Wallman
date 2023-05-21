@@ -92,7 +92,7 @@ fn match_reddit_operation(
 ) -> Result<(), String> {
     match args.subcommand() {
         Some(("authorize", _)) => {
-            reddit::ask_for_grants();
+            reddit::ask_for_grants(config);
         }
         Some(("accept_redirect", sub_matches)) => {
             reddit::handle_authorization_redirect(sub_matches, config);

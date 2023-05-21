@@ -24,10 +24,18 @@ struct Authorization {
 
 pub fn sync() {}
 
-pub fn ask_for_grants() {
+pub fn ask_for_grants(config: &EnvConfig) {
     let client_id = env!("CLIENT_ID");
-    let url = format!( "https://www.reddit.com/api/v1/authorize?client_id={}&response_type=code&state=testing&redirect_uri=wallman%3A%2F%2Fredirect&duration=permanent&scope=history", client_id);
+    let state = uuid::Uuid::new_v4();
+    let url = format!( "https://www.reddit.com/api/v1/authorize?client_id={}&response_type=code&state={}&redirect_uri=wallman%3A%2F%2Fredirect&duration=permanent&scope=history", client_id, state);
     open::that(url).expect("Failed to open URL. Make sure that you have default browser");
+
+    let state_uuid_filename = config.storage_directory.join(env!("STATE_UUID_FILENAME"));
+    fs::write(
+        config.storage_directory.join(state_uuid_filename),
+        state.to_string(),
+    )
+    .expect("Couldn't create/write to state file");
 }
 
 pub fn handle_authorization_redirect(
@@ -48,6 +56,15 @@ pub fn handle_authorization_redirect(
     }
 
     let (state, code) = uri_parsing_result.unwrap();
+
+    let authorize_state =
+        fs::read_to_string(config.storage_directory.join(env!("STATE_UUID_FILENAME")))
+            .expect("Couldn't open state file");
+
+    if !state.eq(&authorize_state) {
+        error!("state from authorize request and response are not equal!");
+        return Err("state from authorize request and response are not equal!".to_owned());
+    }
 
     let request_client = reqwest::blocking::ClientBuilder::new()
         .user_agent(APP_USER_AGENT)
@@ -93,7 +110,11 @@ pub fn handle_authorization_redirect(
         .write(true)
         .create(true)
         .truncate(true)
-        .open(config.storage_directory.join(env!("AUTHORIZATION_FILE")))
+        .open(
+            config
+                .storage_directory
+                .join(env!("AUTHORIZATION_FILENAME")),
+        )
         .expect("Failed to open/create file");
 
     info!("Saving authorization informations");
