@@ -24,3 +24,4 @@ path = "src/lib/mod.rs"
 [[bin]]
 name = "wallman_bin"
 path = "src/main.rs"
+
