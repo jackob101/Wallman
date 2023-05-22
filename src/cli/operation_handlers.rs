@@ -97,6 +97,9 @@ fn match_reddit_operation(
         Some(("accept_redirect", sub_matches)) => {
             reddit::handle_authorization_redirect(sub_matches, config);
         }
+        Some(("sync", _)) => {
+            reddit::sync(config)?;
+        }
         Some(_) => {
             unreachable!("If this happens, then there is mismatch between commands and handler")
         }

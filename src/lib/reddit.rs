@@ -1,7 +1,14 @@
-use std::{borrow::Cow, collections::HashMap, fs, str::FromStr};
+use std::{
+    borrow::Cow,
+    collections::HashMap,
+    fs::{self, File},
+    io::BufReader,
+    str::FromStr,
+};
 
 use clap::ArgMatches;
 use log::{debug, error, info};
+use reqwest::{blocking, Client};
 
 use crate::env_config::EnvConfig;
 
@@ -22,7 +29,12 @@ struct Authorization {
     scope: String,
 }
 
-pub fn sync() {}
+pub fn sync(config: &EnvConfig) -> Result<(), String> {
+    let authorization = parse_authorization_file(config)?;
+    let new_authorization = get_new_authorization_token(&authorization)?;
+
+    write_authorization_to_file(config, &new_authorization)
+}
 
 pub fn ask_for_grants(config: &EnvConfig) {
     let client_id = env!("CLIENT_ID");
@@ -106,31 +118,7 @@ pub fn handle_authorization_redirect(
 
     info!("Successfully parsed access_token response");
 
-    let file = fs::OpenOptions::new()
-        .write(true)
-        .create(true)
-        .truncate(true)
-        .open(
-            config
-                .storage_directory
-                .join(env!("AUTHORIZATION_FILENAME")),
-        )
-        .expect("Failed to open/create file");
-
-    info!("Saving authorization informations");
-
-    let write_result = serde_json::to_writer(&file, &parsed_response);
-
-    match write_result {
-        Ok(_) => {
-            info!("Saved authorization");
-            Ok(())
-        }
-        Err(err) => {
-            error!("{:?}", err);
-            Err(err.to_string())
-        }
-    }
+    write_authorization_to_file(config, &parsed_response)
 }
 
 fn parse_redirect_uri(uri: &str) -> Result<(String, String), String> {
@@ -156,4 +144,103 @@ fn parse_redirect_uri(uri: &str) -> Result<(String, String), String> {
     };
 
     Ok((state.unwrap(), code.unwrap()))
+}
+
+fn parse_authorization_file(config: &EnvConfig) -> Result<Authorization, String> {
+    let authorization_file = File::open(
+        config
+            .storage_directory
+            .join(env!("AUTHORIZATION_FILENAME")),
+    );
+
+    let authorization_file = match authorization_file {
+        Ok(file) => file,
+        Err(err) => {
+            error!("{}", err);
+            return Err("Failed to open authorization file".to_string());
+        }
+    };
+
+    let bufReader = BufReader::new(authorization_file);
+    match serde_json::from_reader(bufReader) {
+        Ok(parsed_value) => Ok(parsed_value),
+        Err(err) => {
+            error!("{}", err);
+            Err("Failed to parse authorization file".to_string())
+        }
+    }
+}
+
+fn get_new_authorization_token(authorization: &Authorization) -> Result<Authorization, String> {
+    let mut request_data = HashMap::new();
+    request_data.insert("grant_type", "refresh_token");
+    request_data.insert("refresh_token", &authorization.refresh_token);
+
+    let request_client = blocking::Client::builder()
+        .user_agent(APP_USER_AGENT)
+        .build()
+        .expect("I have no idea how this could fail"); //TODO: read how this can fail
+
+    let fresh_access_token_response = request_client
+        .post("https://www.reddit.com/api/v1/access_token")
+        .basic_auth(env!("CLIENT_ID"), None::<String>)
+        .form(&request_data)
+        .send();
+
+    let token_response = match fresh_access_token_response {
+        Ok(token_response) => token_response
+            .text()
+            .expect("Failed to get authorization response body"),
+        Err(err) => {
+            error!("{}", err);
+            return Err("Failed to retrieve new access token".to_owned());
+        }
+    };
+
+    debug!("Authorization response: {}", token_response);
+
+    let new_authorization: Result<Authorization, serde_json::Error> =
+        serde_json::from_str(&token_response);
+
+    if let Err(err) = new_authorization {
+        error!("{:?}", err);
+        return Err("Failed to parse access_token response".to_owned());
+    }
+
+    let parsed_response = new_authorization.unwrap();
+
+    info!("Successfully parsed access_token response");
+
+    Ok(parsed_response)
+}
+
+fn write_authorization_to_file(
+    config: &EnvConfig,
+    authorization: &Authorization,
+) -> Result<(), String> {
+    let file = fs::OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open(
+            config
+                .storage_directory
+                .join(env!("AUTHORIZATION_FILENAME")),
+        )
+        .expect("Failed to open/create file");
+
+    info!("Saving authorization informations");
+
+    let write_result = serde_json::to_writer(&file, &authorization);
+
+    match write_result {
+        Ok(_) => {
+            info!("Saved authorization");
+            Ok(())
+        }
+        Err(err) => {
+            error!("{:?}", err);
+            Err(err.to_string())
+        }
+    }
 }

@@ -88,4 +88,5 @@ fn generate_reddit() -> Command {
                 .about("Accept redirect with one time code")
                 .arg(arg!(<URI> "Redirect URI")),
         )
+        .subcommand(Command::new("sync").about("Sync saved images with reddit upvotes"))
 }
