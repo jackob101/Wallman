@@ -8,9 +8,12 @@ use std::{
 
 use clap::ArgMatches;
 use log::{debug, error, info};
-use reqwest::{blocking, Client};
+use reqwest::{blocking, header::USER_AGENT, Client, Error};
 
-use crate::env_config::EnvConfig;
+use crate::{
+    env_config::EnvConfig,
+    reddit_structs::{self, UpvotedResponse},
+};
 
 static APP_USER_AGENT: &str = concat!(
     "linux:",
@@ -29,9 +32,56 @@ struct Authorization {
     scope: String,
 }
 
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+struct UserResponse {
+    pub name: String,
+}
+
 pub fn sync(config: &EnvConfig) -> Result<(), String> {
     let authorization = parse_authorization_file(config)?;
     let new_authorization = get_new_authorization_token(&authorization)?;
+
+    //TODO Requests to download images
+
+    let request_client = blocking::Client::builder()
+        .user_agent(APP_USER_AGENT)
+        .build()
+        .expect("No idea how this can fail");
+
+    let user_account_informations = execute_get_request::<UserResponse>(
+        &request_client,
+        "https://oauth.reddit.com/api/v1/me".to_owned(),
+        &authorization,
+    );
+
+    let user_account_informations = match user_account_informations {
+        Ok(value) => value,
+        Err(err) => {
+            error!("{}", err);
+            return Err("Failed to fetch user account informations".to_owned());
+        }
+    };
+
+    debug!("Fetched username {}", user_account_informations.name);
+
+    let upvoted_posts = execute_get_request::<UpvotedResponse>(
+        &request_client,
+        format!(
+            "https://oauth.reddit.com/user/{}/upvoted.json?limit=100",
+            user_account_informations.name
+        ),
+        &authorization,
+    );
+
+    let upvoted_posts = match upvoted_posts {
+        Ok(value) => value,
+        Err(err) => {
+            error!("{}", err);
+            return Err("Faile to fetch upvoted posts".to_owned());
+        }
+    };
+
+    debug!("{:?}", upvoted_posts);
 
     write_authorization_to_file(config, &new_authorization)
 }
@@ -39,7 +89,7 @@ pub fn sync(config: &EnvConfig) -> Result<(), String> {
 pub fn ask_for_grants(config: &EnvConfig) {
     let client_id = env!("CLIENT_ID");
     let state = uuid::Uuid::new_v4();
-    let url = format!( "https://www.reddit.com/api/v1/authorize?client_id={}&response_type=code&state={}&redirect_uri=wallman%3A%2F%2Fredirect&duration=permanent&scope=history", client_id, state);
+    let url = format!( "https://www.reddit.com/api/v1/authorize?client_id={}&response_type=code&state={}&redirect_uri=wallman%3A%2F%2Fredirect&duration=permanent&scope=history identity", client_id, state);
     open::that(url).expect("Failed to open URL. Make sure that you have default browser");
 
     let state_uuid_filename = config.storage_directory.join(env!("STATE_UUID_FILENAME"));
@@ -243,4 +293,33 @@ fn write_authorization_to_file(
             Err(err.to_string())
         }
     }
+}
+
+fn execute_get_request<T>(
+    request_client: &reqwest::blocking::Client,
+    url: String,
+    authorization: &Authorization,
+) -> Result<T, String>
+where
+    T: serde::de::DeserializeOwned,
+{
+    let request_result = request_client
+        .get(url)
+        .header(
+            "authorization",
+            format!(
+                "{} {}",
+                authorization.token_type, authorization.access_token
+            ),
+        )
+        .send();
+
+    let response = request_result.map_err(|err| err.to_string())?;
+
+    let response_body = response.text().map_err(|err| err.to_string())?;
+
+    let parsed_response_body =
+        serde_json::from_str(&response_body).map_err(|err| err.to_string())?;
+
+    Ok(parsed_response_body)
 }
