@@ -12,7 +12,8 @@ use reqwest::{blocking, header::USER_AGENT, Client, Error};
 
 use crate::{
     env_config::EnvConfig,
-    reddit_structs::{self, UpvotedResponse},
+    reddit_structs::{self, Authorization, Image, UpvotedResponse, UserResponse},
+    storage,
 };
 
 static APP_USER_AGENT: &str = concat!(
@@ -22,20 +23,6 @@ static APP_USER_AGENT: &str = concat!(
     env!("CARGO_PKG_VERSION"),
     " by /u/TSearR"
 );
-
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
-struct Authorization {
-    access_token: String,
-    token_type: String,
-    expires_in: u32,
-    refresh_token: String,
-    scope: String,
-}
-
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
-struct UserResponse {
-    pub name: String,
-}
 
 pub fn sync(config: &EnvConfig) -> Result<(), String> {
     let authorization = parse_authorization_file(config)?;
@@ -64,6 +51,9 @@ pub fn sync(config: &EnvConfig) -> Result<(), String> {
 
     debug!("Fetched username {}", user_account_informations.name);
 
+    let mut upvoted_wallpapers: Vec<Image> = vec![];
+
+    // loop {
     let upvoted_posts = execute_get_request::<UpvotedResponse>(
         &request_client,
         format!(
@@ -77,11 +67,30 @@ pub fn sync(config: &EnvConfig) -> Result<(), String> {
         Ok(value) => value,
         Err(err) => {
             error!("{}", err);
-            return Err("Faile to fetch upvoted posts".to_owned());
+            return Err("Failed to fetch upvoted posts".to_owned());
         }
     };
 
-    debug!("{:?}", upvoted_posts);
+    let mut images: Vec<&Image> = upvoted_posts
+        .data
+        .children
+        .iter()
+        .map(|entry| &entry.data)
+        .filter(|entry| "wallpaper".eq(&entry.subreddit))
+        .map(|entry| &entry.preview)
+        .filter_map(|entry| entry.as_ref())
+        .map(|entry| entry.images.get(0))
+        .filter(|entry| entry.is_some())
+        .map(|entry| &entry.unwrap().source)
+        .collect();
+
+    println!("{:?}", images);
+
+    for image in images.iter_mut() {
+        let normalized_url = image.url.replace("&amp;", "&");
+
+        storage::download(&normalized_url, config);
+    }
 
     write_authorization_to_file(config, &new_authorization)
 }

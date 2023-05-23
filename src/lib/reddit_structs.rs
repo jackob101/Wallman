@@ -1,37 +1,55 @@
+// Upvote response model
+
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct UpvotedResponse {
-    data: UpvotedResponseData,
+    pub data: UpvotedResponseData,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct UpvotedResponseData {
-    children: Vec<T3>,
+    pub children: Vec<T3>,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct T3 {
-    data: T3Data,
+    pub data: T3Data,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct T3Data {
-    subreddit: String,
-    preview: Option<Preview>,
+    pub subreddit: String,
+    pub preview: Option<Preview>,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Preview {
-    images: Vec<Images>,
+    pub images: Vec<Images>,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Images {
-    source: Image,
+    pub source: Image,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Image {
-    url: String,
-    width: u32,
-    height: u32,
+    pub url: String,
+    pub width: u32,
+    pub height: u32,
+}
+
+// Other models
+
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub struct Authorization {
+    pub access_token: String,
+    pub token_type: String,
+    pub expires_in: u32,
+    pub refresh_token: String,
+    pub scope: String,
+}
+
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub struct UserResponse {
+    pub name: String,
 }

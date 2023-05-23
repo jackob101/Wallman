@@ -221,7 +221,13 @@ fn get_files_from_directory(path: &PathBuf) -> Vec<SimpleFile> {
         if path.is_file() {
             let file_name = path.file_stem().unwrap_or_else(|| OsStr::new("0"));
 
-            if file_name.eq(OsStr::new("index")) {
+            // TODO: This is ugly
+            if file_name.eq(OsStr::new("index"))
+                || file_name
+                    .to_str()
+                    .expect("Failed to get str")
+                    .starts_with('.')
+            {
                 continue;
             }
 
