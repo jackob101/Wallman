@@ -12,11 +12,12 @@ use reqwest::{blocking, header::USER_AGENT, Client, Error};
 
 use crate::{
     env_config::EnvConfig,
+    metadata::StorageMetadata,
     reddit_structs::{self, Authorization, Image, UpvotedResponse, UserResponse},
     storage,
 };
 
-static APP_USER_AGENT: &str = concat!(
+pub static APP_USER_AGENT: &str = concat!(
     "linux:",
     env!("CARGO_PKG_NAME"),
     ":",
@@ -24,7 +25,7 @@ static APP_USER_AGENT: &str = concat!(
     " by /u/TSearR"
 );
 
-pub fn sync(config: &EnvConfig) -> Result<(), String> {
+pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Result<(), String> {
     let authorization = parse_authorization_file(config)?;
     let new_authorization = get_new_authorization_token(&authorization)?;
 
@@ -40,6 +41,8 @@ pub fn sync(config: &EnvConfig) -> Result<(), String> {
         "https://oauth.reddit.com/api/v1/me".to_owned(),
         &authorization,
     );
+
+    debug!("{:?}", user_account_informations);
 
     let user_account_informations = match user_account_informations {
         Ok(value) => value,
@@ -71,7 +74,7 @@ pub fn sync(config: &EnvConfig) -> Result<(), String> {
         }
     };
 
-    let mut images: Vec<&Image> = upvoted_posts
+    let urls: Vec<String> = upvoted_posts
         .data
         .children
         .iter()
@@ -82,15 +85,12 @@ pub fn sync(config: &EnvConfig) -> Result<(), String> {
         .map(|entry| entry.images.get(0))
         .filter(|entry| entry.is_some())
         .map(|entry| &entry.unwrap().source)
+        .map(|entry| entry.url.replace("&amp;", "&"))
         .collect();
 
-    println!("{:?}", images);
+    println!("{:?}", urls);
 
-    for image in images.iter_mut() {
-        let normalized_url = image.url.replace("&amp;", "&");
-
-        storage::download(&normalized_url, config);
-    }
+    storage::download_bulk(&urls, config, storage_metadata).expect(""); //TODO implement errors
 
     write_authorization_to_file(config, &new_authorization)
 }
@@ -322,6 +322,8 @@ where
             ),
         )
         .send();
+
+    debug!("{:?}", request_result);
 
     let response = request_result.map_err(|err| err.to_string())?;
 

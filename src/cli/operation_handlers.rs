@@ -88,7 +88,7 @@ fn match_image_command(
 fn match_reddit_operation(
     args: &ArgMatches,
     config: &EnvConfig,
-    storage_metadata: &StorageMetadata,
+    storage_metadata: &mut StorageMetadata,
 ) -> Result<(), String> {
     match args.subcommand() {
         Some(("authorize", _)) => {
@@ -98,7 +98,7 @@ fn match_reddit_operation(
             reddit::handle_authorization_redirect(sub_matches, config);
         }
         Some(("sync", _)) => {
-            reddit::sync(config)?;
+            reddit::sync(config, storage_metadata)?;
         }
         Some(_) => {
             unreachable!("If this happens, then there is mismatch between commands and handler")
