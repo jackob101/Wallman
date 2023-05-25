@@ -1,6 +1,6 @@
 use crate::env_config::EnvConfig;
 use crate::metadata::{FileMetadata, StorageMetadata};
-use crate::reddit;
+use crate::{reddit, utils, INDEX_NOT_INITIALIZED_ERROR};
 
 use std::fs::DirEntry;
 use std::io::{BufRead, Write};
@@ -127,9 +127,32 @@ pub fn download_bulk(
 
     let mut new_files_metadata: Vec<FileMetadata> = vec![];
 
-    let metadata = storage_metadata.metadata.as_mut();
+    let metadata = storage_metadata
+        .metadata
+        .as_mut()
+        .expect(INDEX_NOT_INITIALIZED_ERROR);
 
     for url in urls {
+        let url_filename = match utils::extract_filename_from_url(url) {
+            Ok(value) => value,
+            Err(err) => {
+                error!("{} is not a correct URL. {}", url, err);
+                continue;
+            }
+        };
+
+        let new_file_metadata = FileMetadata::from_url(next_free_id, url);
+
+        let does_file_already_exists = metadata
+            .iter()
+            .filter_map(|old_file| old_file.url_filename.as_ref())
+            .any(|old_filename| old_filename.eq(url_filename));
+
+        if does_file_already_exists {
+            println!("File from URL: {} already exists in storage", url);
+            continue;
+        }
+
         let response = request_client.get(url).send();
 
         let response = match response {
@@ -156,53 +179,26 @@ pub fn download_bulk(
             }
         };
 
-        let question_mark_index = url
-            .find("?")
-            .expect("There are no preview url's without query params");
-
-        let end_of_domain_index = url.find("it/").expect("Incorrect url");
-
-        let url_filename = &url[end_of_domain_index + 3..question_mark_index];
-
-        let indexed_file_name = SimpleFile::new(next_free_id, image_format);
-
-        let absolute_file_path = config.storage_directory.join(indexed_file_name.to_path());
-
-        let file_metadata = FileMetadata::from_url(next_free_id, url);
-
-        if metadata.is_some() {
-            let does_file_already_exists = metadata
-                .as_ref()
-                .unwrap()
-                .iter()
-                .filter_map(|old_file| old_file.url_filename.as_ref())
-                .any(|old_filename| old_filename.eq(url_filename));
-
-            if does_file_already_exists {
-                println!("File from URL: {} already exists in storage", url);
-                continue;
-            }
-        }
-
-        new_files_metadata.push(file_metadata);
+        let absolute_file_path =
+            config
+                .storage_directory
+                .join(utils::format_filename_and_extension(
+                    &next_free_id.to_string(),
+                    image_format,
+                ));
 
         image::load_from_memory(&bytes)
             .unwrap()
             .save(absolute_file_path)
             .unwrap();
 
+        new_files_metadata.push(new_file_metadata);
+
         next_free_id += 1;
     }
 
-    match metadata {
-        Some(value) => {
-            for new_file_metdata in new_files_metadata {
-                value.push(new_file_metdata);
-            }
-        }
-        None => {
-            info!("{} is not initialized", env!("INDEX_FILENAME"))
-        }
+    for new_file_metdata in new_files_metadata {
+        metadata.push(new_file_metdata);
     }
 
     Ok(())

@@ -6,6 +6,7 @@ pub mod reddit;
 pub mod reddit_structs;
 pub mod simple_file;
 pub mod storage;
+pub mod utils;
 
 pub const INDEX: &str = "index.json";
 pub const INDEX_NOT_INITIALIZED_ERROR: &str = "index.json is not initialized";

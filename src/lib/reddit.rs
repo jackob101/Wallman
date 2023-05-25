@@ -14,7 +14,7 @@ use crate::{
     env_config::EnvConfig,
     metadata::StorageMetadata,
     reddit_structs::{self, Authorization, Image, UpvotedResponse, UserResponse},
-    storage,
+    storage, INDEX_NOT_INITIALIZED_ERROR,
 };
 
 pub static APP_USER_AGENT: &str = concat!(
@@ -26,6 +26,9 @@ pub static APP_USER_AGENT: &str = concat!(
 );
 
 pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Result<(), String> {
+    if storage_metadata.metadata.is_none() {
+        return Err(INDEX_NOT_INITIALIZED_ERROR.to_owned());
+    }
     let authorization = parse_authorization_file(config)?;
     let new_authorization = get_new_authorization_token(&authorization)?;
 
