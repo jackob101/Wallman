@@ -16,6 +16,7 @@ pub struct FileMetadata {
     pub tags: Vec<String>,
     pub url: Option<String>,
     pub url_filename: Option<String>,
+    pub permalink: Option<String>,
 }
 
 impl FileMetadata {
@@ -25,6 +26,7 @@ impl FileMetadata {
             tags,
             url: None,
             url_filename: None,
+            permalink: None,
         }
     }
 
@@ -47,6 +49,7 @@ impl FileMetadata {
             tags: vec![],
             url: Some(url.to_string()),
             url_filename: Some(url_filename.to_string()),
+            permalink: None,
         }
     }
 

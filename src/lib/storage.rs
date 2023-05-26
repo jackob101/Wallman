@@ -1,5 +1,6 @@
 use crate::env_config::EnvConfig;
 use crate::metadata::{FileMetadata, StorageMetadata};
+use crate::reddit_structs::PostInformations;
 use crate::{reddit, utils, INDEX_NOT_INITIALIZED_ERROR};
 
 use std::fs::DirEntry;
@@ -112,7 +113,7 @@ pub fn download(url: &str, config: &EnvConfig) -> SimpleFile {
 }
 
 pub fn download_bulk(
-    urls: &[String],
+    posts_informations: &[PostInformations],
     config: &EnvConfig,
     storage_metadata: &mut StorageMetadata,
 ) -> Result<(), String> {
@@ -132,16 +133,20 @@ pub fn download_bulk(
         .as_mut()
         .expect(INDEX_NOT_INITIALIZED_ERROR);
 
-    for url in urls {
-        let url_filename = match utils::extract_filename_from_url(url) {
+    for post_informations in posts_informations {
+        let url_filename = match utils::extract_filename_from_url(&post_informations.image_url) {
             Ok(value) => value,
             Err(err) => {
-                error!("{} is not a correct URL. {}", url, err);
+                error!(
+                    "{} is not a correct URL. {}",
+                    post_informations.image_url, err
+                );
                 continue;
             }
         };
 
-        let new_file_metadata = FileMetadata::from_url(next_free_id, url);
+        let mut new_file_metadata =
+            FileMetadata::from_url(next_free_id, &post_informations.image_url);
 
         let does_file_already_exists = metadata
             .iter()
@@ -149,16 +154,22 @@ pub fn download_bulk(
             .any(|old_filename| old_filename.eq(url_filename));
 
         if does_file_already_exists {
-            println!("File from URL: {} already exists in storage", url);
+            println!(
+                "File from URL: {} already exists in storage",
+                &post_informations.image_url
+            );
             continue;
         }
 
-        let response = request_client.get(url).send();
+        let response = request_client.get(post_informations.image_url).send();
 
         let response = match response {
             Ok(value) => value,
             Err(err) => {
-                error!("Failed to download image from URL: {}. Err {}", url, err);
+                error!(
+                    "Failed to download image from URL: {}. Err {}",
+                    post_informations.image_url, err
+                );
                 continue;
             }
         };
@@ -187,11 +198,15 @@ pub fn download_bulk(
                     image_format,
                 ));
 
-        image::load_from_memory(&bytes)
-            .unwrap()
-            .save(absolute_file_path)
-            .unwrap();
+        let image = image::load_from_memory(&bytes).unwrap();
 
+        image.save(absolute_file_path).unwrap();
+
+        new_file_metadata
+            .tags
+            .push(format!("{}x{}", image.width(), image.height()));
+
+        new_file_metadata.permalink = Some(post_informations.permalink);
         new_files_metadata.push(new_file_metadata);
 
         next_free_id += 1;

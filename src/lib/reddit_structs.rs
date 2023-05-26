@@ -19,6 +19,7 @@ pub struct T3 {
 pub struct T3Data {
     pub subreddit: String,
     pub preview: Option<Preview>,
+    pub permalink: String,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
@@ -36,6 +37,11 @@ pub struct Image {
     pub url: String,
     pub width: u32,
     pub height: u32,
+}
+
+pub struct PostInformations {
+    pub permalink: String,
+    pub image_url: String,
 }
 
 // Other models

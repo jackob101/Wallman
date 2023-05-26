@@ -3,6 +3,7 @@ use std::{
     collections::HashMap,
     fs::{self, File},
     io::BufReader,
+    rt::panic_count::count_is_zero,
     str::FromStr,
 };
 
@@ -13,7 +14,9 @@ use reqwest::{blocking, header::USER_AGENT, Client, Error};
 use crate::{
     env_config::EnvConfig,
     metadata::StorageMetadata,
-    reddit_structs::{self, Authorization, Image, UpvotedResponse, UserResponse},
+    reddit_structs::{
+        self, Authorization, Image, PostInformations, T3Data, UpvotedResponse, UserResponse,
+    },
     storage, INDEX_NOT_INITIALIZED_ERROR,
 };
 
@@ -57,43 +60,62 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
 
     debug!("Fetched username {}", user_account_informations.name);
 
-    let mut upvoted_wallpapers: Vec<Image> = vec![];
+    let upvoted_post_vec: Vec<T3Data> = {
+        //TODO: Loop with repeating requests for posts. Can fetch up to 1000 posts ( maybe )
 
-    // loop {
-    let upvoted_posts = execute_get_request::<UpvotedResponse>(
-        &request_client,
-        format!(
-            "https://oauth.reddit.com/user/{}/upvoted.json?limit=100",
-            user_account_informations.name
-        ),
-        &authorization,
-    );
+        let upvoted_posts = execute_get_request::<UpvotedResponse>(
+            &request_client,
+            format!(
+                "https://oauth.reddit.com/user/{}/upvoted.json?limit=100",
+                user_account_informations.name
+            ),
+            &authorization,
+        );
 
-    let upvoted_posts = match upvoted_posts {
-        Ok(value) => value,
-        Err(err) => {
-            error!("{}", err);
-            return Err("Failed to fetch upvoted posts".to_owned());
-        }
+        let upvoted_posts = match upvoted_posts {
+            Ok(value) => value,
+            Err(err) => {
+                error!("{}", err);
+                return Err("Failed to fetch upvoted posts".to_owned());
+            }
+        };
+
+        upvoted_posts
+            .data
+            .children
+            .iter()
+            .map(|entry| entry.data)
+            .collect()
     };
 
-    let urls: Vec<String> = upvoted_posts
-        .data
-        .children
-        .iter()
-        .map(|entry| &entry.data)
-        .filter(|entry| "wallpaper".eq(&entry.subreddit))
-        .map(|entry| &entry.preview)
-        .filter_map(|entry| entry.as_ref())
-        .map(|entry| entry.images.get(0))
-        .filter(|entry| entry.is_some())
-        .map(|entry| &entry.unwrap().source)
-        .map(|entry| entry.url.replace("&amp;", "&"))
-        .collect();
+    // I have no idea if this inner block to make
+    // posts_data immutable is good idea. Another option
+    // is to just overshadow it.
+    let post_information_vec: Vec<PostInformations> = {
+        let mut post_information_vec = vec![];
+        for post_data in upvoted_post_vec.iter() {
+            if !"wallpaper".eq(&post_data.subreddit) {
+                continue;
+            }
+            if post_data.preview.is_none() {
+                continue;
+            }
+            let post_image = post_data.preview.unwrap().images.get(0);
+            if post_image.is_none() {
+                continue;
+            }
+            let image_url = post_image.unwrap().source.url;
 
-    println!("{:?}", urls);
+            post_information_vec.push(PostInformations {
+                permalink: post_data.permalink,
+                image_url,
+            })
+        }
 
-    storage::download_bulk(&urls, config, storage_metadata).expect(""); //TODO implement errors
+        post_information_vec
+    };
+
+    storage::download_bulk(&post_information_vec, config, storage_metadata).expect(""); //TODO implement errors
 
     write_authorization_to_file(config, &new_authorization)
 }

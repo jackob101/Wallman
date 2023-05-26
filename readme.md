@@ -19,4 +19,7 @@
 - For each fetched image:
     - Display it ( kitty icat )
     - Ask for additional tags
-    - Assign tag base on resolution ( for example assign 'FHD' for 1920x1080 resolutions )
+    - ~~Assign tag base on resolution ( for example assign 'FHD' for 1920x1080 resolutions )~~
+    - Ask if image should be saved 
+    - ~~Ask in what resolution image should be saved (reddit response provides few resolutions, for more custom ones some scaling would be required )~~
+
