@@ -3,8 +3,8 @@ use std::{
     collections::HashMap,
     fs::{self, File},
     io::BufReader,
-    rt::panic_count::count_is_zero,
     str::FromStr,
+    vec,
 };
 
 use clap::ArgMatches;
@@ -62,30 +62,51 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
 
     let upvoted_post_vec: Vec<T3Data> = {
         //TODO: Loop with repeating requests for posts. Can fetch up to 1000 posts ( maybe )
+        //
+        let mut upvoted_post_vec: Vec<T3Data> = vec![];
 
-        let upvoted_posts = execute_get_request::<UpvotedResponse>(
-            &request_client,
-            format!(
-                "https://oauth.reddit.com/user/{}/upvoted.json?limit=100",
-                user_account_informations.name
-            ),
-            &authorization,
-        );
+        let mut after: Option<String> = None;
 
-        let upvoted_posts = match upvoted_posts {
-            Ok(value) => value,
-            Err(err) => {
-                error!("{}", err);
-                return Err("Failed to fetch upvoted posts".to_owned());
+        loop {
+            let url = if after.is_none() {
+                format!(
+                    "https://oauth.reddit.com/user/{}/upvoted.json?limit=100",
+                    user_account_informations.name
+                )
+            } else {
+                format!(
+                    "https://oauth.reddit.com/user/{}/upvoted.json?limit=100&after={}",
+                    user_account_informations.name,
+                    after.as_ref().unwrap()
+                )
+            };
+
+            println!("Executing request: {}", url);
+
+            let upvoted_posts =
+                execute_get_request::<UpvotedResponse>(&request_client, url, &authorization);
+
+            let upvoted_posts = match upvoted_posts {
+                Ok(value) => value,
+                Err(err) => {
+                    error!("{}", err);
+                    return Err("Failed to fetch upvoted posts".to_owned());
+                }
+            };
+
+            upvoted_posts
+                .data
+                .children
+                .into_iter()
+                .for_each(|entry| upvoted_post_vec.push(entry.data));
+
+            if upvoted_posts.data.after.is_none() {
+                break;
             }
-        };
+            after = upvoted_posts.data.after;
+        }
 
-        upvoted_posts
-            .data
-            .children
-            .iter()
-            .map(|entry| entry.data)
-            .collect()
+        upvoted_post_vec
     };
 
     // I have no idea if this inner block to make
@@ -100,15 +121,15 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
             if post_data.preview.is_none() {
                 continue;
             }
-            let post_image = post_data.preview.unwrap().images.get(0);
+            let post_image = post_data.preview.as_ref().unwrap().images.get(0);
             if post_image.is_none() {
                 continue;
             }
-            let image_url = post_image.unwrap().source.url;
+            let image_url = &post_image.as_ref().unwrap().source.url;
 
             post_information_vec.push(PostInformations {
-                permalink: post_data.permalink,
-                image_url,
+                permalink: post_data.permalink.to_string(),
+                image_url: image_url.to_string().replace("&amp;", "&"),
             })
         }
 

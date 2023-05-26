@@ -8,6 +8,7 @@ pub struct UpvotedResponse {
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct UpvotedResponseData {
     pub children: Vec<T3>,
+    pub after: Option<String>,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]

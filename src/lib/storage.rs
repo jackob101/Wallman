@@ -161,7 +161,11 @@ pub fn download_bulk(
             continue;
         }
 
-        let response = request_client.get(post_informations.image_url).send();
+        println!("{:?}", post_informations.image_url);
+
+        let response = request_client
+            .get(post_informations.image_url.to_string())
+            .send();
 
         let response = match response {
             Ok(value) => value,
@@ -198,7 +202,13 @@ pub fn download_bulk(
                     image_format,
                 ));
 
-        let image = image::load_from_memory(&bytes).unwrap();
+        let image = match image::load_from_memory(&bytes) {
+            Ok(value) => value,
+            Err(err) => {
+                println!("Failed to get image {}", err);
+                continue;
+            }
+        };
 
         image.save(absolute_file_path).unwrap();
 
@@ -206,7 +216,7 @@ pub fn download_bulk(
             .tags
             .push(format!("{}x{}", image.width(), image.height()));
 
-        new_file_metadata.permalink = Some(post_informations.permalink);
+        new_file_metadata.permalink = Some(post_informations.permalink.to_string());
         new_files_metadata.push(new_file_metadata);
 
         next_free_id += 1;
