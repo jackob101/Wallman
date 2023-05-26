@@ -35,8 +35,6 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
     let authorization = parse_authorization_file(config)?;
     let new_authorization = get_new_authorization_token(&authorization)?;
 
-    //TODO Requests to download images
-
     let request_client = blocking::Client::builder()
         .user_agent(APP_USER_AGENT)
         .build()
@@ -61,8 +59,6 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
     debug!("Fetched username {}", user_account_informations.name);
 
     let upvoted_post_vec: Vec<T3Data> = {
-        //TODO: Loop with repeating requests for posts. Can fetch up to 1000 posts ( maybe )
-        //
         let mut upvoted_post_vec: Vec<T3Data> = vec![];
 
         let mut after: Option<String> = None;
