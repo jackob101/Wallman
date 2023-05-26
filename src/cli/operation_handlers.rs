@@ -1,7 +1,13 @@
+use std::borrow::Cow;
+use std::collections::HashMap;
+use std::fs;
+use std::str::FromStr;
+
 use clap::ArgMatches;
+
 use wallman_lib::env_config::EnvConfig;
 use wallman_lib::metadata::StorageMetadata;
-use wallman_lib::{metadata, storage};
+use wallman_lib::{metadata, reddit, storage};
 
 pub fn handle(
     matches: &ArgMatches,
@@ -27,6 +33,9 @@ pub fn handle(
             Ok(())
         }
         Some(("query", sub_matches)) => handle_query_operation(sub_matches, storage_metadata),
+        Some(("reddit", sub_matches)) => {
+            match_reddit_operation(sub_matches, config, storage_metadata)
+        }
         None => Err("Failed to match operation".to_owned()),
         _ => unreachable!(),
     }
@@ -74,6 +83,29 @@ fn match_image_command(
         None => Err("None matched".to_string()),
         _ => Ok(()),
     }
+}
+
+fn match_reddit_operation(
+    args: &ArgMatches,
+    config: &EnvConfig,
+    storage_metadata: &mut StorageMetadata,
+) -> Result<(), String> {
+    match args.subcommand() {
+        Some(("authorize", _)) => {
+            reddit::ask_for_grants(config);
+        }
+        Some(("accept_redirect", sub_matches)) => {
+            reddit::handle_authorization_redirect(sub_matches, config);
+        }
+        Some(("sync", _)) => {
+            reddit::sync(config, storage_metadata)?;
+        }
+        Some(_) => {
+            unreachable!("If this happens, then there is mismatch between commands and handler")
+        }
+        None => todo!(),
+    }
+    Ok(())
 }
 
 fn handle_download_operation(

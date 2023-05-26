@@ -8,6 +8,7 @@ pub fn generate_commands() -> Command {
         .subcommand(generate_organise())
         .subcommand(generate_index())
         .subcommand(generate_query())
+        .subcommand(generate_reddit())
 }
 
 fn generate_index() -> Command {
@@ -75,4 +76,17 @@ fn generate_query() -> Command {
         .about("Query data from index.csv")
         .arg(arg!([TAGS] "Tags to query for"))
         .arg_required_else_help(false)
+}
+
+fn generate_reddit() -> Command {
+    Command::new("reddit")
+        .about("Reddit integration")
+        .arg_required_else_help(true)
+        .subcommand(Command::new("authorize").about("Ask reddit for grants to account"))
+        .subcommand(
+            Command::new("accept_redirect")
+                .about("Accept redirect with one time code")
+                .arg(arg!(<URI> "Redirect URI")),
+        )
+        .subcommand(Command::new("sync").about("Sync saved images with reddit upvotes"))
 }

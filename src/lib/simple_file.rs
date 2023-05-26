@@ -2,6 +2,8 @@ use image::ImageFormat;
 use std::fmt::Debug;
 use std::path::PathBuf;
 
+use crate::utils;
+
 #[derive(Debug)]
 pub struct SimpleFile {
     pub index: u32,
@@ -17,10 +19,9 @@ impl SimpleFile {
     }
 
     pub fn to_path(&self) -> PathBuf {
-        PathBuf::from(format!(
-            "{}.{}",
-            self.index,
-            self.format.extensions_str()[0]
+        PathBuf::from(utils::format_filename_and_extension(
+            &self.index.to_string(),
+            self.format,
         ))
     }
 }

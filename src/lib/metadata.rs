@@ -1,9 +1,9 @@
 use crate::env_config::EnvConfig;
 
-use log::info;
+use log::{debug, info};
 use serde::{Deserialize, Serialize};
 use std::fs::{DirEntry, File};
-use std::io::BufReader;
+use std::io::{BufReader, Empty};
 use std::path::PathBuf;
 
 use std::borrow::ToOwned;
@@ -14,11 +14,43 @@ pub struct FileMetadata {
     pub id: u32,
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub tags: Vec<String>,
+    pub url: Option<String>,
+    pub url_filename: Option<String>,
+    pub permalink: Option<String>,
 }
 
 impl FileMetadata {
     pub fn new(index: u32, tags: Vec<String>) -> FileMetadata {
-        FileMetadata { id: index, tags }
+        FileMetadata {
+            id: index,
+            tags,
+            url: None,
+            url_filename: None,
+            permalink: None,
+        }
+    }
+
+    pub fn from_url(index: u32, url: &String) -> FileMetadata {
+        let question_mark_index = url
+            .find("?")
+            .expect("There are no preview url's without query params");
+
+        let end_of_domain_index = url.find("it/").expect("Incorrect url");
+
+        let url_filename = &url[end_of_domain_index + 3..question_mark_index];
+
+        debug!(
+            "{} {} {}",
+            question_mark_index, end_of_domain_index, url_filename
+        );
+
+        FileMetadata {
+            id: index,
+            tags: vec![],
+            url: Some(url.to_string()),
+            url_filename: Some(url_filename.to_string()),
+            permalink: None,
+        }
     }
 
     pub fn add_tag(&mut self, new_tag: &String) -> Result<(), String> {

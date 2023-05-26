@@ -1,0 +1,6 @@
+
+[env]
+INDEX_FILENAME="index.json"
+CLIENT_ID="EBWOFdkZw0cT4rzwsa3Qkg"
+AUTHORIZATION_FILENAME=".authorization"
+STATE_UUID_FILENAME=".state"
