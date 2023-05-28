@@ -52,8 +52,8 @@ window:
   # Blank space added around the window in pixels. This padding is scaled
   # by DPI and the specified value is always added at both opposing sides.
   padding:
-    x: 10 
-    y: 10 
+    x: 0 
+    y: 0 
 
 
   # Spread additional padding evenly around the terminal content.
@@ -109,19 +109,19 @@ window:
 
 font: 
   normal:
-    family: NotoMono Nerd Font Mono
+    family: JetBrainsMono NF 
     style: Regular 
 
   bold:
-    family: NotoMono Nerd Font Mono
+    family: JetBrainsMono NF 
     style: Bold
 
   italic:
-    family: NotoMono Nerd Font Mono
+    family: JetBrainsMono NF 
     style: Italic
 
   bold_italic:
-    family: NotoMono Nerd Font Mono 
+    family: JetBrainsMono NF 
     style: Bold Italic
 
   size: 11
