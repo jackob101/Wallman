@@ -1,5 +1,0 @@
-return {
-	diagnostics = {
-		enable = true,
-	},
-}
