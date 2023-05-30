@@ -9,24 +9,14 @@ use std::{
 
 use clap::ArgMatches;
 use log::{debug, error, info};
-use reqwest::{blocking, header::USER_AGENT, Client, Error};
+use reqwest::blocking;
 
 use crate::{
     env_config::EnvConfig,
     metadata::StorageMetadata,
-    reddit_structs::{
-        self, Authorization, Image, PostInformations, T3Data, UpvotedResponse, UserResponse,
-    },
+    reddit::{client, structs::*, APP_USER_AGENT},
     storage, INDEX_NOT_INITIALIZED_ERROR,
 };
-
-pub static APP_USER_AGENT: &str = concat!(
-    "linux:",
-    env!("CARGO_PKG_NAME"),
-    ":",
-    env!("CARGO_PKG_VERSION"),
-    " by /u/TSearR"
-);
 
 pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Result<(), String> {
     if storage_metadata.metadata.is_none() {
@@ -35,20 +25,16 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
     let authorization = parse_authorization_file(config)?;
     let new_authorization = get_new_authorization_token(&authorization)?;
 
-    let request_client = blocking::Client::builder()
-        .user_agent(APP_USER_AGENT)
-        .build()
-        .expect("No idea how this can fail");
+    let mut request_client = client::ClockedClient::new();
 
-    let user_account_informations = execute_get_request::<UserResponse>(
-        &request_client,
+    let user_account_information_response = request_client.get_authorized::<UserResponse>(
         "https://oauth.reddit.com/api/v1/me".to_owned(),
-        &authorization,
+        &new_authorization,
     );
 
-    debug!("{:?}", user_account_informations);
+    debug!("{:?}", user_account_information_response);
 
-    let user_account_informations = match user_account_informations {
+    let user_account_informations = match user_account_information_response {
         Ok(value) => value,
         Err(err) => {
             error!("{}", err);
@@ -80,7 +66,7 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
             println!("Executing request: {}", url);
 
             let upvoted_posts =
-                execute_get_request::<UpvotedResponse>(&request_client, url, &authorization);
+                request_client.get_authorized::<UpvotedResponse>(url, &new_authorization);
 
             let upvoted_posts = match upvoted_posts {
                 Ok(value) => value,
@@ -137,7 +123,7 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
     write_authorization_to_file(config, &new_authorization)
 }
 
-pub fn ask_for_grants(config: &EnvConfig) {
+pub fn ask_user_for_grants_to_account(config: &EnvConfig) {
     let client_id = env!("CLIENT_ID");
     let state = uuid::Uuid::new_v4();
     let url = format!( "https://www.reddit.com/api/v1/authorize?client_id={}&response_type=code&state={}&redirect_uri=wallman%3A%2F%2Fredirect&duration=permanent&scope=history identity", client_id, state);
@@ -262,8 +248,8 @@ fn parse_authorization_file(config: &EnvConfig) -> Result<Authorization, String>
         }
     };
 
-    let bufReader = BufReader::new(authorization_file);
-    match serde_json::from_reader(bufReader) {
+    let buf_reader = BufReader::new(authorization_file);
+    match serde_json::from_reader(buf_reader) {
         Ok(parsed_value) => Ok(parsed_value),
         Err(err) => {
             error!("{}", err);
@@ -344,35 +330,4 @@ fn write_authorization_to_file(
             Err(err.to_string())
         }
     }
-}
-
-fn execute_get_request<T>(
-    request_client: &reqwest::blocking::Client,
-    url: String,
-    authorization: &Authorization,
-) -> Result<T, String>
-where
-    T: serde::de::DeserializeOwned,
-{
-    let request_result = request_client
-        .get(url)
-        .header(
-            "authorization",
-            format!(
-                "{} {}",
-                authorization.token_type, authorization.access_token
-            ),
-        )
-        .send();
-
-    debug!("{:?}", request_result);
-
-    let response = request_result.map_err(|err| err.to_string())?;
-
-    let response_body = response.text().map_err(|err| err.to_string())?;
-
-    let parsed_response_body =
-        serde_json::from_str(&response_body).map_err(|err| err.to_string())?;
-
-    Ok(parsed_response_body)
 }
