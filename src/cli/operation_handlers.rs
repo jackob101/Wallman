@@ -1,8 +1,3 @@
-use std::borrow::Cow;
-use std::collections::HashMap;
-use std::fs;
-use std::str::FromStr;
-
 use clap::ArgMatches;
 
 use wallman_lib::env_config::EnvConfig;
@@ -92,13 +87,13 @@ fn match_reddit_operation(
 ) -> Result<(), String> {
     match args.subcommand() {
         Some(("authorize", _)) => {
-            reddit::ask_for_grants(config);
+            reddit::operations::ask_user_for_grants_to_account(config);
         }
         Some(("accept_redirect", sub_matches)) => {
-            reddit::handle_authorization_redirect(sub_matches, config);
+            reddit::operations::handle_authorization_redirect(sub_matches, config);
         }
         Some(("sync", _)) => {
-            reddit::sync(config, storage_metadata)?;
+            reddit::operations::sync(config, storage_metadata)?;
         }
         Some(_) => {
             unreachable!("If this happens, then there is mismatch between commands and handler")

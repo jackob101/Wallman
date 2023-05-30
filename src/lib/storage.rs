@@ -1,6 +1,7 @@
 use crate::env_config::EnvConfig;
 use crate::metadata::{FileMetadata, StorageMetadata};
-use crate::reddit_structs::PostInformations;
+use crate::reddit::client::ClockedClient;
+use crate::reddit::APP_USER_AGENT;
 use crate::{reddit, utils, INDEX_NOT_INITIALIZED_ERROR};
 
 use std::fs::DirEntry;
@@ -113,7 +114,7 @@ pub fn download(url: &str, config: &EnvConfig) -> SimpleFile {
 }
 
 pub fn download_bulk(
-    posts_informations: &[PostInformations],
+    posts_informations: &[reddit::structs::PostInformations],
     config: &EnvConfig,
     storage_metadata: &mut StorageMetadata,
 ) -> Result<(), String> {
