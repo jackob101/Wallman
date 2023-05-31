@@ -6,6 +6,7 @@ extern crate core;
 
 use std::env;
 
+use clap::Parser;
 use simple_log::LogConfigBuilder;
 
 use wallman_lib::env_config::EnvConfig;
@@ -13,12 +14,14 @@ use wallman_lib::metadata::StorageMetadata;
 
 fn main() -> Result<(), String> {
     setup_logger()?;
-    let env_config = EnvConfig::init();
-    let mut storage_metadata = StorageMetadata::new(&env_config);
 
-    let matches = cli::commands::generate_commands().get_matches();
+    let cli = cli::Cli::parse();
 
-    cli::operation_handlers::handle(&matches, &env_config, &mut storage_metadata)?;
+    println!("{:#?}", cli);
+    let config = EnvConfig::init();
+    let mut storage_metadata = StorageMetadata::new(&config);
+
+    cli::operation_handlers::handle_operation(cli, &config, &mut storage_metadata)?;
 
     storage_metadata.persist();
 
