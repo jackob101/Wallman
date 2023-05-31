@@ -137,17 +137,10 @@ pub fn ask_user_for_grants_to_account(config: &EnvConfig) {
     .expect("Couldn't create/write to state file");
 }
 
-pub fn handle_authorization_redirect(
-    sub_matches: &ArgMatches,
-    config: &EnvConfig,
-) -> Result<(), String> {
+pub fn handle_authorization_redirect(uri: String, config: &EnvConfig) -> Result<(), String> {
     info!("User gave access to account historical data");
 
-    let uri = sub_matches
-        .get_one::<String>("URI")
-        .expect("URI is required, it must be present");
-
-    let uri_parsing_result = parse_redirect_uri(uri);
+    let uri_parsing_result = parse_redirect_uri(&uri);
 
     if let Err(err) = uri_parsing_result {
         error!("{}", err);
