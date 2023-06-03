@@ -211,6 +211,19 @@ pub fn download_bulk(
             }
         };
 
+        utils::print(&image);
+        println!("Additional tags: ");
+        let mut additional_tags: String = "".to_string();
+        std::io::stdin()
+            .lock()
+            .read_line(&mut additional_tags)
+            .expect("TODO Handle error during input");
+
+        additional_tags
+            .split(',')
+            .map(|e| e.trim().to_owned())
+            .for_each(|e| new_file_metadata.tags.push(e));
+
         image.save(absolute_file_path).unwrap();
 
         new_file_metadata

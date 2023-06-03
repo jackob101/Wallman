@@ -7,7 +7,6 @@ use std::{
     vec,
 };
 
-use clap::ArgMatches;
 use log::{debug, error, info};
 use reqwest::blocking;
 
