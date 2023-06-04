@@ -1,12 +1,10 @@
 use crate::env_config::EnvConfig;
 use crate::metadata::{FileMetadata, StorageMetadata};
 
-
 use crate::{reddit, utils, INDEX_NOT_INITIALIZED_ERROR};
 
 use std::fs::DirEntry;
 use std::io::{BufRead, Write};
-
 
 use crate::simple_file::SimpleFile;
 use image::ImageFormat;
@@ -135,8 +133,9 @@ pub fn download_bulk(
         .as_mut()
         .expect(INDEX_NOT_INITIALIZED_ERROR);
 
-    let mut skipped_files = 0;
+    let mut already_present_in_storage_count = 0;
     let mut saved_files = 0;
+    let mut skipped_images_count = 0;
 
     for post_informations in posts_informations {
         let url_filename = match utils::extract_filename_from_url(&post_informations.image_url) {
@@ -159,7 +158,7 @@ pub fn download_bulk(
             .any(|old_filename| old_filename.eq(url_filename));
 
         if does_file_already_exists {
-            skipped_files += 1;
+            already_present_in_storage_count += 1;
             continue;
         }
 
@@ -216,6 +215,27 @@ pub fn download_bulk(
             .expect("Failed to execute clear");
 
         utils::print(&image);
+
+        let does_user_want_to_save_image = {
+            print!("Save image? (Y/n): ");
+            std::io::stdout().flush().expect("FLUSH");
+
+            let mut user_response = "".to_string();
+            std::io::stdin()
+                .lock()
+                .read_line(&mut user_response)
+                .expect("TODO Handle error during input");
+
+            let user_response = user_response.trim();
+            user_response.is_empty() || user_response.eq_ignore_ascii_case("y")
+        };
+
+        if !(does_user_want_to_save_image) {
+            println!("Skipping image");
+            skipped_images_count += 1;
+            continue;
+        }
+
         print!("Additional tags ( separated by SPACE ): ");
         std::io::stdout().flush().expect("FLUSH");
 
@@ -253,8 +273,12 @@ pub fn download_bulk(
         .status()
         .expect("Failed to execute clear");
 
-    println!("Images already present in storage: {}", skipped_files);
+    println!(
+        "Images already present in storage: {}",
+        already_present_in_storage_count
+    );
     println!("New images saved: {}", saved_files);
+    println!("Skipped images: {}", skipped_images_count);
 
     Ok(())
 }
