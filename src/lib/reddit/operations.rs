@@ -46,6 +46,7 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
     let upvoted_post_vec: Vec<T3Data> = {
         let mut upvoted_post_vec: Vec<T3Data> = vec![];
 
+        let mut upvotes_partition = 1;
         let mut after: Option<String> = None;
 
         loop {
@@ -62,7 +63,7 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
                 )
             };
 
-            println!("Executing request: {}", url);
+            println!("Fetching upvotes partition number: {}", upvotes_partition);
 
             let upvoted_posts =
                 request_client.get_authorized::<UpvotedResponse>(url, &new_authorization);
@@ -84,6 +85,7 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
             if upvoted_posts.data.after.is_none() {
                 break;
             }
+            upvotes_partition += 1;
             after = upvoted_posts.data.after;
         }
 
