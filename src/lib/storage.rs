@@ -126,15 +126,12 @@ pub fn download_bulk(
 ) -> Result<(), String> {
     println!("Starting bulk download");
 
-    let mut next_free_id = get_last_id(&config.storage_directory) + 1;
-
-    let mut new_files_metadata: Vec<FileMetadata> = vec![];
-
     let metadata = storage_metadata
         .metadata
         .as_mut()
         .expect(INDEX_NOT_INITIALIZED_ERROR);
 
+    let mut next_free_id = get_last_id(&config.storage_directory) + 1;
     let mut already_present_in_storage_count = 0;
     let mut saved_files = 0;
     let mut skipped_images_count = 0;
@@ -142,24 +139,24 @@ pub fn download_bulk(
     let new_posts_informations: Vec<PostInformations> = {
         let mut new_posts_informations_mut: Vec<PostInformations> = vec![];
         for post_informations in posts_informations {
-            let url_filename = match utils::extract_filename_from_url(&post_informations.image_url)
-            {
-                Ok(value) => value,
-                Err(err) => {
-                    error!(
-                        "{} is not a correct URL. {}",
-                        post_informations.image_url, err
-                    );
-                    continue;
-                }
-            };
+            let filename_from_url =
+                match utils::extract_filename_from_url(&post_informations.image_url) {
+                    Ok(value) => value,
+                    Err(err) => {
+                        error!(
+                            "{} is not a correct URL. {}",
+                            post_informations.image_url, err
+                        );
+                        continue;
+                    }
+                };
 
-            let does_file_already_exists = metadata
+            let does_file_already_exists_in_storage_metadata = metadata
                 .iter()
-                .filter_map(|old_file| old_file.url_filename.as_ref())
-                .any(|old_filename| old_filename.eq(url_filename));
+                .filter_map(|file_from_storage| file_from_storage.url_filename.as_ref())
+                .any(|file_from_storage| file_from_storage.eq(filename_from_url));
 
-            if does_file_already_exists {
+            if does_file_already_exists_in_storage_metadata {
                 already_present_in_storage_count += 1;
                 continue;
             };
@@ -169,47 +166,23 @@ pub fn download_bulk(
         new_posts_informations_mut
     };
 
-    let mut que: VecDeque<(PostInformations, DynamicImage)> = VecDeque::new();
+    let (tx, rx) = mpsc::sync_channel::<(PostInformations, DynamicImage)>(3);
 
-    let (tx, rx) = mpsc::sync_channel::<Vec<(PostInformations, DynamicImage)>>(0);
-
-    let thread = std::thread::spawn(|| populate_que(new_posts_informations, tx));
-
-    let mut have_que_been_populated = false;
+    std::thread::spawn(|| populate_que(new_posts_informations, tx));
 
     loop {
-        if que.len() <= 3 {
-            match rx.try_recv() {
-                Ok(new_batch) => new_batch
-                    .into_iter()
-                    .for_each(|(post, image)| que.push_back((post, image))),
-                Err(err) => match err {
-                    mpsc::TryRecvError::Empty => (),
-                    mpsc::TryRecvError::Disconnected => have_que_been_populated = true,
-                },
-            };
-        }
-
-        let (post, image) = match que.pop_front() {
-            Some(value) => value,
-            None => {
-                if have_que_been_populated {
-                    break;
-                } else {
-                    continue;
-                }
-            }
-        };
-
-        let mut new_file_metadata = FileMetadata::from_url(next_free_id, &post.image_url);
-
-        let image_format = match image::guess_format(image.as_bytes()) {
+        let (post_informations, image) = match rx.try_recv() {
             Ok(value) => value,
-            Err(err) => {
-                error!("Failed to guess image format, using default. {}", err);
-                ImageFormat::Jpeg
-            }
+            Err(err) => match err {
+                mpsc::TryRecvError::Empty => continue,
+                mpsc::TryRecvError::Disconnected => break,
+            },
         };
+
+        let mut new_image_metadata =
+            FileMetadata::from_url(next_free_id, &post_informations.image_url);
+
+        let image_format = image::guess_format(image.as_bytes()).unwrap_or(ImageFormat::Jpeg);
 
         let absolute_file_path =
             config
@@ -240,8 +213,6 @@ pub fn download_bulk(
             user_response.is_empty() || user_response.eq_ignore_ascii_case("y")
         };
 
-        info!("{}", does_user_want_to_save_image);
-
         if !does_user_want_to_save_image {
             println!("Skipping image");
             skipped_images_count += 1;
@@ -251,7 +222,7 @@ pub fn download_bulk(
         print!("Additional tags ( separated by SPACE ): ");
         std::io::stdout().flush().expect("FLUSH");
 
-        let mut additional_tags: String = "".to_string();
+        let mut additional_tags = "".to_string();
         std::io::stdin()
             .lock()
             .read_line(&mut additional_tags)
@@ -262,23 +233,18 @@ pub fn download_bulk(
             .split(' ')
             .filter(|tag| !tag.is_empty())
             .map(|e| e.trim().to_owned())
-            .for_each(|e| new_file_metadata.tags.push(e));
+            .for_each(|e| new_image_metadata.tags.push(e));
 
-        image.save(absolute_file_path).unwrap();
-        saved_files += 1;
-
-        new_file_metadata
+        new_image_metadata.permalink = Some(post_informations.permalink.to_string());
+        new_image_metadata
             .tags
             .push(format!("{}x{}", image.width(), image.height()));
+        metadata.push(new_image_metadata);
 
-        new_file_metadata.permalink = Some(post.permalink.to_string());
-        new_files_metadata.push(new_file_metadata);
+        saved_files += 1;
+        image.save(absolute_file_path).unwrap();
 
         next_free_id += 1;
-    }
-
-    for new_file_metdata in new_files_metadata {
-        metadata.push(new_file_metdata);
     }
 
     std::process::Command::new("clear")
@@ -291,8 +257,6 @@ pub fn download_bulk(
     );
     println!("New images saved: {}", saved_files);
     println!("Skipped images: {}", skipped_images_count);
-
-    thread.join().unwrap();
 
     Ok(())
 }
@@ -350,14 +314,12 @@ pub fn organise(config: &EnvConfig) -> Vec<(u32, u32)> {
 
 fn populate_que(
     posts_informations: Vec<PostInformations>,
-    tx: SyncSender<Vec<(PostInformations, DynamicImage)>>,
+    tx: SyncSender<(PostInformations, DynamicImage)>,
 ) {
     let request_client = reqwest::blocking::Client::builder()
         .user_agent(reddit::APP_USER_AGENT)
         .build()
         .expect("Failed to create request client");
-
-    let mut buffer: Vec<(PostInformations, DynamicImage)> = Vec::with_capacity(3);
 
     for post_informations in posts_informations {
         let response = request_client
@@ -392,20 +354,8 @@ fn populate_que(
         };
 
         info!("Fetched new image");
-        buffer.push((post_informations, image));
 
-        if buffer.len() >= 3 {
-            info!("Sending batch");
-            match tx.send(buffer) {
-                Ok(_) => (),
-                Err(err) => error!("{}", err),
-            };
-            buffer = Vec::with_capacity(3);
-        }
-    }
-    if !buffer.is_empty() {
-        info!("Sendind last batch");
-        match tx.send(buffer) {
+        match tx.send((post_informations, image)) {
             Ok(_) => (),
             Err(err) => error!("{}", err),
         };
