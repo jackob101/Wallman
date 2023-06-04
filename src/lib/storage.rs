@@ -228,6 +228,7 @@ pub fn download_bulk(
         additional_tags
             .trim()
             .split(' ')
+            .filter(|tag| !tag.is_empty())
             .map(|e| e.trim().to_owned())
             .for_each(|e| new_file_metadata.tags.push(e));
 
