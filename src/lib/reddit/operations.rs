@@ -49,45 +49,45 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
         let mut upvotes_partition = 1;
         let mut after: Option<String> = None;
 
-        loop {
-            let url = if after.is_none() {
-                format!(
-                    "https://oauth.reddit.com/user/{}/upvoted.json?limit=100",
-                    user_account_informations.name
-                )
-            } else {
-                format!(
-                    "https://oauth.reddit.com/user/{}/upvoted.json?limit=100&after={}",
-                    user_account_informations.name,
-                    after.as_ref().unwrap()
-                )
-            };
+        // loop {
+        let url = if after.is_none() {
+            format!(
+                "https://oauth.reddit.com/user/{}/upvoted.json?limit=100",
+                user_account_informations.name
+            )
+        } else {
+            format!(
+                "https://oauth.reddit.com/user/{}/upvoted.json?limit=100&after={}",
+                user_account_informations.name,
+                after.as_ref().unwrap()
+            )
+        };
 
-            println!("Fetching upvotes partition number: {}", upvotes_partition);
+        println!("Fetching upvotes partition number: {}", upvotes_partition);
 
-            let upvoted_posts =
-                request_client.get_authorized::<UpvotedResponse>(url, &new_authorization);
+        let upvoted_posts =
+            request_client.get_authorized::<UpvotedResponse>(url, &new_authorization);
 
-            let upvoted_posts = match upvoted_posts {
-                Ok(value) => value,
-                Err(err) => {
-                    error!("{}", err);
-                    return Err("Failed to fetch upvoted posts".to_owned());
-                }
-            };
-
-            upvoted_posts
-                .data
-                .children
-                .into_iter()
-                .for_each(|entry| upvoted_post_vec.push(entry.data));
-
-            if upvoted_posts.data.after.is_none() {
-                break;
+        let upvoted_posts = match upvoted_posts {
+            Ok(value) => value,
+            Err(err) => {
+                error!("{}", err);
+                return Err("Failed to fetch upvoted posts".to_owned());
             }
-            upvotes_partition += 1;
-            after = upvoted_posts.data.after;
-        }
+        };
+
+        upvoted_posts
+            .data
+            .children
+            .into_iter()
+            .for_each(|entry| upvoted_post_vec.push(entry.data));
+
+        // if upvoted_posts.data.after.is_none() {
+        //     break;
+        // }
+        // upvotes_partition += 1;
+        // after = upvoted_posts.data.after;
+        // }
 
         upvoted_post_vec
     };
@@ -119,7 +119,7 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
         post_information_vec
     };
 
-    storage::download_bulk(&post_information_vec, config, storage_metadata).expect(""); //TODO implement errors
+    storage::download_bulk(post_information_vec, config, storage_metadata).expect(""); //TODO implement errors
 
     write_authorization_to_file(config, &new_authorization)
 }

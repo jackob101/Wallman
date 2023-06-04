@@ -1,7 +1,7 @@
 use std::io::{stdout, Write};
 
 use base64::Engine;
-use image::{DynamicImage, ImageFormat};
+use image::{imageops::FilterType, DynamicImage, ImageFormat};
 
 pub fn extract_filename_from_url(url: &str) -> Result<&str, &str> {
     let question_mark_index = match url.find('?') {
@@ -24,10 +24,11 @@ pub fn format_filename_and_extension(filename: &str, extension: ImageFormat) -> 
 }
 
 pub fn print(image: &DynamicImage) {
-    let width = image.width().to_string();
-    let height = image.height().to_string();
+    let resized_image = image.resize(1024, 576, FilterType::Triangle);
+    let width = resized_image.width().to_string();
+    let height = resized_image.height().to_string();
 
-    let rgba = image.to_rgba8();
+    let rgba = resized_image.to_rgba8();
     let raw = rgba.as_raw();
     let encoded_data = base64::engine::general_purpose::STANDARD.encode(raw);
     let mut iter = encoded_data.chars().peekable();
@@ -35,7 +36,7 @@ pub fn print(image: &DynamicImage) {
     let first_chunk: String = iter.by_ref().take(4096).collect();
 
     print!(
-        "\x1b_Gf=32,a=T,t=d,s={},v={},c=60,r=20,m=1;{}\x1b\\",
+        "\x1b_Gf=32,a=T,t=d,s={},v={},m=1;{}\x1b\\",
         width, height, first_chunk
     );
 
