@@ -1,11 +1,12 @@
 use crate::env_config::EnvConfig;
 use crate::metadata::{FileMetadata, StorageMetadata};
-use crate::reddit::client::ClockedClient;
-use crate::reddit::APP_USER_AGENT;
+
+
 use crate::{reddit, utils, INDEX_NOT_INITIALIZED_ERROR};
 
 use std::fs::DirEntry;
 use std::io::{BufRead, Write};
+
 
 use crate::simple_file::SimpleFile;
 use image::ImageFormat;
@@ -134,6 +135,9 @@ pub fn download_bulk(
         .as_mut()
         .expect(INDEX_NOT_INITIALIZED_ERROR);
 
+    let mut skipped_files = 0;
+    let mut saved_files = 0;
+
     for post_informations in posts_informations {
         let url_filename = match utils::extract_filename_from_url(&post_informations.image_url) {
             Ok(value) => value,
@@ -155,14 +159,9 @@ pub fn download_bulk(
             .any(|old_filename| old_filename.eq(url_filename));
 
         if does_file_already_exists {
-            println!(
-                "File from URL: {} already exists in storage",
-                &post_informations.image_url
-            );
+            skipped_files += 1;
             continue;
         }
-
-        println!("{:?}", post_informations.image_url);
 
         let response = request_client
             .get(post_informations.image_url.to_string())
@@ -211,7 +210,30 @@ pub fn download_bulk(
             }
         };
 
+        //TODO: This is not portable
+        std::process::Command::new("clear")
+            .status()
+            .expect("Failed to execute clear");
+
+        utils::print(&image);
+        print!("Additional tags ( separated by SPACE ): ");
+        std::io::stdout().flush().expect("FLUSH");
+
+        let mut additional_tags: String = "".to_string();
+        std::io::stdin()
+            .lock()
+            .read_line(&mut additional_tags)
+            .expect("TODO Handle error during input");
+
+        additional_tags
+            .trim()
+            .split(' ')
+            .filter(|tag| !tag.is_empty())
+            .map(|e| e.trim().to_owned())
+            .for_each(|e| new_file_metadata.tags.push(e));
+
         image.save(absolute_file_path).unwrap();
+        saved_files += 1;
 
         new_file_metadata
             .tags
@@ -226,6 +248,13 @@ pub fn download_bulk(
     for new_file_metdata in new_files_metadata {
         metadata.push(new_file_metdata);
     }
+
+    std::process::Command::new("clear")
+        .status()
+        .expect("Failed to execute clear");
+
+    println!("Images already present in storage: {}", skipped_files);
+    println!("New images saved: {}", saved_files);
 
     Ok(())
 }

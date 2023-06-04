@@ -3,7 +3,7 @@ use crate::env_config::EnvConfig;
 use log::{debug, info};
 use serde::{Deserialize, Serialize};
 use std::fs::{DirEntry, File};
-use std::io::{BufReader, Empty};
+use std::io::{BufReader};
 use std::path::PathBuf;
 
 use std::borrow::ToOwned;
