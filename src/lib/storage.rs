@@ -1,12 +1,12 @@
 use crate::env_config::EnvConfig;
 use crate::metadata::{FileMetadata, StorageMetadata};
-use crate::reddit::client::ClockedClient;
-use crate::reddit::APP_USER_AGENT;
+
+
 use crate::{reddit, utils, INDEX_NOT_INITIALIZED_ERROR};
 
 use std::fs::DirEntry;
 use std::io::{BufRead, Write};
-use std::process::Stdio;
+
 
 use crate::simple_file::SimpleFile;
 use image::ImageFormat;
