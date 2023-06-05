@@ -17,7 +17,11 @@ use crate::{
     storage, INDEX_NOT_INITIALIZED_ERROR,
 };
 
-pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Result<(), String> {
+pub fn sync(
+    request_limit: Option<u8>,
+    config: &EnvConfig,
+    storage_metadata: &mut StorageMetadata,
+) -> Result<(), String> {
     if storage_metadata.metadata.is_none() {
         return Err(INDEX_NOT_INITIALIZED_ERROR.to_owned());
     }
@@ -49,45 +53,46 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
         let mut upvotes_partition = 1;
         let mut after: Option<String> = None;
 
-        // loop {
-        let url = if after.is_none() {
-            format!(
-                "https://oauth.reddit.com/user/{}/upvoted.json?limit=100",
-                user_account_informations.name
-            )
-        } else {
-            format!(
-                "https://oauth.reddit.com/user/{}/upvoted.json?limit=100&after={}",
-                user_account_informations.name,
-                after.as_ref().unwrap()
-            )
-        };
+        loop {
+            let url = if after.is_none() {
+                format!(
+                    "https://oauth.reddit.com/user/{}/upvoted.json?limit=100",
+                    user_account_informations.name
+                )
+            } else {
+                format!(
+                    "https://oauth.reddit.com/user/{}/upvoted.json?limit=100&after={}",
+                    user_account_informations.name,
+                    after.as_ref().unwrap()
+                )
+            };
 
-        println!("Fetching upvotes partition number: {}", upvotes_partition);
+            println!("Fetching upvotes partition number: {}", upvotes_partition);
 
-        let upvoted_posts =
-            request_client.get_authorized::<UpvotedResponse>(url, &new_authorization);
+            let upvoted_posts =
+                request_client.get_authorized::<UpvotedResponse>(url, &new_authorization);
 
-        let upvoted_posts = match upvoted_posts {
-            Ok(value) => value,
-            Err(err) => {
-                error!("{}", err);
-                return Err("Failed to fetch upvoted posts".to_owned());
+            let upvoted_posts = match upvoted_posts {
+                Ok(value) => value,
+                Err(err) => {
+                    error!("{}", err);
+                    return Err("Failed to fetch upvoted posts".to_owned());
+                }
+            };
+
+            upvoted_posts
+                .data
+                .children
+                .into_iter()
+                .for_each(|entry| upvoted_post_vec.push(entry.data));
+
+            if Some(upvotes_partition) >= request_limit {
+                break;
             }
-        };
 
-        upvoted_posts
-            .data
-            .children
-            .into_iter()
-            .for_each(|entry| upvoted_post_vec.push(entry.data));
-
-        // if upvoted_posts.data.after.is_none() {
-        //     break;
-        // }
-        // upvotes_partition += 1;
-        // after = upvoted_posts.data.after;
-        // }
+            upvotes_partition += 1;
+            after = upvoted_posts.data.after;
+        }
 
         upvoted_post_vec
     };

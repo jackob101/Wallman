@@ -72,6 +72,11 @@ pub enum IndexOperation {
 #[derive(Subcommand, Debug)]
 pub enum RedditOperation {
     Authorize,
-    AcceptRedirect { uri: String },
-    Sync,
+    AcceptRedirect {
+        uri: String,
+    },
+    Sync {
+        #[arg(short = 'l', long = "limit")]
+        upvoted_posts_fetch_limit: Option<u8>,
+    },
 }

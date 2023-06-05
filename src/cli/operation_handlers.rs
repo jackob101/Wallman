@@ -26,7 +26,9 @@ pub fn handle_operation(
             RedditOperation::AcceptRedirect { uri } => {
                 operations::handle_authorization_redirect(uri, config)
             }
-            RedditOperation::Sync => operations::sync(config, storage_metadata),
+            RedditOperation::Sync {
+                upvoted_posts_fetch_limit,
+            } => operations::sync(upvoted_posts_fetch_limit, config, storage_metadata),
         },
         Commands::Image(image) => match image {
             ImageOperation::Download { url, tags: tag } => {

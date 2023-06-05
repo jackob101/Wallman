@@ -2,18 +2,13 @@ use crate::env_config::EnvConfig;
 use crate::metadata::{FileMetadata, StorageMetadata};
 
 use crate::reddit::structs::PostInformations;
-use crate::{reddit, utils, INDEX_NOT_INITIALIZED_ERROR};
-
-use std::collections::VecDeque;
-use std::fs::DirEntry;
-use std::future::{self, Future};
-use std::io::{BufRead, Write};
-use std::process::Output;
-use std::sync::mpsc::{self, Receiver, Sender, SyncSender};
-use std::time::Duration;
+use crate::{prompts, reddit, utils, INDEX_NOT_INITIALIZED_ERROR};
 
 use crate::simple_file::SimpleFile;
-use futures::future::{maybe_done, MaybeDone};
+use std::fs::DirEntry;
+use std::io::{BufRead, Write};
+use std::sync::mpsc::{self, SyncSender};
+
 use image::{DynamicImage, ImageFormat};
 use log::{error, info};
 use reqwest::blocking;
@@ -30,7 +25,7 @@ pub fn fix_storage(
         .as_mut()
         .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
 
-    let stored_files = get_files_from_directory(&config.storage_directory);
+    let stored_files = get_indexed_files_from_directory(&config.storage_directory);
 
     metadata.retain(|file_metadata| {
         let does_file_with_id_exists = stored_files
@@ -131,7 +126,13 @@ pub fn download_bulk(
         .as_mut()
         .expect(INDEX_NOT_INITIALIZED_ERROR);
 
-    let mut next_free_id = get_last_id(&config.storage_directory) + 1;
+    let mut next_free_id = get_indexed_files_from_directory(&config.storage_directory)
+        .iter()
+        .map(|entry| entry.index)
+        .max()
+        .unwrap_or(0)
+        + 1;
+
     let mut already_present_in_storage_count = 0;
     let mut saved_files = 0;
     let mut skipped_images_count = 0;
@@ -168,7 +169,7 @@ pub fn download_bulk(
 
     let (tx, rx) = mpsc::sync_channel::<(PostInformations, DynamicImage)>(3);
 
-    std::thread::spawn(|| populate_que(new_posts_informations, tx));
+    std::thread::spawn(|| fetch_images(new_posts_informations, tx));
 
     loop {
         let (post_informations, image) = match rx.try_recv() {
@@ -199,50 +200,40 @@ pub fn download_bulk(
 
         utils::print(&image);
 
-        let does_user_want_to_save_image = {
-            print!("Save image? (Y/n): ");
-            std::io::stdout().flush().expect("FLUSH");
-
-            let mut user_response = "".to_string();
-            std::io::stdin()
-                .lock()
-                .read_line(&mut user_response)
-                .expect("TODO Handle error during input");
-
-            let user_response = user_response.trim();
-            user_response.is_empty() || user_response.eq_ignore_ascii_case("y")
-        };
-
-        if !does_user_want_to_save_image {
+        if !prompts::ask_for_confirmation_to_save_image() {
             println!("Skipping image");
             skipped_images_count += 1;
             continue;
         }
 
-        print!("Additional tags ( separated by SPACE ): ");
-        std::io::stdout().flush().expect("FLUSH");
-
-        let mut additional_tags = "".to_string();
-        std::io::stdin()
-            .lock()
-            .read_line(&mut additional_tags)
-            .expect("TODO Handle error during input");
-
-        additional_tags
-            .trim()
-            .split(' ')
-            .filter(|tag| !tag.is_empty())
-            .map(|e| e.trim().to_owned())
+        prompts::ask_for_additional_tags()
+            .into_iter()
             .for_each(|e| new_image_metadata.tags.push(e));
 
+        let user_picked_resolution = prompts::ask_for_resolution(image.width(), image.height());
+
+        info!("{:?}", user_picked_resolution);
+
+        let resized_image = if user_picked_resolution == (image.width(), image.height()) {
+            image
+        } else {
+            image.resize(
+                user_picked_resolution.0,
+                user_picked_resolution.1,
+                image::imageops::FilterType::Triangle,
+            )
+        };
+
         new_image_metadata.permalink = Some(post_informations.permalink.to_string());
-        new_image_metadata
-            .tags
-            .push(format!("{}x{}", image.width(), image.height()));
+        new_image_metadata.tags.push(format!(
+            "{}x{}",
+            resized_image.width(),
+            resized_image.height()
+        ));
         metadata.push(new_image_metadata);
 
         saved_files += 1;
-        image.save(absolute_file_path).unwrap();
+        resized_image.save(absolute_file_path).unwrap();
 
         next_free_id += 1;
     }
@@ -262,7 +253,9 @@ pub fn download_bulk(
 }
 
 pub fn organise(config: &EnvConfig) -> Vec<(u32, u32)> {
-    let ordered_wallpapers = get_ordered_files_from_directory(&config.storage_directory);
+    let ordered_wallpapers = get_indexed_files_from_directory_in_order(&config.storage_directory);
+
+    println!("{:#?}", ordered_wallpapers);
 
     let mut missing_numbers: Vec<u32> = vec![];
 
@@ -312,7 +305,7 @@ pub fn organise(config: &EnvConfig) -> Vec<(u32, u32)> {
     moved_files
 }
 
-fn populate_que(
+fn fetch_images(
     posts_informations: Vec<PostInformations>,
     tx: SyncSender<(PostInformations, DynamicImage)>,
 ) {
@@ -405,61 +398,53 @@ fn get_confirmation_for_file_deletion_from_user(file_path: &Path) -> bool {
     }
 }
 
-fn get_ordered_files_from_directory(path: &PathBuf) -> Vec<SimpleFile> {
-    let mut current_files: Vec<SimpleFile> = get_files_from_directory(path);
+fn get_indexed_files_from_directory_in_order(path: &PathBuf) -> Vec<SimpleFile> {
+    let mut current_files: Vec<SimpleFile> = get_indexed_files_from_directory(path);
 
     current_files.sort_by(|x, x1| x.index.cmp(&x1.index));
 
     current_files
 }
 
-fn get_files_from_directory(path: &PathBuf) -> Vec<SimpleFile> {
+///
+/// Indexed files are the ones with ID and file extension for example: 1.png, 2.jpg
+///
+fn get_indexed_files_from_directory(path: &PathBuf) -> Vec<SimpleFile> {
     let mut current_files: Vec<SimpleFile> = vec![];
 
-    for entry in fs::read_dir(&path).unwrap() {
+    for entry in fs::read_dir(path).unwrap() {
         let entry = entry.unwrap();
         let path = entry.path();
-        if path.is_file() {
-            let file_name = path.file_stem().unwrap_or_else(|| OsStr::new("0"));
+        if !path.is_file() {
+            continue;
+        }
 
-            // TODO: This is ugly
-            if file_name.eq(OsStr::new("index"))
-                || file_name
-                    .to_str()
-                    .expect("Failed to get str")
-                    .starts_with('.')
-            {
-                continue;
+        let file_name = path
+            .file_stem()
+            .map(|name| name.to_str().expect("File name is not a valid UTF-8"))
+            .unwrap_or_else(|| "0");
+
+        let file_name_prefix = file_name.split('.').next();
+
+        if file_name_prefix.is_none() {
+            continue;
+        }
+
+        match file_name_prefix.unwrap().parse::<u32>() {
+            Ok(value) => {
+                let format = ImageFormat::from_extension(path.extension().expect("Missing format"))
+                    .expect("");
+                current_files.push(SimpleFile::new(value, format));
             }
-
-            current_files.push(match file_name.to_str() {
-                None => continue,
-                Some(val) => {
-                    let index = val.parse::<u32>().unwrap_or(0);
-                    let format =
-                        ImageFormat::from_extension(path.extension().expect("Missing format"))
-                            .expect("");
-                    SimpleFile::new(index, format)
-                }
-            })
+            Err(_) => continue,
         }
     }
 
     current_files
 }
 
-fn get_last_id(path: &PathBuf) -> u32 {
-    let files_inside_directory = get_files_from_directory(path);
-
-    files_inside_directory
-        .iter()
-        .map(|entry| entry.index)
-        .max()
-        .unwrap_or(0)
-}
-
 fn get_next_free_id(path: &PathBuf) -> u32 {
-    let current_files = get_ordered_files_from_directory(path);
+    let current_files = get_indexed_files_from_directory_in_order(path);
 
     let mut new_file_index = current_files.len() + 1;
 
