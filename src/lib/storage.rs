@@ -10,6 +10,7 @@ use std::io::{BufRead, Write};
 use std::sync::mpsc::{self, SyncSender};
 
 use image::{DynamicImage, ImageFormat};
+use libc::utime;
 use log::{error, info};
 use reqwest::blocking;
 use std::ffi::OsStr;
@@ -171,6 +172,8 @@ pub fn download_bulk(
 
     std::thread::spawn(|| fetch_images(new_posts_informations, tx));
 
+    let mut buffer: Vec<(DynamicImage, FileMetadata)> = Vec::with_capacity(3);
+
     loop {
         let (post_informations, image) = match rx.try_recv() {
             Ok(value) => value,
@@ -182,16 +185,6 @@ pub fn download_bulk(
 
         let mut new_image_metadata =
             FileMetadata::from_url(next_free_id, &post_informations.image_url);
-
-        let image_format = image::guess_format(image.as_bytes()).unwrap_or(ImageFormat::Jpeg);
-
-        let absolute_file_path =
-            config
-                .storage_directory
-                .join(utils::format_filename_and_extension(
-                    &next_free_id.to_string(),
-                    image_format,
-                ));
 
         //TODO: This is not portable
         std::process::Command::new("clear")
@@ -230,11 +223,14 @@ pub fn download_bulk(
             resized_image.width(),
             resized_image.height()
         ));
-        metadata.push(new_image_metadata);
+
+        buffer.push((resized_image, new_image_metadata));
+
+        if buffer.len() == 3 {
+            persist_buffer(&mut buffer, config, storage_metadata);
+        }
 
         saved_files += 1;
-        resized_image.save(absolute_file_path).unwrap();
-
         next_free_id += 1;
     }
 
@@ -456,4 +452,30 @@ fn get_next_free_id(path: &PathBuf) -> u32 {
     }
 
     new_file_index as u32
+}
+
+fn persist_buffer(
+    buffer: &mut Vec<(DynamicImage, FileMetadata)>,
+    config: &EnvConfig,
+    storage_metadata: &mut StorageMetadata,
+) {
+    println!("Persisting buffer");
+    for (image, new_metadata) in buffer.drain(..) {
+        let image_format = image::guess_format(image.as_bytes()).unwrap_or(ImageFormat::Jpeg);
+        let absolute_file_path = config.storage_directory.join(format!(
+            "{}.{}",
+            new_metadata.id,
+            image_format.extensions_str()[0]
+        ));
+
+        //TODO: Remove unwraping after https://trello.com/c/MJlIAvnG/4-storagemetadata
+        storage_metadata
+            .metadata
+            .as_mut()
+            .unwrap()
+            .push(new_metadata);
+        image.save(absolute_file_path).unwrap();
+    }
+
+    storage_metadata.persist();
 }
