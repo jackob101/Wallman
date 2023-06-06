@@ -17,7 +17,11 @@ use crate::{
     storage, INDEX_NOT_INITIALIZED_ERROR,
 };
 
-pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Result<(), String> {
+pub fn sync(
+    request_limit: Option<u8>,
+    config: &EnvConfig,
+    storage_metadata: &mut StorageMetadata,
+) -> Result<(), String> {
     if storage_metadata.metadata.is_none() {
         return Err(INDEX_NOT_INITIALIZED_ERROR.to_owned());
     }
@@ -82,9 +86,10 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
                 .into_iter()
                 .for_each(|entry| upvoted_post_vec.push(entry.data));
 
-            if upvoted_posts.data.after.is_none() {
+            if Some(upvotes_partition) >= request_limit {
                 break;
             }
+
             upvotes_partition += 1;
             after = upvoted_posts.data.after;
         }
@@ -119,7 +124,7 @@ pub fn sync(config: &EnvConfig, storage_metadata: &mut StorageMetadata) -> Resul
         post_information_vec
     };
 
-    storage::download_bulk(&post_information_vec, config, storage_metadata).expect(""); //TODO implement errors
+    storage::download_bulk(post_information_vec, config, storage_metadata).expect(""); //TODO implement errors
 
     write_authorization_to_file(config, &new_authorization)
 }
