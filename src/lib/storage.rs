@@ -141,17 +141,10 @@ pub fn download_bulk(
     let new_posts_informations: Vec<PostInformations> = {
         let mut new_posts_informations_mut: Vec<PostInformations> = vec![];
         for post_informations in posts_informations {
-            let filename_from_url =
-                match utils::extract_filename_from_url(&post_informations.image_url) {
-                    Ok(value) => value,
-                    Err(err) => {
-                        error!(
-                            "{} is not a correct URL. {}",
-                            post_informations.image_url, err
-                        );
-                        continue;
-                    }
-                };
+            let Ok(filename_from_url) = utils::extract_filename_from_url(&post_informations.image_url) 
+            else{
+                continue;
+            };
 
             let does_file_already_exists_in_storage_metadata = metadata
                 .iter()
@@ -183,9 +176,6 @@ pub fn download_bulk(
             },
         };
 
-        let mut new_image_metadata =
-            FileMetadata::from_url(next_free_id, &post_informations.image_url);
-
         //TODO: This is not portable
         std::process::Command::new("clear")
             .status()
@@ -199,10 +189,7 @@ pub fn download_bulk(
             continue;
         }
 
-        prompts::ask_for_additional_tags()
-            .into_iter()
-            .for_each(|e| new_image_metadata.tags.push(e));
-
+        let additional_tags = prompts::ask_for_additional_tags().into_iter().collect();
         let user_picked_resolution = prompts::ask_for_resolution(image.width(), image.height());
 
         info!("{:?}", user_picked_resolution);
@@ -217,12 +204,16 @@ pub fn download_bulk(
             )
         };
 
-        new_image_metadata.permalink = Some(post_informations.permalink.to_string());
-        new_image_metadata.tags.push(format!(
-            "{}x{}",
-            resized_image.width(),
-            resized_image.height()
-        ));
+        let new_image_metadata = FileMetadata {
+            resolution: Some((resized_image.width(), resized_image.height())),
+            permalink: Some(post_informations.permalink.to_string()),
+            id: next_free_id,
+            tags: additional_tags,
+            url_filename: utils::extract_filename_from_url(&post_informations.image_url)
+                .map(|e| e.to_string())
+                .ok(),
+            url: Some(post_informations.image_url),
+        };
 
         buffer.push((resized_image, new_image_metadata));
 

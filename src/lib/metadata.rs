@@ -3,7 +3,7 @@ use crate::env_config::EnvConfig;
 use log::{debug, info};
 use serde::{Deserialize, Serialize};
 use std::fs::{DirEntry, File};
-use std::io::{BufReader};
+use std::io::BufReader;
 use std::path::PathBuf;
 
 use std::borrow::ToOwned;
@@ -17,6 +17,7 @@ pub struct FileMetadata {
     pub url: Option<String>,
     pub url_filename: Option<String>,
     pub permalink: Option<String>,
+    pub resolution: Option<(u32, u32)>,
 }
 
 impl FileMetadata {
@@ -27,6 +28,7 @@ impl FileMetadata {
             url: None,
             url_filename: None,
             permalink: None,
+            resolution: None,
         }
     }
 
@@ -50,6 +52,7 @@ impl FileMetadata {
             url: Some(url.to_string()),
             url_filename: Some(url_filename.to_string()),
             permalink: None,
+            resolution: None,
         }
     }
 
