@@ -95,26 +95,23 @@ impl FileMetadata {
 
 pub struct StorageMetadata {
     path: PathBuf,
-    pub metadata: Option<Vec<FileMetadata>>,
+    pub metadata: Vec<FileMetadata>,
 }
 
 impl StorageMetadata {
-    pub fn new(config: &EnvConfig) -> StorageMetadata {
+    pub fn new(config: &EnvConfig) -> Option<StorageMetadata> {
         let path_to_index_file = config.storage_directory.join(crate::INDEX);
 
         match File::open(&path_to_index_file) {
             Ok(reader) => {
                 let metadata = serde_json::from_reader(BufReader::new(reader))
                     .expect("Failed to parse metadata");
-                StorageMetadata {
+                Some(StorageMetadata {
                     path: path_to_index_file,
-                    metadata: Some(metadata),
-                }
+                    metadata,
+                })
             }
-            Err(_) => StorageMetadata {
-                path: path_to_index_file,
-                metadata: None,
-            },
+            Err(_) => None,
         }
     }
 
@@ -124,11 +121,6 @@ impl StorageMetadata {
         tags: Vec<String>,
         config: &EnvConfig,
     ) -> Result<(), String> {
-        let metadata = self
-            .metadata
-            .as_mut()
-            .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
-
         let does_file_exists = fs::read_dir(&config.storage_directory)
             .expect("Couldn't read storage directory")
             .any(|entry| StorageMetadata::name_with_id_predicate(id, entry));
@@ -137,11 +129,11 @@ impl StorageMetadata {
             return Err("Can't add tags to file that doesn't exists!".to_string());
         }
 
-        let metadata_for_index_option = metadata.iter_mut().find(|entry| entry.id.eq(&id));
+        let metadata_for_index_option = self.metadata.iter_mut().find(|entry| entry.id.eq(&id));
 
         match metadata_for_index_option {
             None => {
-                metadata.push(FileMetadata::new(id, tags));
+                self.metadata.push(FileMetadata::new(id, tags));
                 Ok(())
             }
             Some(metadata) => {
@@ -153,12 +145,7 @@ impl StorageMetadata {
     }
 
     pub fn remove_tag_from_id(&mut self, id: u32, tags: Vec<String>) -> Result<(), String> {
-        let metadata = self
-            .metadata
-            .as_mut()
-            .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
-
-        let metadata_for_index_option = metadata.iter_mut().find(|entry| entry.id.eq(&id));
+        let metadata_for_index_option = self.metadata.iter_mut().find(|entry| entry.id.eq(&id));
 
         match metadata_for_index_option {
             None => Err("File with specified ID doesn't exists".to_string()),
@@ -172,12 +159,7 @@ impl StorageMetadata {
     }
 
     pub fn move_index(&mut self, from: u32, to: u32) -> Result<(), String> {
-        let metadata = self
-            .metadata
-            .as_mut()
-            .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
-
-        let found_metadata_about_file = metadata.iter_mut().find(|entry| entry.id == from);
+        let found_metadata_about_file = self.metadata.iter_mut().find(|entry| entry.id == from);
 
         match found_metadata_about_file {
             None => Err("Index not found".to_string()),
@@ -189,20 +171,15 @@ impl StorageMetadata {
     }
 
     pub fn query(&self, tags: Vec<String>) -> Result<Vec<&FileMetadata>, String> {
-        let metadata = self
-            .metadata
-            .as_ref()
-            .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
-
         if tags.is_empty() {
-            return Ok(metadata.iter().collect());
+            return Ok(self.metadata.iter().collect());
         }
 
         let mut matching_elements: Vec<&FileMetadata> = vec![];
 
-        for entry in metadata {
+        for entry in &self.metadata {
             if entry.contains_tags(&tags) {
-                matching_elements.push(entry);
+                matching_elements.push(&entry);
             }
         }
 
@@ -210,10 +187,6 @@ impl StorageMetadata {
     }
 
     pub fn persist(&self) {
-        if self.metadata.is_none() {
-            return;
-        }
-
         info!("persisting {}", crate::INDEX);
 
         let file = fs::OpenOptions::new()
@@ -226,12 +199,7 @@ impl StorageMetadata {
     }
 
     pub fn move_all_tags(&mut self, moved_files: &[(u32, u32)]) -> Result<(), String> {
-        let metadata = self
-            .metadata
-            .as_mut()
-            .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
-
-        for entry in metadata.iter_mut() {
+        for entry in self.metadata.iter_mut() {
             for moved_file in moved_files.iter() {
                 if moved_file.0 == entry.id {
                     entry.move_id(moved_file.1);
@@ -262,11 +230,11 @@ impl StorageMetadata {
     }
 }
 
-pub fn delete(storage_metadata: &mut StorageMetadata, ids: &[u32]) -> Result<(), String> {
-    let metadata = storage_metadata
-        .metadata
-        .as_mut()
-        .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
+pub fn delete(storage_metadata: &mut Option<StorageMetadata>, ids: &[u32]) -> Result<(), String> {
+    let Some(storage_metadata) = storage_metadata else{
+        return Err(crate::INDEX_NOT_INITIALIZED_ERROR.to_string());
+    };
+    let metadata = &mut storage_metadata.metadata;
 
     metadata.retain(|entry| !ids.iter().any(|id| entry.id == *id));
 

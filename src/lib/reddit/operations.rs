@@ -20,11 +20,12 @@ use crate::{
 pub fn sync(
     request_limit: Option<u8>,
     config: &EnvConfig,
-    storage_metadata: &mut StorageMetadata,
+    storage_metadata: &mut Option<StorageMetadata>,
 ) -> Result<(), String> {
-    if storage_metadata.metadata.is_none() {
+    let Some(storage_metadata) = storage_metadata else{
         return Err(INDEX_NOT_INITIALIZED_ERROR.to_owned());
-    }
+    };
+
     let authorization = parse_authorization_file(config)?;
     let new_authorization = get_new_authorization_token(&authorization)?;
 

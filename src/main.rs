@@ -23,7 +23,9 @@ fn main() -> Result<(), String> {
 
     cli::operation_handlers::handle_operation(cli, &config, &mut storage_metadata)?;
 
-    storage_metadata.persist();
+    if let Some(storage_metadata) = storage_metadata {
+        storage_metadata.persist();
+    }
 
     Ok(())
 }
