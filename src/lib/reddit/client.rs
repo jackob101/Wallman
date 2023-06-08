@@ -67,7 +67,7 @@ impl ClockedClient {
         Ok(parsed_response_body)
     }
 
-    pub fn get<T>(&self, url: String) -> Result<T, String>
+    pub fn get<T>(&self, url: &String) -> Result<T, String>
     where
         T: serde::de::DeserializeOwned,
     {
