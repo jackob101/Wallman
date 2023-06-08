@@ -19,16 +19,15 @@ use std::{fs, io};
 
 pub fn fix_storage(
     config: &EnvConfig,
-    storage_metadata: &mut StorageMetadata,
+    storage_metadata: &mut Option<StorageMetadata>,
 ) -> Result<(), String> {
-    let metadata = storage_metadata
-        .metadata
-        .as_mut()
-        .ok_or(crate::INDEX_NOT_INITIALIZED_ERROR)?;
+    let Some(storage_metadata) = storage_metadata else {
+        return Err(crate::INDEX_NOT_INITIALIZED_ERROR.to_string());
+    };
 
     let stored_files = get_indexed_files_from_directory(&config.storage_directory);
 
-    metadata.retain(|file_metadata| {
+    storage_metadata.metadata.retain(|file_metadata| {
         let does_file_with_id_exists = stored_files
             .iter()
             .any(|entry| entry.index == file_metadata.id);
@@ -122,11 +121,6 @@ pub fn download_bulk(
 ) -> Result<(), String> {
     println!("Starting bulk download");
 
-    let metadata = storage_metadata
-        .metadata
-        .as_mut()
-        .expect(INDEX_NOT_INITIALIZED_ERROR);
-
     let mut next_free_id = get_indexed_files_from_directory(&config.storage_directory)
         .iter()
         .map(|entry| entry.index)
@@ -146,7 +140,8 @@ pub fn download_bulk(
                 continue;
             };
 
-            let does_file_already_exists_in_storage_metadata = metadata
+            let does_file_already_exists_in_storage_metadata = storage_metadata
+                .metadata
                 .iter()
                 .filter_map(|file_from_storage| file_from_storage.url_filename.as_ref())
                 .any(|file_from_storage| file_from_storage.eq(filename_from_url));
@@ -460,11 +455,7 @@ fn persist_buffer(
         ));
 
         //TODO: Remove unwraping after https://trello.com/c/MJlIAvnG/4-storagemetadata
-        storage_metadata
-            .metadata
-            .as_mut()
-            .unwrap()
-            .push(new_metadata);
+        storage_metadata.metadata.push(new_metadata);
         image.save(absolute_file_path).unwrap();
     }
 

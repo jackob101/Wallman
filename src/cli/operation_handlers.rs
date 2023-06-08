@@ -8,7 +8,7 @@ use super::{Cli, Commands, ImageOperation, ImageOperationTag, IndexOperation, Re
 pub fn handle_operation(
     cli: Cli,
     config: &EnvConfig,
-    storage_metadata: &mut StorageMetadata,
+    storage_metadata: &mut Option<StorageMetadata>,
 ) -> Result<(), String> {
     match cli.command {
         Commands::Index(index) => match index {
@@ -37,7 +37,9 @@ pub fn handle_operation(
                 if let Some(tag) = tag {
                     if !tag.is_empty() {
                         println!("Adding tags to image with ID: {}", saved_image.index);
-                        storage_metadata.add_tag_to_id(saved_image.index, tag, config)?;
+                        if let Some(storage_metadata) = storage_metadata {
+                            storage_metadata.add_tag_to_id(saved_image.index, tag, config)?;
+                        }
                     }
                 }
                 Ok(())
@@ -48,26 +50,33 @@ pub fn handle_operation(
                 metadata::delete(storage_metadata, &deleted_files)
             }
             ImageOperation::Tag(tag_operation) => match tag_operation {
-                ImageOperationTag::Add { id, tags: tag } => {
-                    storage_metadata.add_tag_to_id(id, tag, config)
-                }
-                ImageOperationTag::Delete { id, tags } => {
-                    storage_metadata.remove_tag_from_id(id, tags)
-                }
+                ImageOperationTag::Add { id, tags: tag } => match storage_metadata {
+                    Some(value) => value.add_tag_to_id(id, tag, config),
+                    None => Err("Index is not initialized".to_string()),
+                },
+                ImageOperationTag::Delete { id, tags } => match storage_metadata {
+                    Some(value) => value.remove_tag_from_id(id, tags),
+                    None => Err("Index is not initialized".to_string()),
+                },
                 ImageOperationTag::Clear { id } => metadata::delete(storage_metadata, &[id]),
             },
         },
-        Commands::Query { tags } => {
-            storage_metadata
-                .query(tags)?
-                .iter()
-                .for_each(|entry| println!("ID: {}", entry.id));
-
-            Ok(())
-        }
+        Commands::Query { tags } => match storage_metadata {
+            Some(value) => {
+                value
+                    .query(tags)?
+                    .iter()
+                    .for_each(|entry| println!("ID: {}", entry.id));
+                Ok(())
+            }
+            None => Err("Index is not initialized".to_string()),
+        },
         Commands::Organise => {
             let moved_files = storage::organise(config);
-            storage_metadata.move_all_tags(&moved_files)
+            match storage_metadata {
+                Some(value) => value.move_all_tags(&moved_files),
+                None => Err("Index is not initialized".to_string()),
+            }
         }
     }
 }
