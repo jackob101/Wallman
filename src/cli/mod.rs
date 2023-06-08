@@ -67,6 +67,8 @@ pub enum IndexOperation {
     Init,
     ///Try to fix incorrect data inside the metadata file
     Fix,
+    ///Downloads missing images from index
+    Restore,
 }
 
 #[derive(Subcommand, Debug)]
