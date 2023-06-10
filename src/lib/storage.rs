@@ -2,7 +2,7 @@ use crate::env_config::EnvConfig;
 use crate::metadata::{FileMetadata, StorageMetadata};
 
 use crate::reddit::structs::PostInformations;
-use crate::{prompts, reddit, utils, INDEX_NOT_INITIALIZED_ERROR};
+use crate::{prompts, reddit, utils};
 
 use crate::simple_file::SimpleFile;
 use std::fs::DirEntry;
@@ -10,10 +10,10 @@ use std::io::{BufRead, Write};
 use std::sync::mpsc::{self, SyncSender};
 
 use image::{DynamicImage, ImageFormat};
-use libc::utime;
+
 use log::{error, info};
 use reqwest::blocking;
-use std::ffi::OsStr;
+
 use std::path::{Path, PathBuf};
 use std::{fs, io};
 use uuid::Uuid;
