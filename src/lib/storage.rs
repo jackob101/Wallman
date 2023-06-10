@@ -1,6 +1,7 @@
 use crate::env_config::EnvConfig;
 use crate::metadata::{FileMetadata, StorageMetadata};
 
+use crate::reddit::client::ClockedClient;
 use crate::reddit::structs::PostInformations;
 use crate::{prompts, reddit, utils};
 
@@ -9,6 +10,7 @@ use std::fs::DirEntry;
 use std::io::{BufRead, Write};
 use std::sync::mpsc::{self, SyncSender};
 
+use image::imageops::FilterType;
 use image::{DynamicImage, ImageFormat};
 
 use log::{error, info};

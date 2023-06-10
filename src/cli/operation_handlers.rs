@@ -17,6 +17,13 @@ pub fn handle_operation(
                 Ok(())
             }
             IndexOperation::Fix => storage::fix_storage(config, storage_metadata),
+            IndexOperation::Restore => {
+                match storage_metadata {
+                    Some(value) => storage::restore(value, config),
+                    None => return Err("Index is not initialized".to_string()),
+                }
+                Ok(())
+            }
         },
         Commands::Reddit(reddit) => match reddit {
             RedditOperation::Authorize => {
