@@ -229,6 +229,77 @@ pub fn download_bulk(
     Ok(())
 }
 
+pub fn restore(storage_metadata: &StorageMetadata, config: &EnvConfig) {
+    let client = reqwest::blocking::Client::builder()
+        .user_agent(reddit::APP_USER_AGENT)
+        .build()
+        .expect("Failed to create request client");
+
+    let images_in_storage = get_indexed_files_from_directory(&config.storage_directory);
+
+    for file_metadata in &storage_metadata.metadata {
+        let Some(image_url) =  &file_metadata.url else{
+           continue; 
+        };
+
+        let is_file_already_in_storage = images_in_storage
+            .iter()
+            .any(|entry| entry.index == file_metadata.id);
+
+        if is_file_already_in_storage {
+            continue;
+        }
+
+        let response = client.get(image_url).send();
+
+        let response = match response {
+            Ok(value) => value,
+            Err(err) => {
+                error!(
+                    "Failed to download image from URL: {}. Err {}",
+                    image_url, err
+                );
+                continue;
+            }
+        };
+
+        let bytes = match response.bytes() {
+            Ok(value) => value,
+            Err(err) => {
+                error!("Failed to get image Err {}", err);
+                continue;
+            }
+        };
+
+        let image = match image::load_from_memory(&bytes) {
+            Ok(value) => value,
+            Err(err) => {
+                error!("Failed to convert bytes to image: {}", err);
+                continue;
+            }
+        };
+
+        let image = match file_metadata.resolution {
+            Some((width, height)) if width == image.width() && height == image.height() => image,
+            Some((width, height)) => image.resize(width, height, FilterType::Triangle),
+            None => image,
+        };
+
+        let image_format = image::guess_format(image.as_bytes()).unwrap_or(ImageFormat::Jpeg);
+
+        image
+            .save(
+                config
+                    .storage_directory
+                    .join(utils::format_filename_and_extension(
+                        &file_metadata.id.to_string(),
+                        image_format,
+                    )),
+            )
+            .expect("Failed to save image");
+    }
+}
+
 fn fetch_images(
     posts_informations: Vec<PostInformations>,
     tx: SyncSender<(PostInformations, DynamicImage)>,
