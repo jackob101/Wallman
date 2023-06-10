@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use uuid::Uuid;
 
 pub mod operation_handlers;
 
@@ -20,8 +21,6 @@ pub enum Commands {
     Query {
         tags: Vec<String>,
     },
-    /// Sort data inside storage directory
-    Organise,
 }
 
 #[derive(Subcommand, Debug)]
@@ -32,7 +31,7 @@ pub enum ImageOperation {
         tags: Option<Vec<String>>,
     },
     Delete {
-        ids: Vec<u32>,
+        ids: Vec<Uuid>,
     },
     #[command(subcommand)]
     Tag(ImageOperationTag),
@@ -43,21 +42,21 @@ pub enum ImageOperationTag {
     /// Add [TAG] to file with <ID>
     Add {
         /// File ID
-        id: u32,
+        id: Uuid,
         /// One or more tag names separated by space
         tags: Vec<String>,
     },
     /// Delete assigned [TAG] from file with <ID>
     Delete {
         /// File ID
-        id: u32,
+        id: Uuid,
         /// One or more tag names separated by space
         tags: Vec<String>,
     },
     /// Remove all tags from file with ID
     Clear {
         /// File ID
-        id: u32,
+        id: Uuid,
     },
 }
 

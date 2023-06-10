@@ -78,12 +78,5 @@ pub fn handle_operation(
             }
             None => Err("Index is not initialized".to_string()),
         },
-        Commands::Organise => {
-            let moved_files = storage::organise(config);
-            match storage_metadata {
-                Some(value) => value.move_all_tags(&moved_files),
-                None => Err("Index is not initialized".to_string()),
-            }
-        }
     }
 }
