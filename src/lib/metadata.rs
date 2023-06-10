@@ -5,13 +5,14 @@ use serde::{Deserialize, Serialize};
 use std::fs::{DirEntry, File};
 use std::io::BufReader;
 use std::path::PathBuf;
+use uuid::Uuid;
 
 use std::borrow::ToOwned;
 use std::{fs, io};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct FileMetadata {
-    pub id: u32,
+    pub id: Uuid,
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub tags: Vec<String>,
     pub url: Option<String>,
@@ -21,7 +22,7 @@ pub struct FileMetadata {
 }
 
 impl FileMetadata {
-    pub fn new(index: u32, tags: Vec<String>) -> FileMetadata {
+    pub fn new(index: Uuid, tags: Vec<String>) -> FileMetadata {
         FileMetadata {
             id: index,
             tags,
@@ -32,7 +33,7 @@ impl FileMetadata {
         }
     }
 
-    pub fn from_url(index: u32, url: &String) -> FileMetadata {
+    pub fn from_url(index: Uuid, url: &String) -> FileMetadata {
         let question_mark_index = url
             .find("?")
             .expect("There are no preview url's without query params");
@@ -87,10 +88,6 @@ impl FileMetadata {
         }
         true
     }
-
-    pub fn move_id(&mut self, to: u32) {
-        self.id = to;
-    }
 }
 
 pub struct StorageMetadata {
@@ -117,7 +114,7 @@ impl StorageMetadata {
 
     pub fn add_tag_to_id(
         &mut self,
-        id: u32,
+        id: Uuid,
         tags: Vec<String>,
         config: &EnvConfig,
     ) -> Result<(), String> {
@@ -144,7 +141,7 @@ impl StorageMetadata {
         }
     }
 
-    pub fn remove_tag_from_id(&mut self, id: u32, tags: Vec<String>) -> Result<(), String> {
+    pub fn remove_tag_from_id(&mut self, id: Uuid, tags: Vec<String>) -> Result<(), String> {
         let metadata_for_index_option = self.metadata.iter_mut().find(|entry| entry.id.eq(&id));
 
         match metadata_for_index_option {
@@ -153,18 +150,6 @@ impl StorageMetadata {
                 for tag in tags {
                     metadata.remove_tag(&tag)?
                 }
-                Ok(())
-            }
-        }
-    }
-
-    pub fn move_index(&mut self, from: u32, to: u32) -> Result<(), String> {
-        let found_metadata_about_file = self.metadata.iter_mut().find(|entry| entry.id == from);
-
-        match found_metadata_about_file {
-            None => Err("Index not found".to_string()),
-            Some(value) => {
-                value.move_id(to);
                 Ok(())
             }
         }
@@ -198,18 +183,7 @@ impl StorageMetadata {
         serde_json::to_writer(&file, &self.metadata).expect("Failed to write");
     }
 
-    pub fn move_all_tags(&mut self, moved_files: &[(u32, u32)]) -> Result<(), String> {
-        for entry in self.metadata.iter_mut() {
-            for moved_file in moved_files.iter() {
-                if moved_file.0 == entry.id {
-                    entry.move_id(moved_file.1);
-                }
-            }
-        }
-        Ok(())
-    }
-
-    fn name_with_id_predicate(index: u32, entry: io::Result<DirEntry>) -> bool {
+    fn name_with_id_predicate(index: Uuid, entry: io::Result<DirEntry>) -> bool {
         match entry {
             Ok(dir_entry) => {
                 let file_id = dir_entry
@@ -218,7 +192,7 @@ impl StorageMetadata {
                     .expect("Missing file stem")
                     .to_str()
                     .expect("Couldn't parse file name into &str")
-                    .parse::<u32>();
+                    .parse::<Uuid>();
 
                 match file_id {
                     Ok(value) => value == index,
@@ -230,7 +204,7 @@ impl StorageMetadata {
     }
 }
 
-pub fn delete(storage_metadata: &mut Option<StorageMetadata>, ids: &[u32]) -> Result<(), String> {
+pub fn delete(storage_metadata: &mut Option<StorageMetadata>, ids: &[Uuid]) -> Result<(), String> {
     let Some(storage_metadata) = storage_metadata else{
         return Err(crate::INDEX_NOT_INITIALIZED_ERROR.to_string());
     };
