@@ -17,6 +17,8 @@ pub enum Commands {
     #[command(subcommand)]
     Reddit(RedditOperation),
     #[command(subcommand)]
+    Wallheaven(WallheavenOperation),
+    #[command(subcommand)]
     Image(ImageOperation),
     Query {
         tags: Vec<String>,
@@ -80,4 +82,9 @@ pub enum RedditOperation {
         #[arg(short = 'l', long = "limit")]
         upvoted_posts_fetch_limit: Option<u8>,
     },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum WallheavenOperation {
+    Sync,
 }

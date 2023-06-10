@@ -1,7 +1,7 @@
 use wallman_lib::env_config::EnvConfig;
 use wallman_lib::metadata::StorageMetadata;
 use wallman_lib::reddit::operations;
-use wallman_lib::{metadata, storage};
+use wallman_lib::{metadata, storage, wallheaven};
 
 use super::{Cli, Commands, ImageOperation, ImageOperationTag, IndexOperation, RedditOperation};
 
@@ -77,6 +77,9 @@ pub fn handle_operation(
                 Ok(())
             }
             None => Err("Index is not initialized".to_string()),
+        },
+        Commands::Wallheaven(operation) => match operation {
+            super::WallheavenOperation::Sync => wallheaven::sync(),
         },
     }
 }
