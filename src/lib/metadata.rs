@@ -1,7 +1,9 @@
 use crate::env_config::EnvConfig;
+use crate::prompts::ask_for_confirmation_to_save_image;
 
-use log::{debug, info};
+use log::{debug, error, info};
 use serde::{Deserialize, Serialize};
+use std::ffi::OsString;
 use std::fs::{DirEntry, File};
 use std::io::BufReader;
 use std::path::PathBuf;
@@ -90,26 +92,53 @@ impl FileMetadata {
     }
 }
 
+pub struct Collection {
+    pub label: String,
+    pub index: Vec<FileMetadata>,
+}
+
 pub struct StorageMetadata {
     path: PathBuf,
-    pub metadata: Vec<FileMetadata>,
+    pub collections: Vec<Collection>,
 }
 
 impl StorageMetadata {
     pub fn new(config: &EnvConfig) -> Option<StorageMetadata> {
-        let path_to_index_file = config.storage_directory.join(crate::INDEX);
+        let mut collections: Vec<Collection> = vec![];
 
-        match File::open(&path_to_index_file) {
-            Ok(reader) => {
-                let metadata = serde_json::from_reader(BufReader::new(reader))
-                    .expect("Failed to parse metadata");
-                Some(StorageMetadata {
-                    path: path_to_index_file,
-                    metadata,
+        let root_directory =
+            fs::read_dir(&config.storage_directory).expect("Wrong path to storage directory");
+
+        for entry in root_directory {
+            if let Err(value) = entry {
+                error!("Failed to get entry in storage directory.{}", value);
+                continue;
+            }
+
+            let dir = entry.unwrap().path();
+            if !dir.is_dir() {
+                continue;
+            }
+
+            let mut collection = fs::read_dir(&dir).expect("Failed to read collection directory");
+
+            let index_option =
+                collection.find(|entry| entry.as_ref().expect("").file_name() == *"index.json");
+
+            if let Some(index) = index_option {
+                let file = fs::read(index.expect("").path()).expect("");
+                let index_parsed: Vec<FileMetadata> = serde_json::from_slice(&file).expect("");
+                collections.push(Collection {
+                    label: dir.file_name().expect("").to_str().expect("").to_owned(),
+                    index: index_parsed,
                 })
             }
-            Err(_) => None,
         }
+
+        Some(StorageMetadata {
+            path: config.storage_directory.clone(),
+            collections,
+        })
     }
 
     pub fn add_tag_to_id(
@@ -117,8 +146,16 @@ impl StorageMetadata {
         id: Uuid,
         tags: Vec<String>,
         config: &EnvConfig,
+        collection_label: String,
     ) -> Result<(), String> {
-        let does_file_exists = fs::read_dir(&config.storage_directory)
+        let Some(collection) = self.get_collection_mut(&collection_label) else {
+                return Err(format!(
+                    "Collection with label {} was not found",
+                    collection_label
+                ))
+        };
+
+        let does_file_exists = fs::read_dir(&config.storage_directory.join(collection_label))
             .expect("Couldn't read storage directory")
             .any(|entry| StorageMetadata::name_with_id_predicate(id, entry));
 
@@ -126,11 +163,11 @@ impl StorageMetadata {
             return Err("Can't add tags to file that doesn't exists!".to_string());
         }
 
-        let metadata_for_index_option = self.metadata.iter_mut().find(|entry| entry.id.eq(&id));
+        let metadata_for_index_option = collection.index.iter_mut().find(|entry| entry.id.eq(&id));
 
         match metadata_for_index_option {
             None => {
-                self.metadata.push(FileMetadata::new(id, tags));
+                collection.index.push(FileMetadata::new(id, tags));
                 Ok(())
             }
             Some(metadata) => {
@@ -141,8 +178,19 @@ impl StorageMetadata {
         }
     }
 
-    pub fn remove_tag_from_id(&mut self, id: Uuid, tags: Vec<String>) -> Result<(), String> {
-        let metadata_for_index_option = self.metadata.iter_mut().find(|entry| entry.id.eq(&id));
+    pub fn remove_tag_from_id(
+        &mut self,
+        id: Uuid,
+        tags: Vec<String>,
+        collection_label: String,
+    ) -> Result<(), String> {
+        let Some(collection) = self.get_collection_mut( &collection_label)else{
+                return Err(format!(
+                    "Collection with label {} was not found",
+                    collection_label
+                ))
+        };
+        let metadata_for_index_option = collection.index.iter_mut().find(|entry| entry.id.eq(&id));
 
         match metadata_for_index_option {
             None => Err("File with specified ID doesn't exists".to_string()),
@@ -155,14 +203,24 @@ impl StorageMetadata {
         }
     }
 
-    pub fn query(&self, tags: Vec<String>) -> Result<Vec<&FileMetadata>, String> {
+    pub fn query(
+        &self,
+        tags: Vec<String>,
+        collection_label: String,
+    ) -> Result<Vec<&FileMetadata>, String> {
+        let Some(collection) = self.get_collection(&collection_label)else {
+                return Err(format!(
+                    "Collection with label {} was not found",
+                    collection_label
+                ))
+        };
         if tags.is_empty() {
-            return Ok(self.metadata.iter().collect());
+            return Ok(collection.index.iter().collect());
         }
 
         let mut matching_elements: Vec<&FileMetadata> = vec![];
 
-        for entry in &self.metadata {
+        for entry in &collection.index {
             if entry.contains_tags(&tags) {
                 matching_elements.push(&entry);
             }
@@ -174,13 +232,28 @@ impl StorageMetadata {
     pub fn persist(&self) {
         info!("persisting {}", crate::INDEX);
 
-        let file = fs::OpenOptions::new()
-            .write(true)
-            .create(true)
-            .truncate(true)
-            .open(&self.path)
-            .expect("Failed to open/create file");
-        serde_json::to_writer(&file, &self.metadata).expect("Failed to write");
+        for collection in &self.collections {
+            let file = fs::OpenOptions::new()
+                .write(true)
+                .create(true)
+                .truncate(true)
+                .open(&self.path.join(&collection.label).join(crate::INDEX))
+                .expect("Failed to open/create file");
+
+            serde_json::to_writer(&file, &collection.index).expect("Failed to write");
+        }
+    }
+
+    pub fn get_collection(&self, collection_label: &str) -> Option<&Collection> {
+        self.collections
+            .iter()
+            .find(|entry| entry.label == *collection_label)
+    }
+
+    pub fn get_collection_mut(&mut self, collection_label: &str) -> Option<&mut Collection> {
+        self.collections
+            .iter_mut()
+            .find(|entry| entry.label == *collection_label)
     }
 
     fn name_with_id_predicate(index: Uuid, entry: io::Result<DirEntry>) -> bool {
@@ -204,11 +277,22 @@ impl StorageMetadata {
     }
 }
 
-pub fn delete(storage_metadata: &mut Option<StorageMetadata>, ids: &[Uuid]) -> Result<(), String> {
+pub fn delete(
+    storage_metadata: &mut Option<StorageMetadata>,
+    ids: &[Uuid],
+    collection_label: String,
+) -> Result<(), String> {
     let Some(storage_metadata) = storage_metadata else{
         return Err(crate::INDEX_NOT_INITIALIZED_ERROR.to_string());
     };
-    let metadata = &mut storage_metadata.metadata;
+
+    let Some(collection) = storage_metadata.get_collection_mut(&collection_label) else{
+                return Err(format!(
+                    "Collection with label {} was not found",
+                    collection_label
+                ))
+    };
+    let metadata = &mut collection.index;
 
     metadata.retain(|entry| !ids.iter().any(|id| entry.id == *id));
 

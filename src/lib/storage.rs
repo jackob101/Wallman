@@ -1,9 +1,9 @@
 use crate::env_config::EnvConfig;
-use crate::metadata::{FileMetadata, StorageMetadata};
+use crate::metadata::{Collection, FileMetadata, StorageMetadata};
 
 use crate::reddit::client::ClockedClient;
 use crate::reddit::structs::PostInformations;
-use crate::{prompts, reddit, utils};
+use crate::{prompts, reddit, storage, utils};
 
 use crate::simple_file::SimpleFile;
 use std::fs::DirEntry;
@@ -17,12 +17,13 @@ use log::{error, info};
 use reqwest::blocking;
 
 use std::path::{Path, PathBuf};
-use std::{fs, io};
+use std::{collections, fs, io};
 use uuid::Uuid;
 
 pub fn fix_storage(
     config: &EnvConfig,
     storage_metadata: &mut Option<StorageMetadata>,
+    collection_label: String,
 ) -> Result<(), String> {
     let Some(storage_metadata) = storage_metadata else {
         return Err(crate::INDEX_NOT_INITIALIZED_ERROR.to_string());
@@ -30,7 +31,11 @@ pub fn fix_storage(
 
     let stored_files = get_indexed_files_from_directory(&config.storage_directory);
 
-    storage_metadata.metadata.retain(|file_metadata| {
+    let Some(collection) = storage_metadata.get_collection_mut(&collection_label) else{
+    return Err(format!("Collection with label {} was not found", collection_label));
+};
+
+    collection.index.retain(|file_metadata| {
         let does_file_with_id_exists = stored_files
             .iter()
             .any(|entry| entry.index == file_metadata.id);
@@ -43,9 +48,10 @@ pub fn fix_storage(
     Ok(())
 }
 
-pub fn init_storage(config: &EnvConfig) {
-    fs::write(config.storage_directory.join("index.json"), "[]")
-        .expect("Failed to initialize index.json");
+pub fn init_storage(config: &EnvConfig, collection_label: &str) {
+    let collection_dir = config.storage_directory.join(collection_label);
+    fs::create_dir(&collection_dir).expect("Failed to create collection dir");
+    fs::write(collection_dir.join("index.json"), "[]").expect("Failed to initialize index.json");
 }
 
 pub fn delete(ids: &[Uuid], config: &EnvConfig) -> Result<Vec<Uuid>, String> {
@@ -128,6 +134,10 @@ pub fn download_bulk(
     let mut saved_files = 0;
     let mut skipped_images_count = 0;
 
+    let collection = storage_metadata
+        .get_collection(&"reddit".to_string())
+        .expect("TMP");
+
     let new_posts_informations: Vec<PostInformations> = {
         let mut new_posts_informations_mut: Vec<PostInformations> = vec![];
         for post_informations in posts_informations {
@@ -136,8 +146,8 @@ pub fn download_bulk(
                 continue;
             };
 
-            let does_file_already_exists_in_storage_metadata = storage_metadata
-                .metadata
+            let does_file_already_exists_in_storage_metadata = collection
+                .index
                 .iter()
                 .filter_map(|file_from_storage| file_from_storage.url_filename.as_ref())
                 .any(|file_from_storage| file_from_storage.eq(filename_from_url));
@@ -229,7 +239,15 @@ pub fn download_bulk(
     Ok(())
 }
 
-pub fn restore(storage_metadata: &StorageMetadata, config: &EnvConfig) {
+pub fn restore(
+    storage_metadata: &StorageMetadata,
+    config: &EnvConfig,
+    collection_label: String,
+) -> Result<(), String> {
+    let Some(collection) = storage_metadata.get_collection(&collection_label) else{
+        return Err(format!("Collection with label: {} was not found", collection_label));
+    };
+
     let client = reqwest::blocking::Client::builder()
         .user_agent(reddit::APP_USER_AGENT)
         .build()
@@ -237,7 +255,7 @@ pub fn restore(storage_metadata: &StorageMetadata, config: &EnvConfig) {
 
     let images_in_storage = get_indexed_files_from_directory(&config.storage_directory);
 
-    for file_metadata in &storage_metadata.metadata {
+    for file_metadata in &collection.index {
         let Some(image_url) =  &file_metadata.url else{
            continue; 
         };
@@ -298,6 +316,7 @@ pub fn restore(storage_metadata: &StorageMetadata, config: &EnvConfig) {
             )
             .expect("Failed to save image");
     }
+    Ok(())
 }
 
 fn fetch_images(
@@ -446,16 +465,19 @@ fn persist_buffer(
     println!("Persisting buffer");
     for (image, new_metadata) in buffer.drain(..) {
         let image_format = image::guess_format(image.as_bytes()).unwrap_or(ImageFormat::Jpeg);
-        let absolute_file_path = config.storage_directory.join(format!(
+        let absolute_file_path = config.storage_directory.join("reddit").join(format!(
             "{}.{}",
             new_metadata.id,
             image_format.extensions_str()[0]
         ));
 
         //TODO: Remove unwraping after https://trello.com/c/MJlIAvnG/4-storagemetadata
-        storage_metadata.metadata.push(new_metadata);
+        storage_metadata
+            .get_collection_mut("reddit")
+            .expect("")
+            .index
+            .push(new_metadata);
         image.save(absolute_file_path).unwrap();
     }
-
     storage_metadata.persist();
 }
