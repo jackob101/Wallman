@@ -17,8 +17,11 @@ pub enum Commands {
     #[command(subcommand)]
     Reddit(RedditOperation),
     #[command(subcommand)]
+    Wallheaven(WallheavenOperation),
+    #[command(subcommand)]
     Image(ImageOperation),
     Query {
+        collection: String,
         tags: Vec<String>,
     },
 }
@@ -26,11 +29,13 @@ pub enum Commands {
 #[derive(Subcommand, Debug)]
 pub enum ImageOperation {
     Download {
+        collection: String,
         url: String,
         #[arg(short, long, num_args = 1..)]
         tags: Option<Vec<String>>,
     },
     Delete {
+        collection: String,
         ids: Vec<Uuid>,
     },
     #[command(subcommand)]
@@ -41,6 +46,7 @@ pub enum ImageOperation {
 pub enum ImageOperationTag {
     /// Add [TAG] to file with <ID>
     Add {
+        collection: String,
         /// File ID
         id: Uuid,
         /// One or more tag names separated by space
@@ -48,6 +54,7 @@ pub enum ImageOperationTag {
     },
     /// Delete assigned [TAG] from file with <ID>
     Delete {
+        collection: String,
         /// File ID
         id: Uuid,
         /// One or more tag names separated by space
@@ -55,6 +62,7 @@ pub enum ImageOperationTag {
     },
     /// Remove all tags from file with ID
     Clear {
+        collection: String,
         /// File ID
         id: Uuid,
     },
@@ -63,11 +71,11 @@ pub enum ImageOperationTag {
 #[derive(Subcommand, Debug)]
 pub enum IndexOperation {
     ///Create file for string metadata about storage
-    Init,
+    Init { collection: String },
     ///Try to fix incorrect data inside the metadata file
-    Fix,
+    Fix { collection: String },
     ///Downloads missing images from index
-    Restore,
+    Restore { collection: String },
 }
 
 #[derive(Subcommand, Debug)]
@@ -80,4 +88,9 @@ pub enum RedditOperation {
         #[arg(short = 'l', long = "limit")]
         upvoted_posts_fetch_limit: Option<u8>,
     },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum WallheavenOperation {
+    Sync,
 }
