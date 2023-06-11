@@ -9,6 +9,7 @@ use reqwest::blocking::Client;
 use uuid::Uuid;
 
 use crate::{
+    env_config::EnvConfig,
     metadata::{self, FileMetadata, StorageMetadata},
     wallheaven::structs::{CollectionData, CollectionDataResponse, ImageDetailsResponse},
 };
@@ -18,12 +19,18 @@ use self::structs::{Collection, CollectionsResponse, ImageDetailsData};
 mod client;
 mod structs;
 
-pub fn sync(storage_metadata: &mut StorageMetadata) -> Result<(), String> {
+pub fn sync(storage_metadata: &mut StorageMetadata, config: &EnvConfig) -> Result<(), String> {
     let client = client::wallman_client()
         .build()
         .map_err(|err| err.to_string())?;
 
-    let collection_response = get_user_collections(&client, "TSear")?;
+    let collection_response = get_user_collections(
+        &client,
+        config
+            .wallheaven_username
+            .as_ref()
+            .expect("env WALLMAN_WALLHEAVEN_USERNAME username is not set"),
+    )?;
 
     println!("{:#?}", collection_response);
 

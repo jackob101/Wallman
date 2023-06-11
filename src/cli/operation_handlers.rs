@@ -101,7 +101,7 @@ pub fn handle_operation(
         },
         Commands::Wallheaven(operation) => match operation {
             super::WallheavenOperation::Sync => {
-                wallheaven::sync(storage_metadata.as_mut().unwrap())
+                wallheaven::sync(storage_metadata.as_mut().unwrap(), config)
             }
         },
     }

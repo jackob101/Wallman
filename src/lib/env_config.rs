@@ -1,9 +1,10 @@
-use std::env;
+use std::env::{self, vars};
 
 use std::path::PathBuf;
 
 pub struct EnvConfig {
     pub storage_directory: PathBuf,
+    pub wallheaven_username: Option<String>,
 }
 
 impl EnvConfig {
@@ -13,6 +14,14 @@ impl EnvConfig {
             Err(_) => home::home_dir().unwrap().join("Wallpapers"),
         };
 
-        EnvConfig { storage_directory }
+        let wallheaven_username = match env::var("WALLMAN_WALLHEAVEN_USERNAME") {
+            Ok(value) => Some(value),
+            Err(_) => None,
+        };
+
+        EnvConfig {
+            storage_directory,
+            wallheaven_username,
+        }
     }
 }
