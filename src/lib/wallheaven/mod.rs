@@ -1,15 +1,24 @@
-use std::io::{stdout, BufRead, Write};
+use std::{
+    fs,
+    io::{stdout, BufRead, Write},
+};
 
+use image::{DynamicImage, ImageFormat};
+use log::error;
 use reqwest::blocking::Client;
+use uuid::Uuid;
 
-use crate::wallheaven::structs::{CollectionData, CollectionDataResponse, ImageDetailsResponse};
+use crate::{
+    metadata::{self, FileMetadata, StorageMetadata},
+    wallheaven::structs::{CollectionData, CollectionDataResponse, ImageDetailsResponse},
+};
 
 use self::structs::{Collection, CollectionsResponse, ImageDetailsData};
 
 mod client;
 mod structs;
 
-pub fn sync() -> Result<(), String> {
+pub fn sync(storage_metadata: &mut StorageMetadata) -> Result<(), String> {
     let client = client::wallman_client()
         .build()
         .map_err(|err| err.to_string())?;
@@ -47,14 +56,50 @@ pub fn sync() -> Result<(), String> {
         println!("Selected collection is empty");
         return Ok(());
     }
+    let collection_path = storage_metadata.path.join(&selected_collection.label);
+
+    if !collection_path.exists() {
+        fs::create_dir(collection_path).expect("Failed to create collection directory");
+    }
 
     let images_in_collection = get_images_in_collection(&client, selected_collection)?;
+    let images_details = get_images_details(images_in_collection, &client)?;
 
-    println!("{:#?}", images_in_collection);
+    let mut collection = storage_metadata.get_collection_owned(&selected_collection.label);
+    let images_not_in_store = get_images_not_in_store(&collection, images_details);
 
-    let images_details = get_images_details(images_in_collection, &client);
+    let mut buffer: Vec<(DynamicImage, FileMetadata)> = Vec::with_capacity(3);
 
-    println!("{:#?}", images_details);
+    for entry in images_not_in_store {
+        let image = match get_image_from_url(&client, &entry.path) {
+            Ok(value) => value,
+            Err(err) => {
+                error!("{}", err);
+                continue;
+            }
+        };
+
+        let tags = entry.tags.iter().map(|tag| tag.name.to_string()).collect();
+
+        let new_image_metadata = FileMetadata {
+            id: Uuid::new_v4(),
+            url: Some(entry.path),
+            resolution: Some((image.width(), image.height())),
+            permalink: Some(entry.url),
+            tags,
+            ..FileMetadata::default()
+        };
+
+        buffer.push((image, new_image_metadata));
+
+        if buffer.len() == 3 {
+            persist_buffer(&mut buffer, storage_metadata, &mut collection);
+        }
+    }
+
+    persist_buffer(&mut buffer, storage_metadata, &mut collection);
+
+    storage_metadata.collections.push(collection);
 
     Ok(())
 }
@@ -118,4 +163,52 @@ fn get_images_details(
         images_details_mut.push(image_details_response.data);
     }
     Ok(images_details_mut)
+}
+
+fn persist_buffer(
+    buffer: &mut Vec<(DynamicImage, FileMetadata)>,
+    storage_metadata: &StorageMetadata,
+    collection: &mut metadata::Collection,
+) {
+    println!("Persisting buffer");
+    for (image, new_metadata) in buffer.drain(..) {
+        let image_format = image::guess_format(image.as_bytes()).unwrap_or(ImageFormat::Jpeg);
+        let absolute_file_path = storage_metadata.path.join(&collection.label).join(format!(
+            "{}.{}",
+            new_metadata.id,
+            image_format.extensions_str()[0]
+        ));
+
+        println!("{:?}", absolute_file_path);
+        collection.index.push(new_metadata);
+        image.save(absolute_file_path).unwrap();
+    }
+    collection.persist_collection(storage_metadata);
+}
+
+fn get_images_not_in_store(
+    collection: &metadata::Collection,
+    mut images_details: Vec<ImageDetailsData>,
+) -> Vec<ImageDetailsData> {
+    images_details.retain(|entry| {
+        !collection
+            .index
+            .iter()
+            .filter(|index_entry| index_entry.url.is_some())
+            .any(|index_entry| *index_entry.url.as_ref().unwrap() == entry.path)
+    });
+
+    images_details
+}
+
+fn get_image_from_url(client: &Client, url: &str) -> Result<DynamicImage, String> {
+    let request_builder = client.get(url);
+
+    let image_response = client::limited_get(&client, request_builder);
+
+    let image_response = image_response?;
+
+    let bytes = image_response.bytes().map_err(|err| err.to_string())?;
+
+    image::load_from_memory(&bytes).map_err(|err| err.to_string())
 }

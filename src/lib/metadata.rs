@@ -9,10 +9,10 @@ use std::io::BufReader;
 use std::path::PathBuf;
 use uuid::Uuid;
 
-use std::borrow::ToOwned;
+use std::borrow::{BorrowMut, ToOwned};
 use std::{fs, io};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct FileMetadata {
     pub id: Uuid,
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
@@ -92,13 +92,32 @@ impl FileMetadata {
     }
 }
 
+#[derive(Debug)]
 pub struct Collection {
     pub label: String,
     pub index: Vec<FileMetadata>,
 }
 
+impl Collection {
+    pub fn persist_collection(&self, storage_metadata: &StorageMetadata) {
+        let collection_dir = storage_metadata.path.join(&self.label);
+        if !collection_dir.exists() {
+            fs::create_dir(&collection_dir).expect("TODO: How can this fail");
+        };
+
+        let file = fs::OpenOptions::new()
+            .write(true)
+            .create(true)
+            .truncate(true)
+            .open(collection_dir.join(crate::INDEX))
+            .expect("Failed to open/create file");
+
+        serde_json::to_writer(&file, &self.index).expect("Failed to write");
+    }
+}
+
 pub struct StorageMetadata {
-    path: PathBuf,
+    pub path: PathBuf,
     pub collections: Vec<Collection>,
 }
 
@@ -233,11 +252,16 @@ impl StorageMetadata {
         info!("persisting {}", crate::INDEX);
 
         for collection in &self.collections {
+            let collection_dir = &self.path.join(&collection.label);
+            if !collection_dir.exists() {
+                fs::create_dir(collection_dir).expect("TODO: How can this fail");
+            };
+
             let file = fs::OpenOptions::new()
                 .write(true)
                 .create(true)
                 .truncate(true)
-                .open(&self.path.join(&collection.label).join(crate::INDEX))
+                .open(collection_dir.join(crate::INDEX))
                 .expect("Failed to open/create file");
 
             serde_json::to_writer(&file, &collection.index).expect("Failed to write");
@@ -254,6 +278,21 @@ impl StorageMetadata {
         self.collections
             .iter_mut()
             .find(|entry| entry.label == *collection_label)
+    }
+
+    pub fn get_collection_owned(&mut self, collection_label: &str) -> Collection {
+        let position = self
+            .collections
+            .iter()
+            .position(|entry| entry.label == collection_label);
+
+        match position {
+            Some(value) => self.collections.swap_remove(value),
+            None => Collection {
+                label: collection_label.to_owned(),
+                index: vec![],
+            },
+        }
     }
 
     fn name_with_id_predicate(index: Uuid, entry: io::Result<DirEntry>) -> bool {

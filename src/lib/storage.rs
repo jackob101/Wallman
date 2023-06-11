@@ -54,10 +54,14 @@ pub fn init_storage(config: &EnvConfig, collection_label: &str) {
     fs::write(collection_dir.join("index.json"), "[]").expect("Failed to initialize index.json");
 }
 
-pub fn delete(ids: &[Uuid], config: &EnvConfig) -> Result<Vec<Uuid>, String> {
+pub fn delete(
+    ids: &[Uuid],
+    config: &EnvConfig,
+    collection_label: &str,
+) -> Result<Vec<Uuid>, String> {
     let mut removed_ids: Vec<Uuid> = vec![];
 
-    let files_iterator = fs::read_dir(&config.storage_directory)
+    let files_iterator = fs::read_dir(&config.storage_directory.join(collection_label))
         .map_err(|_| "Failed to read files from directory")?;
 
     for file in files_iterator {

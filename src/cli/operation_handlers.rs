@@ -19,13 +19,10 @@ pub fn handle_operation(
             IndexOperation::Fix { collection } => {
                 storage::fix_storage(config, storage_metadata, collection)
             }
-            IndexOperation::Restore { collection } => {
-                match storage_metadata {
-                    Some(value) => storage::restore(value, config, collection),
-                    None => return Err("Index is not initialized".to_string()),
-                };
-                Ok(())
-            }
+            IndexOperation::Restore { collection } => match storage_metadata {
+                Some(value) => storage::restore(value, config, collection),
+                None => Err("Index is not initialized".to_string()),
+            },
         },
         Commands::Reddit(reddit) => match reddit {
             RedditOperation::Authorize => {
@@ -66,7 +63,7 @@ pub fn handle_operation(
                 ids: id,
                 collection,
             } => {
-                let deleted_files = storage::delete(&id, config)?;
+                let deleted_files = storage::delete(&id, config, &collection)?;
 
                 metadata::delete(storage_metadata, &deleted_files, collection)
             }
@@ -103,7 +100,9 @@ pub fn handle_operation(
             None => Err("Index is not initialized".to_string()),
         },
         Commands::Wallheaven(operation) => match operation {
-            super::WallheavenOperation::Sync => wallheaven::sync(),
+            super::WallheavenOperation::Sync => {
+                wallheaven::sync(storage_metadata.as_mut().unwrap())
+            }
         },
     }
 }
