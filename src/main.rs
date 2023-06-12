@@ -27,6 +27,7 @@ fn main() -> Result<(), String> {
     if let Some(storage_metadata) = storage_metadata {
         storage_metadata.persist();
     }
+
     Ok(())
 }
 
