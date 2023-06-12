@@ -24,60 +24,48 @@ pub fn sync(storage_metadata: &mut StorageMetadata, config: &EnvConfig) -> Resul
         .build()
         .map_err(|err| err.to_string())?;
 
-    let collection_response = get_user_collections(
-        &client,
-        config
-            .wallheaven_username
-            .as_ref()
-            .expect("env WALLMAN_WALLHEAVEN_USERNAME username is not set"),
-    )?;
+    let username = match config.wallheaven_username.clone() {
+        Some(value) => value,
+        None => inquire::Text::new("Input username")
+            .prompt()
+            .expect("Failed to get user input"),
+    };
 
-    println!("{:#?}", collection_response);
-
-    println!("Which collection would You like to sync?");
-    for (index, data) in collection_response.data.iter().enumerate() {
-        println!("{}: {}", index + 1, data.label);
-    }
-    print!("Select option: ");
-    stdout().flush().expect("Failed to flush");
-
-    let mut user_response = "".to_string();
-    std::io::stdin()
-        .lock()
-        .read_line(&mut user_response)
-        .expect("TODO Handle error during input");
-
-    let user_response = user_response
-        .trim()
-        .parse::<u32>()
-        .map_err(|err| err.to_string())?;
-
-    let selected_collection = collection_response
+    let not_empty_user_collections = get_user_collections(&client, &username)?
         .data
-        .get((user_response - 1) as usize)
-        .ok_or("Index out of bounds")?;
+        .drain(..)
+        .filter(|e| e.count != 0)
+        .collect::<Vec<Collection>>();
 
-    println!("Selected collection: {}", selected_collection.label);
+    let collection_picked_by_user =
+        inquire::Select::new("Pick collection to sync", not_empty_user_collections)
+            .prompt()
+            .expect("Failed to select");
 
-    if selected_collection.count == 0 {
-        println!("Selected collection is empty");
-        return Ok(());
-    }
-    let collection_path = storage_metadata.path.join(&selected_collection.label);
+    let collection_path = storage_metadata.path.join(&collection_picked_by_user.label);
 
     if !collection_path.exists() {
         fs::create_dir(collection_path).expect("Failed to create collection directory");
     }
 
-    let images_in_collection = get_images_in_collection(&client, selected_collection)?;
+    let images_in_collection = get_images_in_collection(&client, &collection_picked_by_user)?;
     let images_details = get_images_details(images_in_collection, &client)?;
 
-    let mut collection = storage_metadata.get_collection_owned(&selected_collection.label);
-    let images_not_in_store = get_images_not_in_store(&collection, images_details);
+    let mut collection = storage_metadata.get_collection_owned(&collection_picked_by_user.label);
+    let mut images_not_in_store = get_images_not_in_store(&collection, images_details);
 
     let mut buffer: Vec<(DynamicImage, FileMetadata)> = Vec::with_capacity(3);
 
-    for entry in images_not_in_store {
+    let total_amount_of_images_to_download = images_not_in_store.len();
+
+    println!("\nStarting image download:");
+
+    for (index, entry) in images_not_in_store.drain(..).enumerate() {
+        println!(
+            "Downloading: {}/{}",
+            index + 1,
+            total_amount_of_images_to_download
+        );
         let image = match get_image_from_url(&client, &entry.path) {
             Ok(value) => value,
             Err(err) => {
@@ -108,6 +96,11 @@ pub fn sync(storage_metadata: &mut StorageMetadata, config: &EnvConfig) -> Resul
 
     storage_metadata.collections.push(collection);
 
+    println!(
+        "\nCollection {} was synchronised",
+        collection_picked_by_user.label
+    );
+
     Ok(())
 }
 
@@ -132,7 +125,10 @@ fn get_images_in_collection(
     let mut index = 1;
     let mut pages = 1;
 
+    println!();
+
     while index <= pages {
+        println!("Fetching collection information page: {}", index);
         let images_in_collection_request = client.get(format!(
             "https://wallhaven.cc/api/v1/collections/TSear/{}?page={}",
             collection.id, index
@@ -177,7 +173,6 @@ fn persist_buffer(
     storage_metadata: &StorageMetadata,
     collection: &mut metadata::Collection,
 ) {
-    println!("Persisting buffer");
     for (image, new_metadata) in buffer.drain(..) {
         let image_format = image::guess_format(image.as_bytes()).unwrap_or(ImageFormat::Jpeg);
         let absolute_file_path = storage_metadata.path.join(&collection.label).join(format!(
@@ -186,7 +181,6 @@ fn persist_buffer(
             image_format.extensions_str()[0]
         ));
 
-        println!("{:?}", absolute_file_path);
         collection.index.push(new_metadata);
         image.save(absolute_file_path).unwrap();
     }

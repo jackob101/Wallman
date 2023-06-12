@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -10,6 +12,12 @@ pub struct Collection {
     pub id: u32,
     pub label: String,
     pub count: u32,
+}
+
+impl Display for Collection {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.label)
+    }
 }
 
 // Collection data Response
