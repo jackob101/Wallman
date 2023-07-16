@@ -2,32 +2,70 @@
     "margin-left": 10,
     "margin-bottom": 10,
     "margin-right": 10,
-     "layer": "top", // Waybar at top layer
+    "layer": "top", // Waybar at top layer
     "position": "bottom", // Waybar position (top|bottom|left|right)
     "height": 35, // Waybar height (to be removed for auto height)
     // "width": 1280, // Waybar width
     "spacing": 4, // Gaps between modules (4px)
     // Choose the order of the modules
-    "modules-left": ["wlr/workspaces", "sway/mode", "sway/scratchpad", "custom/media"],
-    "modules-center": ["hyprland/window"],
-    "modules-right": ["pulseaudio", "network", "backlight", "keyboard-state", "clock", "tray"],
+    "modules-left": [
+        "custom/launcher",
+        "wlr/workspaces",
+        "custom/media"
+    ],
+    "modules-center": [
+        "hyprland/window"
+    ],
+    "modules-right": [
+        "pulseaudio",
+        "network",
+        "backlight",
+        "keyboard-state",
+        "clock",
+        "tray"
+    ],
+    "custom/launcher":{
+        "format": "",
+        "on-click": "$HOME/.config/rofi/launcher.sh"
+    },
     // Modules configuration
     "wlr/workspaces": {
-         "acitve-only": true,
-         "disable-scroll": false,
-         "on-click": "activate",
-         "all-outputs": false,
-         "format": "{name}",
-         "sort-by-number": true,
-         "format-icons": {
-             "urgent": "",
-             "focused": "",
-            "default": ""
-         }
-     },
+        "acitve-only": true,
+        "disable-scroll": false,
+        "on-click": "activate",
+        "all-outputs": false,
+        "format": "{icon}",
+        "sort-by-number": true,
+        "format-icons": {
+            "urgent": "",
+            "focused": "",
+            "default": "",
+            "1":"1",
+            "2":"2",
+            "3":"3",
+            "4":"4",
+            "5":"5",
+            "6":"6",
+            "7":"7",
+            "8":"8",
+            "9":"9",
+            "10":"10",
+            "11": "1",
+            "12": "2",
+            "13": "3",
+            "14": "4",
+            "15": "5",
+            "16": "6",
+            "17": "7",
+            "18": "8",
+            "19": "9",
+            "20": "10",
+        }
+    },
     "hyprland/window": {
-      "max-length": 200,
-      "separate-outputs": true
+        "max-length": 200,
+        "separate-outputs": true,
+        "icon": true
     },
     "keyboard-state": {
         "numlock": true,
@@ -44,7 +82,10 @@
     "sway/scratchpad": {
         "format": "{icon} {count}",
         "show-empty": false,
-        "format-icons": ["", ""],
+        "format-icons": [
+            "",
+            ""
+        ],
         "tooltip": true,
         "tooltip-format": "{app}: {title}"
     },
@@ -71,12 +112,26 @@
         "critical-threshold": 80,
         // "format-critical": "{temperatureC}°C {icon}",
         "format": "{temperatureC}°C {icon}",
-        "format-icons": ["", "", ""]
+        "format-icons": [
+            "",
+            "",
+            ""
+        ]
     },
     "backlight": {
         // "device": "acpi_video1",
         "format": "{percent}% {icon}",
-        "format-icons": ["", "", "", "", "", "", "", "", ""]
+        "format-icons": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]
     },
     "battery": {
         "states": {
@@ -90,7 +145,13 @@
         "format-alt": "{time} {icon}",
         // "format-good": "", // An empty format will hide the module
         // "format-full": "",
-        "format-icons": ["", "", "", "", ""]
+        "format-icons": [
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]
     },
     "battery#bat2": {
         "bat": "BAT2"
@@ -106,7 +167,7 @@
     },
     "pulseaudio": {
         // "scroll-step": 1, // %, can be a float
-        "format": "{icon} {volume}%    {format_source}",
+        "format": "{icon} {volume}%        {format_source}",
         "format-bluetooth": "{volume}% {icon} {format_source}",
         "format-bluetooth-muted": " {icon} {format_source}",
         "format-muted": " {format_source}",
@@ -119,7 +180,11 @@
             "phone": "",
             "portable": "",
             "car": "",
-            "default": ["", "", ""]
+            "default": [
+                "",
+                "",
+                ""
+            ]
         },
         "on-click": "pavucontrol"
     },

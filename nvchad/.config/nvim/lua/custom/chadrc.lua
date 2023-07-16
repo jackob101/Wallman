@@ -1,7 +1,7 @@
 ---@type ChadrcConfig
 local M = {}
 M.ui = {
-	theme = "tokyonight",
+	theme = "everforest",
 	cmp = {
 		style = "flat_dark",
 	},
@@ -18,6 +18,7 @@ M.mappings = require("custom.mappings")
 vim.o.number = true
 vim.o.relativenumber = true
 vim.diagnostic.config({ virtual_text = false })
+vim.o.scrolloff = 15
 
 vim.g.yuck_lisp_indentation = 1
 

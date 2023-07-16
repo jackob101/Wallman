@@ -6,8 +6,8 @@
 ## Twitter : @adi1090x
 
 #Path to style
-theme="launcherStyle"
-dir="$HOME/.config/rofi"
+theme="style.rasi"
+dir="$HOME/.config/rofi/launcher"
 
 #exec command
 rofi  -no-lazy-grab -show drun -p "Application name" -theme $dir/"$theme"

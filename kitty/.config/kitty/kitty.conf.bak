@@ -27,7 +27,7 @@ modify_font underline_position 1px
 #: placed in the cell. For example::
 
 #:     modify_font cell_width 80%
-#:     modify_font cell_height -2px
+modify_font cell_height 1px
 #:     modify_font baseline 3
 
 #: Cursor customization 
@@ -53,7 +53,7 @@ cursor_blink_interval 0
 #: Mouse 
 
 # mouse_hide_wait 3.0
-url_color #0087bd
+# url_color #0087bd
 url_style curly
 # open_url_with default
 # url_prefixes file ftp ftps gemini git gopher http https irc ircs kitty mailto news sftp ssh
@@ -109,7 +109,7 @@ enable_audio_bell false
 # window_resize_step_lines 2
 # window_border_width 0.5pt
 # draw_minimal_borders yes
-# window_margin_width 0
+window_margin_width 0 
 # single_window_margin_width -1
 # window_padding_width 0
 # placement_strategy center
@@ -186,7 +186,7 @@ tab_powerline_style slanted
 
 # foreground #dddddd
 # background #000000
-# background_opacity 1.0
+background_opacity 0.9 
 # background_image none
 # background_image_layout tiled
 # background_image_linear no
@@ -266,7 +266,7 @@ tab_powerline_style slanted
 
 #: Advanced 
 
-# shell .
+shell /usr/bin/fish
 
 #: The shell program to execute. The default value of . means to use
 #: whatever shell is set as the default shell for the current user.
@@ -720,7 +720,7 @@ tab_powerline_style slanted
 #: The full list of actions that can be mapped to key presses is
 #: available here <https://sw.kovidgoyal.net/kitty/actions/>.
 
-# kitty_mod ctrl+shift
+kitty_mod ctrl+shift
 
 #: Special modifier key alias for default shortcuts. You can change
 #: the value of this option to alter all default shortcuts that use
@@ -763,7 +763,7 @@ tab_powerline_style slanted
 
 #: Copy to clipboard
 
-# map kitty_mod+c copy_to_clipboard
+map kitty_mod+c copy_to_clipboard
 # map cmd+c       copy_to_clipboard
 
 #::  There is also a copy_or_interrupt action that can be optionally
@@ -774,7 +774,7 @@ tab_powerline_style slanted
 
 #: Paste from clipboard
 
-# map kitty_mod+v paste_from_clipboard
+map kitty_mod+v paste_from_clipboard
 # map cmd+v       paste_from_clipboard
 
 #: Paste from selection
@@ -1392,3 +1392,9 @@ tab_powerline_style slanted
 #: 
 
 #: 
+
+
+# BEGIN_KITTY_THEME
+# Everforest Dark Hard
+include current-theme.conf
+# END_KITTY_THEME
