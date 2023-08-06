@@ -100,9 +100,10 @@ pub fn handle_operation(
             None => Err("Index is not initialized".to_string()),
         },
         Commands::Wallheaven(operation) => match operation {
-            super::WallheavenOperation::Sync => {
-                wallheaven::sync(storage_metadata.as_mut().unwrap(), config)
-            }
+            super::WallheavenOperation::Sync => wallheaven::sync(
+                storage_metadata.as_mut().unwrap(),
+                config.wallheaven_username.clone(),
+            ),
         },
     }
 }
