@@ -19,14 +19,17 @@ use self::structs::{Collection, CollectionsResponse, ImageDetailsData};
 mod client;
 mod structs;
 
-pub fn sync(storage_metadata: &mut StorageMetadata, config: &EnvConfig) -> Result<(), String> {
+pub fn sync(
+    storage_metadata: &mut StorageMetadata,
+    username: Option<String>,
+) -> Result<(), String> {
     let client = client::wallman_client()
         .build()
         .map_err(|err| err.to_string())?;
 
-    let username = match config.wallheaven_username.clone() {
+    let username = match username {
         Some(value) => value,
-        None => inquire::Text::new("Input username")
+        None => inquire::Text::new("Wallheaven username:")
             .prompt()
             .expect("Failed to get user input"),
     };
@@ -34,13 +37,16 @@ pub fn sync(storage_metadata: &mut StorageMetadata, config: &EnvConfig) -> Resul
     let not_empty_user_collections = get_user_collections(&client, &username)?
         .data
         .drain(..)
+        // There is no point in showing empty collections
         .filter(|e| e.count != 0)
         .collect::<Vec<Collection>>();
 
-    let collection_picked_by_user =
-        inquire::Select::new("Pick collection to sync", not_empty_user_collections)
-            .prompt()
-            .expect("Failed to select");
+    let collection_picked_by_user = inquire::Select::new(
+        "Which collection would You like to sync: ",
+        not_empty_user_collections,
+    )
+    .prompt()
+    .expect("Failed to select");
 
     let collection_path = storage_metadata.path.join(&collection_picked_by_user.label);
 
@@ -58,7 +64,7 @@ pub fn sync(storage_metadata: &mut StorageMetadata, config: &EnvConfig) -> Resul
 
     let total_amount_of_images_to_download = images_not_in_store.len();
 
-    println!("\nStarting image download:");
+    println!("Starting image download:");
 
     for (index, entry) in images_not_in_store.drain(..).enumerate() {
         println!(
@@ -128,7 +134,7 @@ fn get_images_in_collection(
     println!();
 
     while index <= pages {
-        println!("Fetching collection information page: {}", index);
+        println!("Downloading informations about collection: {}", index);
         let images_in_collection_request = client.get(format!(
             "https://wallhaven.cc/api/v1/collections/TSear/{}?page={}",
             collection.id, index
