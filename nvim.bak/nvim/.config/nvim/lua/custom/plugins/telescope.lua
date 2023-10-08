@@ -5,10 +5,12 @@ return {
     branch = '0.1.x',
     dependencies = { 'nvim-lua/plenary.nvim', 'ThePrimeagen/harpoon' },
     keys = {
-      { '<leader>ff', '<cmd>Telescope find_files<cr>',                desc = 'Find files' },
-      { '<leader>fk', '<cmd>Telescope keymaps<cr>',                   desc = 'Show keymaps' },
+      { '<leader>ff', '<cmd>Telescope find_files<cr>', desc = 'Find files' },
+      { '<leader>fk', '<cmd>Telescope keymaps<cr>', desc = 'Show keymaps' },
       { '<leader>fg', '<cmd>Telescope current_buffer_fuzzy_find<cr>', desc = 'Current buffer fuzzy find' },
-      { '<leader>fG', '<cmd>Telescope live_grep<cr>',                 desc = 'Live grep' },
+      { '<leader>fG', '<cmd>Telescope live_grep<cr>', desc = 'Live grep' },
+      { '<leader>fb', '<cmd>Telescope buffers<cr>', desc = 'Find buffer' },
+      { '<leader>sk', '<cmd>Telescope keymaps<cr>', desc = 'Find keybinding' },
     },
     config = function()
       require('telescope').setup()

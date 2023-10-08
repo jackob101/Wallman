@@ -186,7 +186,7 @@ tab_powerline_style slanted
 
 # foreground #dddddd
 # background #000000
-background_opacity 0.9 
+background_opacity 0.95
 # background_image none
 # background_image_layout tiled
 # background_image_linear no
@@ -1395,6 +1395,6 @@ map kitty_mod+v paste_from_clipboard
 
 
 # BEGIN_KITTY_THEME
-# Everforest Dark Hard
+# Catppuccin-Frappe
 include current-theme.conf
 # END_KITTY_THEME

@@ -7,7 +7,13 @@ return {
     },
     keys = {
       { '<C-/>', '<cmd>ToggleTerm direction=float<cr>', desc = 'Floating terminal' },
-      { '<C-/>', '<cmd>ToggleTerm direction=float<cr>', mode = 't', desc = 'Floating terminal' },
+      {
+        '<C-/>',
+        '<cmd>ToggleTerm direction=float<cr>',
+        mode = 't',
+        desc = 'Floating terminal',
+      },
+      { '<M-1>', '<cmd>ToggleTerm direction=horizontal size=30<cr>', desc = 'Toggle term' },
     },
   },
 }

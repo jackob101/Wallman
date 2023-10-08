@@ -60,8 +60,6 @@ return {
       -- vim.api.nvim_set_hl(0, 'CmpItemKindInterface', { fg = '#D8EEEB', bg = '#58B5A8' })
       -- vim.api.nvim_set_hl(0, 'CmpItemKindColor', { fg = '#D8EEEB', bg = '#58B5A8' })
       -- vim.api.nvim_set_hl(0, 'CmpItemKindTypeParameter', { fg = '#D8EEEB', bg = '#58B5A8' })
-      --
-      --
 
       local cmp = require 'cmp'
       cmp.setup {
@@ -80,8 +78,12 @@ return {
           ['<C-Space>'] = cmp.mapping.complete {},
           ['<CR>'] = cmp.mapping.confirm {
             behavior = cmp.ConfirmBehavior.Insert,
+          },
+          ['<C-CR>'] = cmp.mapping.confirm {
+            behavior = cmp.ConfirmBehavior.Insert,
             select = true,
           },
+
           ['<Tab>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
@@ -103,12 +105,12 @@ return {
         },
         sources = {
           { name = 'nvim_lsp', priority = 10 },
-          { name = 'luasnip',  priority = 1 },
+          { name = 'luasnip', priority = 1 },
         },
         formatting = {
           fields = { 'kind', 'abbr', 'menu' },
           format = function(entry, vim_item)
-            local kind = require('lspkind').cmp_format { mode = 'symbol_text', maxwidth = 50 } (entry, vim_item)
+            local kind = require('lspkind').cmp_format { mode = 'symbol_text', maxwidth = 50 }(entry, vim_item)
             local strings = vim.split(kind.kind, '%s', { trimempty = true })
             kind.kind = ' ' .. (strings[1] or '') .. ' '
             kind.menu = '    (' .. (strings[2] or '') .. ')'
